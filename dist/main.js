@@ -62,7 +62,7 @@ var CreepCache = function(){
         return {
             harvester: (1 + this.length('harvester'))/4.0, 
             builder: (1 + this.length('builder'))/2,
-            guard: (1 + this.length('guard'))*15.0
+            guard: (1 + this.length('guard'))*2.0
         };
     }
     

@@ -2,6 +2,7 @@
 module.exports = {
     transfer: function(creep, target){
         if (creep.carry.energy == 0){
+            creep.say('Transfered');
             this.retarget(creep);
             this.work(creep);
         }else{
@@ -22,6 +23,7 @@ module.exports = {
     harvest: function(creep, target){
         // console.log(target);
         if (creep.carry.energy == creep.carryCapacity){
+            creep.say('Harvested');
             this.retarget(creep);
             this.work(creep);
         }else{
@@ -35,10 +37,13 @@ module.exports = {
                 this.retarget(creep);
             }
         }
-        
+    },
+    move: function(creep, target){
+        creep.moveTo(target);
+        this.retarget(creep);
     },
     retarget: function(creep){
-        console.log('Harvester ' + creep.name + ' retargeting');
+        console.log('INFO: Harvester ' + creep.name + ' retargeting');
         this.retarget_count++;
         if (this.retarget_count > 3){
             console.log('CRITICAL: harvester unable to find a new target');
@@ -56,8 +61,8 @@ module.exports = {
                 creep.memory.target_id = target.id;
                 creep.memory.action_name = 'harvest';
             }else{
-                // creep.memory.target_id = Game.flags.attack.id;
-                // creep.memory.action_name = 'move';
+                creep.memory.target_id = Game.flags.resting.id;
+                creep.memory.action_name = 'move';
                 console.log('unable to find a new harvest target');
             }
         }else{
@@ -93,6 +98,8 @@ module.exports = {
                 creep.memory.target_id = target.id;
                 creep.memory.action_name = 'transfer';
             }else{
+                creep.memory.target_id = Game.flags.resting.id;
+                creep.memory.action_name = 'move';
                 console.log('unable to find a new transfer target');
             }
         }

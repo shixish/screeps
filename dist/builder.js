@@ -13,8 +13,9 @@ module.exports = {
     build: function(creep, target){
         var action = creep.build(target);
         if (creep.carry.energy == 0){//end condition:
+            creep.say('Built');
             this.retarget(creep);
-            // this.work(creep);
+            this.work(creep);
         }else{
             if(action == ERR_NOT_IN_RANGE) {
                 creep.moveTo(target);
@@ -30,8 +31,9 @@ module.exports = {
     },
     upgrade: function(creep, target){
         if (creep.carry.energy == 0){//end condition:
+            creep.say('Upgraded');
             this.retarget(creep);
-            // this.work(creep);
+            this.work(creep);
         }else{
             var action = creep.upgradeController(target);
             if(action == ERR_NOT_IN_RANGE) {
@@ -44,23 +46,27 @@ module.exports = {
     },
     restock: function(creep, target){
         if (creep.carry.energy == creep.carryCapacity || target.energy == 0){//end condition:
+            creep.say('Restocked');
             this.retarget(creep);
             this.work(creep);
         }else{
-            var action = target.transferEnergy(creep);
-            // if (target.energy <= 5){
-            //     this.retarget(creep);
-            // }
-            if(action == ERR_NOT_IN_RANGE) {
-                creep.moveTo(target);
-            }else if (action != 0){
-                console.log('restocking error:', action);
-                this.retarget(creep);
+            //Otherwise the builders will bleed the system dry and run out of harvesters...
+            if (target.energy > target.energyCapacity*.75){ //mostly full, then go for it.
+                var action = target.transferEnergy(creep);
+                // if (target.energy <= 5){
+                //     this.retarget(creep);
+                // }
+                if(action == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(target);
+                }else if (action != 0){
+                    console.log('restocking error:', action);
+                    this.retarget(creep);
+                }
             }
         }
     },
     retarget: function(creep){
-        console.log('Builder ' + creep.name + ' retargeting');
+        console.log('INFO: Builder ' + creep.name + ' retargeting');
         this.retarget_count++;
         if (this.retarget_count > 3){
             console.log('CRITICAL: builder unable to find a new target');
