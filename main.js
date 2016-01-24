@@ -81,7 +81,7 @@ var CreepCache = function(){
 }
 
 module.exports.loop = function () {
-    // console.log('tick');
+    console.log('tick');
     
     var Cache = new CreepCache();
     
