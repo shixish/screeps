@@ -1,0 +1,25 @@
+{
+  "name": "screeps",
+  "version": "0.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/shixish/screeps.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shixish/screeps/issues"
+  },
+  "homepage": "https://github.com/shixish/screeps",
+  "dependencies": {
+    "grunt": "^0.4.5",
+    "gulp-screeps": "^1.0.1",
+    "gulp": "^3.9.0",
+    "gulp-watch": "^4.3.5"
+  }
+}
