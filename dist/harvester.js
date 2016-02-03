@@ -42,8 +42,13 @@ module.exports = {
         creep.moveTo(target);
         this.retarget(creep);
     },
+
+    // }
+    //     if (!target.pos.isNearTo(this.pos)) {
+    //         return C.ERR_NOT_IN_RANGE;
+    //     }
     retarget: function(creep){
-        console.log('INFO: Harvester ' + creep.name + ' retargeting');
+        // console.log('INFO: Harvester ' + creep.name + ' retargeting');
         this.retarget_count++;
         if (this.retarget_count > 3){
             console.log('CRITICAL: harvester unable to find a new target');
@@ -61,8 +66,10 @@ module.exports = {
                 creep.memory.target_id = target.id;
                 creep.memory.action_name = 'harvest';
             }else{
-                creep.memory.target_id = Game.flags.resting.id;
-                creep.memory.action_name = 'move';
+                if (Game.flags.resting){
+                    creep.memory.target_id = Game.flags.resting.id;
+                    creep.memory.action_name = 'move';
+                }
                 console.log('unable to find a new harvest target');
             }
         }else{
@@ -89,8 +96,8 @@ module.exports = {
             var target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
                 filter: function(obj){
                     return (
-                        obj.structureType == STRUCTURE_SPAWN
-                        || (obj.structureType == STRUCTURE_EXTENSION && obj.energy < obj.energyCapacity)
+                        (obj.structureType == STRUCTURE_SPAWN || obj.structureType == STRUCTURE_EXTENSION)
+                        && obj.energy < obj.energyCapacity
                     );
                 }
             });
@@ -98,8 +105,10 @@ module.exports = {
                 creep.memory.target_id = target.id;
                 creep.memory.action_name = 'transfer';
             }else{
-                creep.memory.target_id = Game.flags.resting.id;
-                creep.memory.action_name = 'move';
+                if (Game.flags.resting){
+                    creep.memory.target_id = Game.flags.resting.id;
+                    creep.memory.action_name = 'move';
+                }
                 console.log('unable to find a new transfer target');
             }
         }
@@ -150,8 +159,11 @@ module.exports = {
     },
     make: function(spawn){
         var memory = {
-            role: "harvester"
-        }
-        return spawn.createCreep([WORK, CARRY, MOVE], null, memory);
+                role: "harvester"
+            },
+            body = [WORK, WORK, WORK, CARRY, MOVE];
+        //simple:
+        body = [WORK, WORK, CARRY, MOVE];
+        return spawn.createCreep(body, null, memory);
     }
 };

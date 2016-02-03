@@ -44,6 +44,10 @@ module.exports = {
             }
         }
     },
+    move: function(creep, target){
+        creep.moveTo(target);
+        this.retarget(creep);
+    },
     restock: function(creep, target){
         if (creep.carry.energy == creep.carryCapacity || target.energy == 0){//end condition:
             creep.say('Restocked');
@@ -66,7 +70,7 @@ module.exports = {
         }
     },
     retarget: function(creep){
-        console.log('INFO: Builder ' + creep.name + ' retargeting');
+        // console.log('INFO: Builder ' + creep.name + ' retargeting');
         this.retarget_count++;
         if (this.retarget_count > 3){
             console.log('CRITICAL: builder unable to find a new target');
@@ -87,6 +91,10 @@ module.exports = {
                 creep.memory.target_id = target.id;
                 creep.memory.action_name = 'restock';
             }else{
+                if (Game.flags.resting){
+                    creep.memory.target_id = Game.flags.resting.id;
+                    creep.memory.action_name = 'move';
+                }
                 console.log('unable to find a new restock target');
             }
 		}
@@ -105,7 +113,10 @@ module.exports = {
                     creep.memory.target_id = target.id;
                     creep.memory.action_name = 'build';
                 }else{
-                    this.failcount++;
+                    if (Game.flags.resting){
+                        creep.memory.target_id = Game.flags.resting.id;
+                        creep.memory.action_name = 'move';
+                    }
                     console.log('unable to find a new build target');
                 }
             }
@@ -165,8 +176,11 @@ module.exports = {
     },
     make: function(spawn){
         var memory = {
-            role: "builder"
-        }
-        return spawn.createCreep([WORK, CARRY, CARRY, MOVE], null, memory);
+                role: "builder"
+            },
+            body = [WORK, WORK, CARRY, CARRY, MOVE];
+        //simple:
+        // body = [WORK, CARRY, CARRY, MOVE];
+        return spawn.createCreep(body, null, memory);
     }
 };
