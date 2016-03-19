@@ -1,4 +1,6 @@
 /// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
+var Globals = require('Globals');
+
 declare var module: any;
 (module).exports = class CreepController {
     creep: Creep;
@@ -8,6 +10,10 @@ declare var module: any;
     // constructor(public firstname, public middleinitial, public lastname) {
     //     this.creep.fullname = firstname + " " + middleinitial + " " + lastname;
     // }
+
+    constructor(creep: Creep) {
+        this.creep = creep;
+    }
 
     resetBodyCounts() {
         this.creep.memory.bodyCounts = {
@@ -98,11 +104,11 @@ declare var module: any;
                 break;
             case 'renewing':
                 // console.log('max creep cost:' + this.creep.room.memory.highest_creep_cost);
-                // if (this.creep.ticksToLive < MIN_TICKS_TO_LIVE){
+                // if (this.creep.ticksToLive < Globals.MIN_TICKS_TO_LIVE){
                 //     console.log(this.creep.memory.cost, this.creep.room.memory.highest_creep_cost-50);
                 // }
                 if (
-                    this.creep.ticksToLive < MIN_TICKS_TO_LIVE &&
+                    this.creep.ticksToLive < Globals.MIN_TICKS_TO_LIVE &&
                     this.creep.memory.cost &&
                     this.creep.room.memory.highest_creep_cost &&
                     this.creep.memory.cost >= this.creep.room.memory.highest_creep_cost - 50
@@ -250,7 +256,7 @@ declare var module: any;
         // if (auto_retarget) console.log('unstucking');
         if (targets.length) {
             this.retarget()
-        } else if (this.creep.ticksToLive < MIN_TICKS_TO_LIVE && action_name != 'renewing') {
+        } else if (this.creep.ticksToLive < Globals.MIN_TICKS_TO_LIVE && action_name != 'renewing') {
             this.retarget();
         } else if (!target || !action_function || auto_retarget) {
             this.retarget();

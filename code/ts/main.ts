@@ -1,15 +1,21 @@
 /// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
-var _ = require('lodash'),
-    CreepController = require('CreepController');
+// var _ = require('lodash'),
+var Globals = require('Globals'),
+    CreepController = require('CreepController'),
+    CreepCache = require('CreepCache');
     // Harvester = require('harvester'),
     // Guard = require('guard'),
     // Builder = require('builder'),
     // Spawn = require('spawn');
 
-var USERNAME = 'ShiXish',
-    MIN_TICKS_TO_LIVE = 200,
-    MAX_UNITS_METRIC = 3,
-    MAX_HITS_REPAIR = 200000;
+// var USERNAME = 'ShiXish',
+//     MIN_TICKS_TO_LIVE = 200,
+//     MAX_UNITS_METRIC = 3,
+//     MAX_HITS_REPAIR = 200000;
+
+
+
+// var CreepCache = Game['CreepCache'] = new CreepCache();
 
 interface Room {
     storeSources();
@@ -83,81 +89,6 @@ Room.prototype.sources = function() {
 //             return build_role;
 //     }
 // }
-
-var CreepCache = function(){
-    var creep_cache = {};
-    var creep_cache_length = {};
-    
-    this.add = function(creep){
-        var role = creep.memory.role,
-            name = creep.name;
-        
-        // console.log('caching:', creep, role);
-        if (role && name){
-            if (!creep_cache.hasOwnProperty(role)){
-                creep_cache[role] = {};
-                creep_cache_length[role] = 0;
-            }
-            
-            creep_cache[role][name] = creep;
-            creep_cache_length[role] += 1;
-        }else{
-            console.log("unable to cache:", creep)
-        }
-    }
-    
-    this.get = function(role){
-        return creep_cache[role];
-    }
-    
-    this.length = function(role){
-        return creep_cache_length[role] || 0;
-    }
-    
-    this.weighted_lengths = function(){
-        return { 
-            worker: (1 + this.length('worker')),
-            guard: (1 + this.length('guard'))*1.5
-        };
-    }
-
-    this.should_build = function(){
-        var weights = this.weighted_lengths();
-        var build_value, build_role;
-        for (var i in weights){
-            var value = weights[i];
-            if (build_value == undefined || value < build_value){
-                build_value = value;
-                build_role = i;
-            }
-        }
-        if (build_value <= MAX_UNITS_METRIC)
-            return build_role;
-    }
-
-    
-    // this.min_creep_role = function(){
-    //     var weights = this.weighted_lengths();
-    //     var min_value, min_index;
-    //     for (var i in weights){
-    //         var value = weights[i];
-    //         if (min_value == undefined || value < min_value){
-    //             min_value = value;
-    //             min_index = i;
-    //         }
-    //     }
-    //     return min_index;
-    // }
-}
-
-var PartCosts = {};
-PartCosts[MOVE] = 50;
-PartCosts[WORK] = 100;
-PartCosts[CARRY] = 50;
-PartCosts[ATTACK] = 80;
-PartCosts[RANGED_ATTACK] = 150;
-PartCosts[HEAL] = 250;
-PartCosts[TOUGH] = 10;
 
 declare var module: any;
 (module).exports.loop = function () {
@@ -256,8 +187,8 @@ declare var module: any;
                                 // }
                                 return (
                                     (obj.structureType == STRUCTURE_ROAD ||
-                                        (obj.owner && obj.owner.username == USERNAME))// ||  obj.structureType == STRUCTURE_WALL)
-                                    && obj.hits < obj.hitsMax && obj.hits < MAX_HITS_REPAIR
+                                        (obj.owner && obj.owner.username == Globals.USERNAME))// ||  obj.structureType == STRUCTURE_WALL)
+                                    && obj.hits < obj.hitsMax && obj.hits < Globals.MAX_HITS_REPAIR
                                 );
                             }
                         });

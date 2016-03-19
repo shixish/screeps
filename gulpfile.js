@@ -11,7 +11,7 @@ gulp.task('screeps', function() {
 	var tsResult = gulp.src(['code/ts/**.ts', 'code/dts/**.ts', "./node_modules/screeps-typescript-declarations/dist/screeps.d.ts"])
 		.pipe(ts({
 			// noImplicitAny: true,
-			// out: 'script.js'
+			// out: 'main.js',
 			// declaration: true,
 			// noExternalResolve: true,
 			// target: 'ES6',
@@ -24,8 +24,8 @@ gulp.task('screeps', function() {
 	//   tsResult.js.pipe(gulp.dest('public/js'))
 	// ]).pipe(browserSync.stream());
 
-	return tsResult.js.pipe(gulp.dest('.cache'));
-	// return tsResult.js.pipe(screeps(credentials));//.pipe(gulp.dest('.cache'));
+	// tsResult.js;
+	tsResult.js.pipe(gulp.dest('.cache')).pipe(screeps(credentials));
 });
 
 gulp.task('default', ['screeps'], function(){
