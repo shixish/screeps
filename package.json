@@ -20,6 +20,8 @@
     "grunt": "^0.4.5",
     "gulp-screeps": "^1.0.1",
     "gulp": "^3.9.0",
-    "gulp-watch": "^4.3.5"
+    "gulp-watch": "^4.3.5",
+    "gulp-typescript": "^2.12.1",
+    "screeps-typescript-declarations": "^1.5.1"
   }
 }
