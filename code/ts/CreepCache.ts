@@ -35,7 +35,7 @@ declare var module: any;
     weighted_lengths() {
         return {
             worker: (1 + this.length('worker')),
-            guard: (1 + this.length('guard')) * 1.5
+            guard: (1 + this.length('guard')) * 2
         };
     }
 

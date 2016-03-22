@@ -2,52 +2,32 @@
 var Globals = require('Globals');
 
 declare var module: any;
-(module).exports = class CreepController {
-    creep: Creep;
-
-    retarget_count: number;
-
-    // constructor(public firstname, public middleinitial, public lastname) {
-    //     this.creep.fullname = firstname + " " + middleinitial + " " + lastname;
-    // }
+(module).exports = class BaseCreep { //Abstract class
+    public creep: Creep;
 
     constructor(creep: Creep) {
         this.creep = creep;
     }
 
-    resetBodyCounts() {
-        this.creep.memory.bodyCounts = {
-            move: 0,
-            work: 0,
-            carry: 0,
-            attack: 0,
-            ranged_attack: 0,
-            heal: 0,
-            tough: 0,
-        };
-        for (var b in this.creep.body) {
-            // console.log(this.creep.body[b].hits, this.creep.body[b].type);
-            if (this.creep.body[b].hits > 0)
-                this.creep.memory.bodyCounts[this.creep.body[b].type]++;
+    retarget() {
+        //needs to be extended
+    }
+
+    try_targeting(type: string) {
+        var target = this.find_target(this.creep, type);
+        if (target) {
+            this.creep.memory.target_id = target.id;
+            this.creep.memory.action_name = type;
         }
+        return !!target;
     }
-
-    canWork() {
-        if (!this.creep.memory.bodyCounts) this.resetBodyCounts();
-        return this.creep.memory.bodyCounts.work || 0;
-    }
-
-    canFight() {
-        if (!this.creep.memory.bodyCounts) this.resetBodyCounts();
-        return this.creep.memory.bodyCounts.attack || 0;
-    }
-
-    tryTargeting(type:string) {
+    
+    find_target(creep:Creep, type: string) {
         var target;
         switch (type) {
             //Energy spending:
             case 'transferring':
-                target = this.creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+                target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
                     filter: function(obj) {
                         return (
                             (
@@ -61,7 +41,7 @@ declare var module: any;
                 });
                 break;
             case 'storing':
-                target = this.creep.pos.findClosestByPath<Structure>(FIND_MY_STRUCTURES, {
+                target = creep.pos.findClosestByPath<Structure>(FIND_MY_STRUCTURES, {
                     filter: function(obj) {
                         return (
                             obj.structureType == STRUCTURE_STORAGE && obj.store.energy < obj.storeCapacity
@@ -70,22 +50,22 @@ declare var module: any;
                 });
                 break;
             case 'building':
-                target = this.creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES, {
+                target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES, {
                     // filter: { owner: { username: 'Invader' } }
                 });
                 break;
             case 'upgrading':
-                if (this.creep.room.controller) {
-                    target = this.creep.room.controller;
+                if (creep.room.controller) {
+                    target = creep.room.controller;
                 }
                 break;
 
             //Energy gaining:
             case 'picking':
-                target = this.creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
+                target = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
                 break;
             case 'harvesting':
-                target = this.creep.pos.findClosestByPath(FIND_SOURCES, {
+                target = creep.pos.findClosestByPath(FIND_SOURCES, {
                     // filter: { owner: { username: 'Invader' } }
                     filter: function(obj) {
                         return obj.energy > 0; //Sources can run out as well
@@ -93,7 +73,7 @@ declare var module: any;
                 });
                 break;
             case 'energizing':
-                target = this.creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+                target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
                     filter: function(obj) {
                         return (
                             obj.structureType == STRUCTURE_STORAGE
@@ -103,175 +83,35 @@ declare var module: any;
                 });
                 break;
             case 'renewing':
-                // console.log('max creep cost:' + this.creep.room.memory.highest_creep_cost);
-                // if (this.creep.ticksToLive < Globals.MIN_TICKS_TO_LIVE){
-                //     console.log(this.creep.memory.cost, this.creep.room.memory.highest_creep_cost-50);
+                // console.log('max creep cost:' + creep.room.memory.highest_creep_cost);
+                // if (creep.ticksToLive < Globals.MIN_TICKS_TO_LIVE){
+                //     console.log(creep.memory.cost, creep.room.memory.highest_creep_cost-50);
                 // }
                 if (
-                    this.creep.ticksToLive < Globals.MIN_TICKS_TO_LIVE &&
-                    this.creep.memory.cost &&
-                    this.creep.room.memory.highest_creep_cost &&
-                    this.creep.memory.cost >= this.creep.room.memory.highest_creep_cost - 50
+                    creep.ticksToLive < Globals.MIN_TICKS_TO_LIVE &&
+                    creep.memory.cost &&
+                    creep.room.memory.highest_creep_cost &&
+                    creep.memory.cost >= creep.room.memory.highest_creep_cost - 50
                 ) {
-                    target = this.creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+                    target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
                         filter: function(obj) {
                             return (
                                 obj.structureType == STRUCTURE_SPAWN
                             );
                         }
                     });
-                    console.log('Renewing ' + this.creep.memory.role + ' creep ' + this.creep.name + ' (' + this.creep.memory.cost + ')');
+                    console.log('Renewing ' + creep.memory.role + ' creep ' + creep.name + ' (' + creep.memory.cost + ')');
                 }
-                break;
-            case 'resting':
-                if (Game.flags['resting']) {
-                    target = Game.flags['resting'];
-                }
-                type = 'moving';
-                break;
-            case 'waiting':
-                if (Game.flags['resting']) {
-                    target = Game.flags['attack'];
-                }
-                type = 'moving';
                 break;
             case 'fighting':
-                target = this.creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
+                target = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
 
                 });
                 break;
         }
-        if (target) {
-            this.creep.memory.target_id = target.id;
-            this.creep.memory.action_name = type;
-        }
-        return !!target;
+        return target;
     }
 
-    retarget() {
-        this.retarget_count++;
-        if (this.retarget_count > 3) {
-            console.log('CRITICAL: builder retargeting loop');
-            return;
-        }
-        // this.resetBodyCounts();
-        // console.log(Object.keys(this.creep.memory.bodyCounts));
-        // console.log(this.creep.memory.bodyCounts.work);
-
-        // spawn.memory.highest_creep_cost
-        if (!this.tryTargeting('renewing')) {
-            if (this.canWork()) {
-                // console.log('worker!');
-                if (this.creep.carry.energy > 0) {
-                    if (!this.tryTargeting('transferring')) {
-                        if (!this.tryTargeting('building')) {
-                            // if (!this.tryTargeting('storing')){
-                            //     if (!this.tryTargeting('upgrading')){
-                            //         console.log('Creep is unable to spend energy!?');
-                            //     }
-                            // }
-                            var coin = Math.round(Math.random() * 2);
-                            // console.log(coin);
-                            if (coin) { //Can either store the energy, or go upgrade with it.
-                                if (!this.tryTargeting('storing')) {
-                                    if (!this.tryTargeting('upgrading')) {
-                                        console.log('Creep is unable to spend energy!?');
-                                    }
-                                }
-                            } else {
-                                if (!this.tryTargeting('upgrading')) {
-                                    console.log('Creep is unable to spend energy!?');
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    if (!this.tryTargeting('picking')) {
-                        if (!this.tryTargeting('harvesting')) {
-                            if (!this.tryTargeting('energizing')) {
-                                // console.log('Creep is unable to find an energy source!');
-                                // this.tryTargeting('moving');
-                                if (Game.flags['resting']) {
-                                    this.creep.memory.target_id = Game.flags['resting'].id;
-                                    this.creep.memory.action_name = 'moving';
-                                }
-                            }
-                        }
-                    }
-                }
-            } else if (this.canFight()) {
-                // console.log('fighter');
-                // var targets = this.creep.room.find(FIND_HOSTILE_CREEPS);
-                // if(targets.length) {
-                //     var target = this.creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
-                //         // filter: function(obj){
-                //         //     return (
-                //         //         (obj.structureType == STRUCTURE_SPAWN || obj.structureType == STRUCTURE_EXTENSION)
-                //         //         && obj.energy < obj.energyCapacity
-                //         //     );
-                //         // }
-                //     });
-                //     if(target) {
-                //         if(this.creep.attack(target) == ERR_NOT_IN_RANGE) {
-                //             this.creep.moveTo(target);
-                //         }
-                //     }
-                // }
-                // else{
-                //     if (Game.flags['attack']){
-                //         this.creep.memory.target_id = Game.flags['attack'].id;
-                //         this.creep.memory.action_name = 'move';
-                //         this.creep.moveTo(Game.flags['attack']);
-                //     }
-                //     // creep.moveTo(Game.flags['attack'])
-                //     // creep.moveTo(creep.room.controller);
-                // }
-
-                if (!this.tryTargeting('fighting')) {
-                    // console.log('Creep is unable to find an energy source!');
-                    // this.tryTargeting('moving');
-                    if (Game.flags['attack']) {
-                        this.creep.memory.target_id = Game.flags['attack'].id;
-                        this.creep.memory.action_name = 'moving';
-                    }
-                }
-            }
-        }
-        // this.work();
-    }
-
-    work() {
-        this.retarget_count = 0;
-        var target = Game.getObjectById(this.creep.memory.target_id),
-            action_name = this.creep.memory.action_name,
-            action_function = this[action_name];
-
-        // this.retarget();
-        this.creep.say(action_name);
-        // console.log(action_name, target);
-
-        //(Game.time%200 == 0)
-        var targets = this.creep.room.find(FIND_HOSTILE_CREEPS);
-        var auto_retarget = Math.round(Math.random() * 100) == 0;//Periodically force a retarget to hopefully unstuck things.
-        // if (auto_retarget) console.log('unstucking');
-        if (targets.length) {
-            this.retarget()
-        } else if (this.creep.ticksToLive < Globals.MIN_TICKS_TO_LIVE && action_name != 'renewing') {
-            this.retarget();
-        } else if (!target || !action_function || auto_retarget) {
-            this.retarget();
-        }
-
-        if (target && action_function) {
-            // action_function(target);
-            action_function.apply(this, [target]);
-        }
-    }
-
-
-    //
-    //Targeting actions:
-    //
 
     harvesting(target) {
         if (this.creep.carry.energy == this.creep.carryCapacity || target.energy == 0) {

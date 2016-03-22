@@ -2,7 +2,12 @@
 // var _ = require('lodash'),
 var Globals = require('Globals'),
     CreepController = require('CreepController'),
-    CreepCache = require('CreepCache');
+    CourierCreep = require('CourierCreep'),
+    TowerController = require('TowerController'),
+    SpawnController = require('SpawnController'),
+    SourceController = require('SourceController'),
+    // CreepCache = require('CreepCache'),
+    Inventory = require('Inventory');
     // Harvester = require('harvester'),
     // Guard = require('guard'),
     // Builder = require('builder'),
@@ -93,8 +98,9 @@ Room.prototype.sources = function() {
 declare var module: any;
 (module).exports.loop = function () {
     // console.log('tick');
-    
-    var Cache = new CreepCache();
+    Inventory.update();
+    // console.log(Inventory);
+    // var Cache = new CreepCache();
     
     // var creep_cache = {};
     // var creep_cache_length = {};
@@ -117,208 +123,162 @@ declare var module: any;
     // }
 
     
-    //Clear out the old memory:
-    for (var c in Memory.creeps){
-        // Game.getObjectById()
-        if (!Game.creeps[c]){
-            Memory.creeps[c].cost
-            console.log('Deleting creep ' + c + " from memory. Cost(" + Memory.creeps[c].cost + ")");
-            delete Memory.creeps[c];
-        }
-    }
+    // //Clear out the old memory:
+    // for (var c in Memory.creeps){
+    //     // Game.getObjectById()
+    //     if (!Game.creeps[c]){
+    //         console.log('Deleting creep ' + c + " from memory. Cost(" + Memory.creeps[c].cost + ")");
+    //         delete Memory.creeps[c];
+    //     }
+    // }
 
     for (var r in Game.rooms){
         // console.log(Game.rooms[r]);
-        var room = Game.rooms[r];
-        // console.log(room.sources());
+        var room = <Room>Game.rooms[r];
+        var memory = Memory.rooms[room.name];
+        // console.log('room', room.name);
         // var sources = room.sources();
         // for (var s in sources){
         //     var source = sources[s];
-        //     // console.log(source.memory);
+        //     // console.log(source);
+
         // }
         // console.log(r);
 
-        var towers = <Tower[]>room.find(FIND_MY_STRUCTURES, {
-            filter: function(obj){
-                return (
-                    obj.structureType == STRUCTURE_TOWER
-                );
-            }
-        });
-
-        for (var t in towers){
-            var tower = towers[t];
-            var target;
-            // console.log(tower.id);
-
-            // var action = tower.repair(repair_target);
-            // console.log(repair_target, action);
-            if (tower.energy > 0){
-                // target = tower.pos.findClosestByRange(FIND_MY_CREEPS, {
-                //     filter: function(obj){
-                //         return obj.memory.action_name == 'building'
-                //     }
-                // });
-                // if (target){
-                //     var transferring = Math.min(target.carryCapacity - target.carry.energy, tower.energy);
-                //     console.log(target.carryCapacity - target.carry.energy, tower.energy, transferring);
-                //     if (transferring > 0){
-                //         var action = tower.transferEnergy(target, transferring);
-                //         console.log(target, action, transferring);
-                //     }
-                // }
-
-                target = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-                if (target){
-                    var action = tower.attack(target);
-                }else{
-                    target = tower.pos.findClosestByRange(FIND_MY_CREEPS, {
-                        filter: function(obj){
-                            return obj.hits < obj.hitsMax
-                        }
-                    });
-                    if (target){
-                        var action = tower.heal(target);
+        if (memory.tower) {
+            for (var t in memory.tower) {
+                // var t_obj = memory.tower[t];
+                try {
+                    var tower = new TowerController(t);
+                } catch (e) {
+                    if (e === "Invalid Object ID") {
+                        // console.log('remove tower with id:', t);
+                        // delete t_obj; //Doesn't work
+                        delete memory.tower[t];
                     }else{
-                        target = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-                            filter: function(obj){
-                                // if (obj.structureType == STRUCTURE_ROAD){
-                                //     console.log(obj.hits, obj.hitsMax, obj.hitsMax*3/4);
-                                // }
-                                return (
-                                    (obj.structureType == STRUCTURE_ROAD ||
-                                        (obj.owner && obj.owner.username == Globals.USERNAME))// ||  obj.structureType == STRUCTURE_WALL)
-                                    && obj.hits < obj.hitsMax && obj.hits < Globals.MAX_HITS_REPAIR
-                                );
-                            }
-                        });
-                        if (target){
-                            var action = tower.repair(target);
-                        }
+                        console.log(e);
                     }
                 }
-                
             }
         }
+
+
+        if (memory.spawn) {
+            for (var t in memory.spawn) {
+                try {
+                    var spawn = new SpawnController(t);
+                } catch (e) {
+                    if (e === "Invalid Object ID") {
+                        // console.log('remove spawn with id:', t);
+                        // delete t_obj; //Doesn't work
+                        delete memory.spawn[t];
+                    } else {
+                        console.log(e);
+                    }
+                }
+            }
+        }
+
+
+        if (memory.source) {
+            for (var t in memory.source) {
+                try {
+                    var source = new SourceController(t);
+                } catch (e) {
+                    if (e === "Invalid Object ID") {
+                        delete memory.source[t];
+                    } else {
+                        console.log(e);
+                    }
+                }
+            }
+        }
+
+
     }
     
     for(var c in Game.creeps) {
        // console.log(c);
         var creep = Game.creeps[c];
-        Cache.add(creep);
+        // Cache.add(creep);
 
-        var cc = new CreepController(creep);
+        
+        // console.log(courier.work);
+        // courier.work();
 
-        // if(creep.memory.role == 'guard') {
-        //     Guard.work(creep);
-        // }else{
-        //     creep.work();
-        // }
-        cc.work();
+        if (creep.memory.role == 'courier') {
+            var courier = new CourierCreep(creep);
+            courier.work(creep);
+        } else {
+            var cc = new CreepController(creep);
+            cc.work();
+        }
+
 
         // var drone = <Drone>creep;
     }
 
-    for (var s in Game.spawns){
-        var spawn = Game.spawns[s];
-        var totalEnergy = spawn.energy;
-        var totalCapacity = spawn.energyCapacity;
+    // for (var s in Game.spawns){
+    //     var spawn = Game.spawns[s];
+    //     var totalEnergy = spawn.energy;
+    //     var totalCapacity = spawn.energyCapacity;
 
-        var extensions = <Extension[]>spawn.room.find(FIND_MY_STRUCTURES, {
-            filter: function(obj){
-                return obj.structureType == STRUCTURE_EXTENSION;
-            }
-        });
-        for (var e in extensions){
-            var extension = extensions[e];
-            totalEnergy += extension.energy;
-            totalCapacity += extension.energyCapacity;
-        }
-        if (totalEnergy == totalCapacity){
-            var build_role = Cache.should_build();
-            // console.log('attempting to build: ' + build_role);
-            if (build_role){
+    //     var extensions = <Extension[]>spawn.room.find(FIND_MY_STRUCTURES, {
+    //         filter: function(obj){
+    //             return obj.structureType == STRUCTURE_EXTENSION;
+    //         }
+    //     });
+    //     for (var e in extensions){
+    //         var extension = extensions[e];
+    //         totalEnergy += extension.energy;
+    //         totalCapacity += extension.energyCapacity;
+    //     }
+    //     if (totalEnergy == totalCapacity || totalEnergy >= Globals.MAX_COST) {
+    //         var build_role = Cache.should_build();
+    //         // console.log('attempting to build: ' + build_role);
+    //         if (build_role){
                 
-                var memory = {
-                        role: build_role
-                    },
-                    body = [MOVE],
-                    cost = 50;
+    //             var creep_memory = {
+    //                     role: build_role
+    //                 },
+    //                 body = [MOVE],
+    //                 cost = 50;
 
-                function fillBody(bodyParts){
-                    var costOfSet = 0, numOfParts = 0;
-                    for (var b in bodyParts){
-                        costOfSet += PartCosts[bodyParts[b]];
-                        numOfParts++;
-                    }
-                    while(totalEnergy - (cost + costOfSet) > 0 && body.length+numOfParts <= 50){
-                        for (var b in bodyParts){
-                            body.unshift(bodyParts[b]);
-                        }
-                        cost += costOfSet;
-                    }
-                }
-                if (build_role == 'worker'){
-                    // var partCost = 100 + 50 + 50, parts = 3;
-                    // body = fillBody(body, [WORK, CARRY, MOVE], 100 + 50 + 50);
-                    // while(totalEnergy - (cost + partCost) >= 0){ //limit the amount of move parts
-                    //     body.unshift(MOVE); //50
-                    //     body.unshift(CARRY); //50
-                    //     body.unshift(WORK); //100
-                    //     cost += partCost;
-                    // }
-                    // partCost = 100 + 50; parts = 2;
-                    // while(totalEnergy - (cost + partCost) >= 0){
-                    //     body.unshift(CARRY); //50
-                    //     body.unshift(WORK); //100
-                    //     cost += partCost;
-                    // }
-                    // partCost = 50; parts = 1;
-                    // while(totalEnergy - (cost + partCost) >= 0){
-                    //     body.unshift(CARRY); //50
-                    //     cost += partCost;
-                    // }
-                    fillBody([MOVE, CARRY, WORK]);
-                    fillBody([CARRY, WORK]);
-                    fillBody([CARRY]);
-                }else if (build_role == 'guard'){
-                    // var partCost = 80 + 10 + 10 + 50, parts = 4;
-                    // while(totalEnergy - (cost + partCost) >= 0){ //limit the amount of move parts
-                    //     body.unshift(MOVE); //50
-                    //     body.unshift(ATTACK); //80
-                    //     body.unshift(TOUGH); //10
-                    //     body.unshift(TOUGH); //10
-                    //     cost += partCost;
-                    // }
-                    // partCost = 80 + 10 + 10;
-                    // while(totalEnergy - (cost + partCost) >= 0){
-                    //     body.unshift(ATTACK); //80
-                    //     body.unshift(TOUGH); //10
-                    //     body.unshift(TOUGH); //10
-                    //     cost += partCost;
-                    // }
-                    // partCost = 10;
-                    // while(totalEnergy - (cost + partCost) >= 0){
-                    //     body.unshift(TOUGH); //10
-                    //     cost += partCost;
-                    // }
-                    fillBody([MOVE, ATTACK, TOUGH, TOUGH]);
-                    fillBody([ATTACK, TOUGH, TOUGH]);
-                    fillBody([TOUGH]);
-                }
-                spawn.room.memory.highest_creep_cost = Math.max(cost, spawn.room.memory.highest_creep_cost);
-                memory['cost'] = cost;
-                var response = spawn.createCreep(body, null, memory);
-                if (!(response < 0)){
-                    console.log("Making a new " + build_role + " named "  + response + " that costs " + cost);
-                }else if (response == ERR_BUSY){
-                    //just wait
-                }else{
-                    console.log("Create creep response:", response);
-                }
-            }else{
-                // console.log('no build role');
-            }
-        }
-    }
+    //             function fillBody(bodyParts){
+    //                 var costOfSet = 0, numOfParts = 0;
+    //                 for (var b in bodyParts){
+    //                     costOfSet += Globals.PART_COSTS[bodyParts[b]];
+    //                     numOfParts++;
+    //                 }
+    //                 while (totalEnergy - (cost + costOfSet) > 0 && (body.length + numOfParts) <= 50 && (cost + costOfSet) <= Globals.MAX_COST) {
+    //                     for (var b in bodyParts){
+    //                         body.unshift(bodyParts[b]);
+    //                     }
+    //                     cost += costOfSet;
+    //                 }
+    //             }
+    //             if (build_role == 'worker'){
+    //                 fillBody([MOVE, CARRY, WORK]);
+    //                 fillBody([CARRY, WORK]);
+    //                 fillBody([CARRY]);
+    //             }else if (build_role == 'guard'){
+    //                 fillBody([MOVE, ATTACK, TOUGH, TOUGH]);
+    //                 fillBody([ATTACK, TOUGH, TOUGH]);
+    //                 fillBody([TOUGH]);
+    //             }
+    //             spawn.room.memory.highest_creep_cost = Math.max(cost, spawn.room.memory.highest_creep_cost);
+    //             creep_memory['cost'] = cost;
+    //             var response = spawn.createCreep(body, null, creep_memory);
+    //             if (!(response < 0)){
+    //                 console.log("Making a new " + build_role + " named "  + response + " that costs " + cost);
+    //             }else if (response == ERR_BUSY){
+    //                 //just wait
+    //             }else{
+    //                 console.log("Create creep response:", response);
+    //             }
+    //         }else{
+    //             // console.log('no build role');
+    //         }
+    //     }
+    // }
 }
