@@ -10,9 +10,9 @@ var PartCosts = {};
 declare var module: any;
 (module).exports = {
     USERNAME: 'ShiXish',
-    MIN_TICKS_TO_LIVE: 500,
+    MIN_TICKS_TO_LIVE: 400,
     MAX_UNITS_METRIC: 3,
-    MAX_HITS_REPAIR: 200000,
+    MAX_HITS_REPAIR: 500000,
     MAX_COST: 3000,
     PART_COSTS: PartCosts,
 }

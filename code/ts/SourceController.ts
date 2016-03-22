@@ -1,7 +1,7 @@
 /// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
 var Globals = require('Globals'),
     Inventory = require('Inventory'),
-    CourierCreep = require('CourierCreep');
+    LinkerCreep = require('LinkerCreep');
 
 declare var module: any;
 (module).exports = class SourceController {
@@ -17,6 +17,10 @@ declare var module: any;
     }
 
     work() {
-
+        this.source.room.name;
+        var linkers = Inventory.creeps_by_role('linker');
+        // for (var l in linkers) {
+        //     console.log(linkers[l]);
+        // }
     }
 }

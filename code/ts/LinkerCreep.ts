@@ -1,10 +1,10 @@
 /// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
 /// <reference path="BaseCreep.ts" />
-var Globals = require('Globals'), 
+var Globals = require('Globals'),
     BaseCreep = require('BaseCreep');
 
 declare var module: any;
-(module).exports = class CourierCreep extends BaseCreep {
+(module).exports = class LinkerCreep extends BaseCreep {
     public creep: Creep;
     public retarget_count: number;
 
@@ -13,17 +13,17 @@ declare var module: any;
     }
 
     retarget() {
-        if (this.creep.carry.energy > 0) {
-            if (!super.try_targeting('transferring')) {
+        // if (this.creep.carry.energy > 0) {
+        //     if (!super.try_targeting('transferring')) {
 
-            }
-        } else {
-            if (!super.try_targeting('picking')) {
-                if (!super.try_targeting('energizing')) {
+        //     }
+        // } else {
+        //     if (!super.try_targeting('picking')) {
+        //         if (!super.try_targeting('energizing')) {
 
-                }
-            }
-        }
+        //         }
+        //     }
+        // }
     }
 
     work() {
@@ -51,11 +51,12 @@ declare var module: any;
         }
     }
 
-    static create(budget:number) {
-        if (budget >= 50 + 50*10)
+    static create(budget: number) {
+        if (budget >= 50 + 50 * 16) //850
             return [
-                MOVE, 
-                CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY
+                MOVE,
+                CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
+                CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
             ];
         else
             return [MOVE, CARRY, CARRY, CARRY, CARRY, CARRY];

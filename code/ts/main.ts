@@ -185,11 +185,11 @@ declare var module: any;
                 try {
                     var source = new SourceController(t);
                 } catch (e) {
-                    if (e === "Invalid Object ID") {
-                        delete memory.source[t];
-                    } else {
-                        console.log(e);
-                    }
+                    // if (e === "Invalid Object ID") {
+                    //     delete memory.source[t];
+                    // } else {
+                    //     console.log(e);
+                    // }
                 }
             }
         }

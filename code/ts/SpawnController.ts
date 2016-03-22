@@ -1,7 +1,8 @@
 /// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
 var Globals = require('Globals'),
     Inventory = require('Inventory'),
-    CourierCreep = require('CourierCreep');
+    CourierCreep = require('CourierCreep'),
+    LinkerCreep = require('LinkerCreep');
 
 declare var module: any;
 (module).exports = class SpawnController {
@@ -64,23 +65,25 @@ declare var module: any;
                     console.log("Create creep response:", response);
                 }
             } else if (Inventory.creeps_role_count('courier') < 2) {
-                this.create_creep('courier', CourierCreep.create(totalEnergy));
+                this.create_creep(CourierCreep.create(totalEnergy), {
+                    role: 'courier'
+                });
+            } else if (Inventory.creeps_role_count('linker') < Inventory.source_count(this.structure.room)) {
+                this.create_creep(LinkerCreep.create(totalEnergy), {
+                    role: 'linker'
+                });
             } else {
                 // console.log('no build role');
             }
         }
     }
 
-    create_creep(build_role: string, creep_body: string[]) {
-        var creep_memory = {
-            role: build_role
-        };
-
+    create_creep(creep_body: string[], creep_memory) {
         var response = this.structure.createCreep(creep_body, null, creep_memory);
         if (!(response < 0)) {
             var name = response;
-            console.log("Making a new " + build_role + " named " + name);
-            Inventory.invNewCreep(build_role, name);
+            console.log("Making a new " + creep_memory.role + " named " + name);
+            Inventory.invNewCreep(creep_memory.role, name);
             return response;//new creep name
         } else if (response == ERR_BUSY) {
             //just wait

@@ -3,17 +3,20 @@ var Globals = require('Globals');
 
 declare var module: any;
 (module).exports = class Inventory {
-    static flush() {
-        for (var r in Game.rooms) {
-            var room = Game.rooms[r];
-            room.memory['energy'] = room.memory['energyCapacity'] = 0;
+    // static flush() {
+    //     for (var r in Game.rooms) {
+    //         var room = Game.rooms[r];
+    //         room.memory['energy'] = room.memory['energyCapacity'] = 0;
 
-            if (!room.memory.source) Inventory.invRoomSources(room);
+    //         Inventory.invRoomSources(room);
+    //         Inventory.invRoomMinerals(room);
+    //         Inventory.invRoomStructures(room);
 
-            Inventory.invRoomStructures(room);
-        }
-        Inventory.invCreeps();
-    }
+
+    //         // FIND_CONSTRUCTION_SITES
+    //     }
+    //     Inventory.invCreeps();
+    // }
 
     static update() {
         for (var r in Game.rooms) {
@@ -21,18 +24,34 @@ declare var module: any;
             room.memory['energy'] = room.memory['energyCapacity'] = 0;
 
             if (!room.memory.source) Inventory.invRoomSources(room);
+            Inventory.invRoomMinerals(room);
 
             Inventory.invRoomStructures(room);
         }
         Inventory.invCreeps();
     }
 
+    static source_count(room: Room) {
+        return Object.keys(room.memory['source']).length;
+    }
+
     static invRoomSources(room:Room) {
         var sources = <Source[]>room.find(FIND_SOURCES);
-        room.memory['source'] = {};
+        if (!room.memory['source']) room.memory['source'] = {};
         for (var s in sources) {
             var source = sources[s];
-            room.memory['source'][source.id] = {};
+            if (!room.memory['source'][source.id])
+                room.memory['source'][source.id] = {};
+        }
+    }
+
+    static invRoomMinerals(room: Room) {
+        var minerals = <Mineral[]>room.find(FIND_MINERALS);
+        if (!room.memory['mineral']) room.memory['mineral'] = {};
+        for (var s in minerals) {
+            var mineral = minerals[s];
+            if (!room.memory['mineral'][mineral.id])
+                room.memory['mineral'][mineral.id] = {};
         }
     }
 
