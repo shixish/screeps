@@ -1,5 +1,6 @@
 /// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
 /// <reference path="BaseCreep.ts" />
+"use strict";
 var _ = require('lodash'),
     Globals = require('Globals'), 
     BaseCreep = require('BaseCreep');
@@ -10,7 +11,7 @@ declare var module: any;
 
     constructor(creep: Creep) {
         super(creep);
-        // this.creep.memory.obsolete = true;//can't repair creeps that have CLAIM
+        this.creep.memory.obsolete = true;//can't repair creeps that have CLAIM
         // this.retarget();
     }
 
@@ -36,18 +37,6 @@ declare var module: any;
                 }
             }
         }
-    }
-
-    claiming(target) {
-        var action = this.creep.claimController(target);
-        if (action == ERR_NOT_IN_RANGE) {
-            this.creep.moveTo(target);
-        } else if (action != 0) {
-            console.log('claiming error:', action);
-            // this.retarget();
-            return false;
-        }
-        return true;
     }
 
     static create(budget:number) {

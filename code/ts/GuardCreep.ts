@@ -1,5 +1,6 @@
 /// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
 /// <reference path="BaseCreep.ts" />
+"use strict";
 var Globals = require('Globals'),
     BaseCreep = require('BaseCreep');
 
@@ -15,7 +16,10 @@ declare var module: any;
         super.retarget();
         // this.creep.memory.target_id = this.creep.memory.action_name = null;
         if (!super.try_targeting('fighting')) {
-
+            if (Game.flags['attack']) {
+                this.creep.memory.target_id = Game.flags['attack'].id;
+                this.creep.memory.action_name = 'moving';
+            }
         }
     }
 

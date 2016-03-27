@@ -1,5 +1,6 @@
 /// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
 /// <reference path="Inventory.ts" />
+"use strict";
 var _ = require('lodash'),
     Globals = require('Globals'),
     Inventory = require('Inventory'),
@@ -36,7 +37,7 @@ declare var module: any;
             'miner': storage > 0 ? Inventory.room_count('mineral', this.structure.room) : 0,
             'builder': spawns,
             'guard': (towers < 1) ? 1 : 0,
-            'runner': 0 //Game.flags['running'] ? 1 : 0, 
+            'runner': Game.flags[this.structure.room.name+'_runner'] ? 1 : 0, 
         }
     }
 
@@ -57,6 +58,13 @@ declare var module: any;
                 return obj.ticksToLive < 1400
             }
         });
+        // if (room.name == 'W18S29') {
+        //     let max_creeps = this.max_creeps();
+        //     console.log(this.structure.room.name);
+        //     for (let i in max_creeps) {
+        //         console.log(i, max_creeps[i]);
+        //     }
+        // }
         if (repairable.length) {
             let lowest_creep = _.min(repairable, function(obj) {
                 return obj.ticksToLive;
@@ -76,15 +84,6 @@ declare var module: any;
             }
         } else if (room.energyAvailable == room.energyCapacityAvailable || room.energyAvailable >= Globals.MAX_COST) {
             let max_creeps = this.max_creeps();
-            // console.log('max_creeps', max_creeps);
-
-            // if (room.name == 'W18S29') {
-            //     console.log(this.structure.room.name);
-            //     for (let i in max_creeps) { 
-            //         console.log(i, max_creeps[i]);
-            //     }
-            // }
-
             let min_role = null, min_count = null;
             for (let role in max_creeps) {
                 let count = Inventory.room_count_creeps(role, room);

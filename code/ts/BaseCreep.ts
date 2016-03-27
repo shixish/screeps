@@ -1,4 +1,5 @@
 /// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
+"use strict";
 var _ = require('lodash'),
     Globals = require('Globals');
 
@@ -17,7 +18,7 @@ declare var module: any;
     }
 
     try_targeting(type: string) {
-        var target = this.find_target(this.creep, type);
+        let target = this.find_target(this.creep, type);
         if (target) {
             this.creep.memory.target_id = target.id;
             this.creep.memory.action_name = type;
@@ -26,7 +27,7 @@ declare var module: any;
     }
 
     work(is_retry) {
-        var target = Game.getObjectById(this.creep.memory.target_id),
+        let target = Game.getObjectById(this.creep.memory.target_id),
             action_name = this.creep.memory.action_name,
             action_function = this[action_name];
 
@@ -70,7 +71,7 @@ declare var module: any;
     }
     
     find_target(creep:Creep, type: string) {
-        var target;
+        let target;
         switch (type) {
             //Energy spending:
             case 'transferring':
@@ -185,13 +186,13 @@ declare var module: any;
 
 
     harvesting(target) {
-        var total_carrying = _.sum(this.creep.carry);
+        let total_carrying = _.sum(this.creep.carry);
         if (total_carrying == this.creep.carryCapacity) {
             // this.creep.say('Harvested');
             // this.retarget();
             return false;
         } else {
-            var action = this.creep.harvest(target);
+            let action = this.creep.harvest(target);
             if (action == ERR_NOT_IN_RANGE) {
                 this.creep.moveTo(target);
             } else if (action == ERR_BUSY) {//The creep is still being spawned.
@@ -210,7 +211,7 @@ declare var module: any;
     }
 
     claiming(target) {
-        var action = this.creep.claimController(target);
+        let action = this.creep.claimController(target);
         if (action == ERR_NOT_IN_RANGE) {
             this.creep.moveTo(target);
         } else if (action != 0) {
@@ -223,16 +224,16 @@ declare var module: any;
 
     //This works for energy and minerals
     storing(target) {
-        var total_carrying = _.sum(this.creep.carry);
+        let total_carrying = _.sum(this.creep.carry);
         if (total_carrying == 0) {
             this.creep.say('Stored');
             // this.retarget();
             return false;
         } else {
-            var transferring, transfer_type;
-            var empty_space = (<Storage>target).storeCapacity - _.sum((<Storage>target).store);
-            for (var t in this.creep.carry) {
-                var amount = this.creep.carry[t];
+            let transferring, transfer_type;
+            let empty_space = (<Storage>target).storeCapacity - _.sum((<Storage>target).store);
+            for (let t in this.creep.carry) {
+                let amount = this.creep.carry[t];
                 if (amount > 0) {
                     amount = Math.min(empty_space, amount);
                     if (amount > 0) {
@@ -243,7 +244,7 @@ declare var module: any;
                 }
             }
             if (transferring > 0) {
-                var action = this.creep.transfer(target, transfer_type, transferring);
+                let action = this.creep.transfer(target, transfer_type, transferring);
                 // if (transfer_type != RESOURCE_ENERGY)
                 //     console.log(this.creep.name + ' transferring ' + transferring + ' ' + transfer_type + ' to ' + target);
                 if (action == ERR_NOT_IN_RANGE) {
@@ -268,14 +269,14 @@ declare var module: any;
             // this.retarget();
             return false;
         } else {
-            var transferring;
+            let transferring;
             if ((<Storage>target).store) {
                 transferring = Math.min((<Storage>target).storeCapacity - (<Storage>target).store.energy, this.creep.carry.energy);
             } else {
                 transferring = Math.min(target.energyCapacity - target.energy, this.creep.carry.energy);
             }
             if (transferring > 0) {
-                var action = this.creep.transfer(target, RESOURCE_ENERGY, transferring);
+                let action = this.creep.transfer(target, RESOURCE_ENERGY, transferring);
                 if (action == ERR_NOT_IN_RANGE) {
                     this.creep.moveTo(target);
                 } else if (action != 0) {
@@ -298,7 +299,7 @@ declare var module: any;
             return false;
         } else {
             if (target.energy > 0 || (target.store && target.store.energy > 0)) { //Storage uses .store, others don't
-                var action = target.transferEnergy(this.creep);
+                let action = target.transferEnergy(this.creep);
                 // if (target.energy <= 5){
                 //     this.retarget(this);
                 // }
@@ -327,7 +328,7 @@ declare var module: any;
             // this.retarget();
             return false;
         } else {
-            var action = this.creep.build(target);
+            let action = this.creep.build(target);
             if (action == ERR_NOT_IN_RANGE) {
                 this.creep.moveTo(target);
             } else if (action == ERR_BUSY) {//The creep is still being spawned.
@@ -348,7 +349,7 @@ declare var module: any;
             // this.retarget();
             return false;
         } else {
-            var action = this.creep.upgradeController(target);
+            let action = this.creep.upgradeController(target);
             if (action == ERR_NOT_IN_RANGE) {
                 this.creep.moveTo(target);
             } else if (action == ERR_BUSY) {//The creep is still being spawned.
@@ -364,7 +365,7 @@ declare var module: any;
     }
 
     picking(target) {
-        var action = this.creep.pickup(target);
+        let action = this.creep.pickup(target);
         if (action == ERR_NOT_IN_RANGE) {
             this.creep.moveTo(target);
         } else if (action == ERR_BUSY) {//The creep is still being spawned.
@@ -381,7 +382,7 @@ declare var module: any;
     }
 
     fighting(target) {
-        var action = this.creep.attack(target);
+        let action = this.creep.attack(target);
         if (action == ERR_NOT_IN_RANGE) {
             this.creep.moveTo(target);
         } else if (action == ERR_BUSY) {//The creep is still being spawned.
@@ -400,7 +401,7 @@ declare var module: any;
     renewing(target) {
         if (this.creep.ticksToLive < 1400) {
             this.creep.moveTo(target);
-            // var action = target.renewCreep(this.creep);
+            // let action = target.renewCreep(this.creep);
             // if (action == ERR_NOT_IN_RANGE) {
             //     this.creep.moveTo(target);
             // } else if (action == ERR_BUSY) {//The spawn is busy

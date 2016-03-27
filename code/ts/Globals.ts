@@ -1,3 +1,4 @@
+"use strict";
 // var _ = require('lodash'),
 //     Inventory = require('Inventory');
 

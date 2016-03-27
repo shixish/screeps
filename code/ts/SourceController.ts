@@ -1,4 +1,5 @@
 /// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
+"use strict";
 var Globals = require('Globals'),
     Inventory = require('Inventory'),
     HarvesterCreep = require('HarvesterCreep');

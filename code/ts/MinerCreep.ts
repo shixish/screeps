@@ -1,5 +1,6 @@
 /// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
 /// <reference path="BaseCreep.ts" />
+"use strict";
 var _ = require('lodash'),
     Globals = require('Globals'),
     BaseCreep = require('BaseCreep');

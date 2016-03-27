@@ -1,11 +1,12 @@
 /// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
+"use strict";
 var Globals = require('Globals');
 
 declare var module: any;
 (module).exports = class Inventory {
     // static flush() {
-    //     for (var r in Game.rooms) {
-    //         var room = Game.rooms[r];
+    //     for (let r in Game.rooms) {
+    //         let room = Game.rooms[r];
     //         room.memory['energy'] = room.memory['energyCapacity'] = 0;
 
     //         Inventory.invRoomSources(room);
@@ -18,9 +19,10 @@ declare var module: any;
     //     Inventory.invCreeps();
     // }
     static update() {
-        for (var r in Game.rooms) {
-            var room = Game.rooms[r];
+        for (let r in Game.rooms) {
+            let room = Game.rooms[r];
             // room.memory['energy'] = room.memory['energyCapacity'] = 0;
+            delete room.memory['creep_roles']; //needs to be rebuilt.
 
             if (!room.memory.source) Inventory.invRoomSources(room);
             if (!room.memory.mineral) Inventory.invRoomMinerals(room);
@@ -45,39 +47,39 @@ declare var module: any;
     }
 
     static invRoomSources(room:Room) {
-        var sources = <Source[]>room.find(FIND_SOURCES);
+        let sources = <Source[]>room.find(FIND_SOURCES);
         if (!room.memory['source']) room.memory['source'] = {};
-        for (var s in sources) {
-            var source = sources[s];
+        for (let s in sources) {
+            let source = sources[s];
             if (!room.memory['source'][source.id])
                 room.memory['source'][source.id] = {};
         }
     }
 
     static invRoomMinerals(room: Room) {
-        var minerals = <Mineral[]>room.find(FIND_MINERALS);
+        let minerals = <Mineral[]>room.find(FIND_MINERALS);
         if (!room.memory['mineral']) room.memory['mineral'] = {};
-        for (var s in minerals) {
-            var mineral = minerals[s];
+        for (let s in minerals) {
+            let mineral = minerals[s];
             if (!room.memory['mineral'][mineral.id])
                 room.memory['mineral'][mineral.id] = {};
         }
     }
 
     // invRoomSpawns(room: Room) {
-    //     var spawns = <Spawn[]>room.find(FIND_MY_SPAWNS);
+    //     let spawns = <Spawn[]>room.find(FIND_MY_SPAWNS);
     //     room.memory.spawns = {};
-    //     for (var s in spawns) {
-    //         var spawn = spawns[s];
+    //     for (let s in spawns) {
+    //         let spawn = spawns[s];
     //         room.memory.spawns[spawn.id] = {};
     //     }
     // }
 
     static invRoomStructures(room: Room) {
-        var structures = <Structure[]>room.find(FIND_STRUCTURES);
+        let structures = <Structure[]>room.find(FIND_STRUCTURES);
         // room.memory.structures = {};
-        for (var s in structures) {
-            var structure = structures[s];
+        for (let s in structures) {
+            let structure = structures[s];
             if (!room.memory[structure.structureType])
                 room.memory[structure.structureType] = {};
 
@@ -96,7 +98,7 @@ declare var module: any;
         // if (!Memory['creep_roles']) Memory['creep_roles'] = {};
 
         //Clear out the old memory:
-        for (var name in Memory.creeps) {
+        for (let name in Memory.creeps) {
             // Game.getObjectById()
             if (!Game.creeps[name]) {
                 console.log('Deleting ' + Memory.creeps[name].role + " creep " + name + " from memory. Cost(" + Memory.creeps[name].cost + ")");
@@ -106,10 +108,10 @@ declare var module: any;
             }
         }
 
-        for (var c in Game.creeps) {
+        for (let c in Game.creeps) {
             // console.log(c);
-            var creep = <Creep>Game.creeps[c];
-            // var role = creep.memory.role,
+            let creep = <Creep>Game.creeps[c];
+            // let role = creep.memory.role,
             //     name = creep.name;
             // if (!Memory['creep_roles'][role]) Memory['creep_roles'][role] = {};
             // Memory['creep_roles'][role][name] = {};
@@ -128,7 +130,7 @@ declare var module: any;
     // }
 
     // static invCreep(role: any, name?: string) {
-    //     // var role: string, name: string;
+    //     // let role: string, name: string;
     //     if (typeof(role) == "object") {
     //         name = (<Creep>role).name;
     //         role = (<Creep>role).memory.role;
@@ -176,10 +178,10 @@ declare var module: any;
     // }
 
     // static creep_should_build() {
-    //     var weights = Inventory.creep_weights();
-    //     var build_value, build_role;
-    //     for (var i in weights) {
-    //         var value = weights[i];
+    //     let weights = Inventory.creep_weights();
+    //     let build_value, build_role;
+    //     for (let i in weights) {
+    //         let value = weights[i];
     //         if (build_value == undefined || value < build_value) {
     //             build_value = value;
     //             build_role = i;

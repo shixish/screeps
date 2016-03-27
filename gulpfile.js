@@ -14,7 +14,7 @@ gulp.task('screeps', function() {
 			// out: 'main.js',
 			// declaration: true,
 			// noExternalResolve: true,
-			// target: 'ES6',
+			target: 'ES6',
 			removeComments: true,
 		}));
 	
