@@ -36,9 +36,11 @@ declare var module: any;
                             //     console.log(obj.hits, obj.hitsMax, obj.hitsMax*3/4);
                             // }
                             return (
-                                (obj.structureType == STRUCTURE_ROAD ||
-                                    (obj.owner && obj.owner.username == Globals.USERNAME))// ||  obj.structureType == STRUCTURE_WALL)
-                                && obj.hits < obj.hitsMax && obj.hits < Globals.MAX_HITS_REPAIR
+                                (
+                                    obj.structureType == STRUCTURE_ROAD || 
+                                    obj.structureType == STRUCTURE_WALL || 
+                                    (obj.owner && obj.owner.username == Globals.USERNAME)
+                                )&& obj.hits < obj.hitsMax && obj.hits < Globals.MAX_HITS_REPAIR
                             );
                         }
                     });

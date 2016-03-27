@@ -3,6 +3,12 @@
 var Globals = require('Globals'),
     CreepController = require('CreepController'),
     CourierCreep = require('CourierCreep'),
+    HarvesterCreep = require('HarvesterCreep'),
+    MinerCreep = require('MinerCreep'),
+    LinkerCreep = require('LinkerCreep'),
+    BuilderCreep = require('BuilderCreep'),
+    GuardCreep = require('GuardCreep'),
+    RunnerCreep = require('RunnerCreep'),
     TowerController = require('TowerController'),
     SpawnController = require('SpawnController'),
     SourceController = require('SourceController'),
@@ -133,7 +139,7 @@ declare var module: any;
     // }
 
     for (var r in Game.rooms){
-        // console.log(Game.rooms[r]);
+        // console.log('room', Game.rooms[r]);
         var room = <Room>Game.rooms[r];
         var memory = Memory.rooms[room.name];
         // console.log('room', room.name);
@@ -208,7 +214,26 @@ declare var module: any;
 
         if (creep.memory.role == 'courier') {
             var courier = new CourierCreep(creep);
-            courier.work(creep);
+            courier.work();
+        } else if(creep.memory.role == 'linker') {
+            var linker = new LinkerCreep(creep);
+            linker.work();
+        } else if (creep.memory.role == 'harvester') {
+            console.log(creep.name);
+            var harvester = new HarvesterCreep(creep);
+            harvester.work();
+        } else if (creep.memory.role == 'miner') {
+            var miner = new MinerCreep(creep);
+            miner.work();
+        } else if (creep.memory.role == 'builder') {
+            var builder = new BuilderCreep(creep);
+            builder.work();
+        } else if (creep.memory.role == 'guard') {
+            var guard = new GuardCreep(creep);
+            guard.work();
+        } else if (creep.memory.role == 'runner') {
+            var runner = new RunnerCreep(creep);
+            runner.work();
         } else {
             var cc = new CreepController(creep);
             cc.work();

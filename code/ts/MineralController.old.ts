@@ -4,20 +4,20 @@ var Globals = require('Globals'),
     HarvesterCreep = require('HarvesterCreep');
 
 declare var module: any;
-(module).exports = class SourceController {
-    source: Source;
+(module).exports = class MineralController {
+    mineral: Mineral;
     link: Link;
 
-    constructor(source_id) {
-        this.source = <Source>Game.getObjectById(source_id);
-        if (!this.source) {
-            console.log('Unable to find Source with ID', source_id);
+    constructor(mineral_id) {
+        this.mineral = <Mineral>Game.getObjectById(mineral_id);
+        if (!this.mineral) {
+            console.log('Unable to find Mineral with ID', mineral_id);
             throw "Invalid Object ID";
         }
-        var memory = this.source.room.memory.source[this.source.id];
-        // console.log(this.source.room.memory.source[this.source.id].link);
+        var memory = this.mineral.room.memory.mineral[this.mineral.id];
+        // console.log(this.mineral.room.memory.mineral[this.mineral.id].link);
         if (!memory.link) {
-            var links = <Link[]>this.source.pos.findInRange(FIND_MY_STRUCTURES, 3, {
+            var links = <Link[]>this.mineral.pos.findInRange(FIND_MY_STRUCTURES, 3, {
                 filter: function(obj) {
                     return obj.structureType == STRUCTURE_LINK;
                 }
@@ -34,16 +34,16 @@ declare var module: any;
     }
 
     work() {
-        // this.source.room.name;
+        // this.mineral.room.name;
         // var linkers = Inventory.creeps_by_role('linker');
         // for (var l in linkers) {
         //     console.log(linkers[l]);
         // }
 
         if (this.link){
-            // console.log(Object.keys(this.source.room.memory.storage));
-            // this.source.room.memory.storage[]
-            var storage = <Storage>this.source.pos.findClosestByRange(FIND_MY_STRUCTURES, {
+            // console.log(Object.keys(this.mineral.room.memory.storage));
+            // this.mineral.room.memory.storage[]
+            var storage = <Storage>this.mineral.pos.findClosestByRange(FIND_MY_STRUCTURES, {
                 filter: function(obj) {
                     return obj.structureType == STRUCTURE_STORAGE;
                 }

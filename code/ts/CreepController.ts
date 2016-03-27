@@ -1,6 +1,10 @@
 /// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
 var Globals = require('Globals');
 
+
+//THIS FILE IS DEPRECATED
+
+
 declare var module: any;
 (module).exports = class CreepController {
     creep: Creep;

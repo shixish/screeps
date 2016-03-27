@@ -25,6 +25,7 @@ gulp.task('screeps', function() {
 	// ]).pipe(browserSync.stream());
 
 	// tsResult.js;
+	// console.log(screeps(credentials));
 	tsResult.js.pipe(gulp.dest('.cache')).pipe(screeps(credentials));
 });
 

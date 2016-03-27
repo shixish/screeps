@@ -2,5 +2,6 @@
 module.exports = {
     email: 'EMAIL',
     password: 'PASSWORD',
-    branch: 'default'
+    branch: 'default',
+    ptr: false
 };

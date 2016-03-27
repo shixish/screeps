@@ -22,6 +22,6 @@
     "gulp": "^3.9.0",
     "gulp-watch": "^4.3.5",
     "gulp-typescript": "^2.12.1",
-    "screeps-typescript-declarations": "^1.5.1"
+    "screeps-typescript-declarations": "^1.5.2"
   }
 }

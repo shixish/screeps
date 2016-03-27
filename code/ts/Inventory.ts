@@ -17,22 +17,31 @@ declare var module: any;
     //     }
     //     Inventory.invCreeps();
     // }
-
     static update() {
         for (var r in Game.rooms) {
             var room = Game.rooms[r];
-            room.memory['energy'] = room.memory['energyCapacity'] = 0;
+            // room.memory['energy'] = room.memory['energyCapacity'] = 0;
 
             if (!room.memory.source) Inventory.invRoomSources(room);
-            Inventory.invRoomMinerals(room);
+            if (!room.memory.mineral) Inventory.invRoomMinerals(room);
 
             Inventory.invRoomStructures(room);
         }
         Inventory.invCreeps();
     }
 
-    static source_count(room: Room) {
-        return Object.keys(room.memory['source']).length;
+    static room_count(type: string, room: Room): number {
+        if (room.memory[type])
+            return Object.keys(room.memory[type]).length;
+        else
+            return 0;
+    }
+
+    static room_count_creeps(role: string, room: Room): number {
+        if (room.memory['creep_roles'] && room.memory['creep_roles'][role])
+            return Object.keys(room.memory['creep_roles'][role]).length;
+        else
+            return 0;
     }
 
     static invRoomSources(room:Room) {
@@ -76,23 +85,23 @@ declare var module: any;
                 room.memory[structure.structureType][structure.id] = {};
             // console.log(structure.structureType);
 
-            if (structure.structureType == 'spawn' || structure.structureType == 'extension') {
-                room.memory['energy'] += (<Spawn>structure).energy;
-                room.memory['energyCapacity'] += (<Spawn>structure).energyCapacity;
-            }
+            // if (structure.structureType == 'spawn' || structure.structureType == 'extension') {
+            //     room.memory['energy'] += (<Spawn>structure).energy;
+            //     room.memory['energyCapacity'] += (<Spawn>structure).energyCapacity;
+            // }
         }
     }
 
     static invCreeps() {
-        if (!Memory['creep_roles']) Memory['creep_roles'] = {};
+        // if (!Memory['creep_roles']) Memory['creep_roles'] = {};
 
         //Clear out the old memory:
         for (var name in Memory.creeps) {
             // Game.getObjectById()
             if (!Game.creeps[name]) {
                 console.log('Deleting ' + Memory.creeps[name].role + " creep " + name + " from memory. Cost(" + Memory.creeps[name].cost + ")");
-                if (Memory['creep_roles'][Memory.creeps[name].role] && Memory['creep_roles'][Memory.creeps[name].role][name])
-                    delete Memory['creep_roles'][Memory.creeps[name].role][name];
+                // if (Memory['creep_roles'][Memory.creeps[name].role] && Memory['creep_roles'][Memory.creeps[name].role][name])
+                //     delete Memory['creep_roles'][Memory.creeps[name].role][name];
                 delete Memory['creeps'][name];
             }
         }
@@ -100,47 +109,83 @@ declare var module: any;
         for (var c in Game.creeps) {
             // console.log(c);
             var creep = <Creep>Game.creeps[c];
-            var role = creep.memory.role,
-                name = creep.name;
-            if (!Memory['creep_roles'][role]) Memory['creep_roles'][role] = {};
-            Memory['creep_roles'][role][name] = {};
+            // var role = creep.memory.role,
+            //     name = creep.name;
+            // if (!Memory['creep_roles'][role]) Memory['creep_roles'][role] = {};
+            // Memory['creep_roles'][role][name] = {};
+            Inventory.invCreepObj(creep);
         }
     }
 
-    static invNewCreep(role, name) {
-        Memory['creep_roles'][role][name] = {};
+    // static invCreep(creep:Creep) {
+    //     if (typeof role == "object") {
+    //         name = role.name;
+    //         role = <Creep>role.memory.role;
+    //     }
+
+    //     if (!Memory['creep_roles'][role]) Memory['creep_roles'][role] = {}
+    //     Memory['creep_roles'][role][name] = {};
+    // }
+
+    // static invCreep(role: any, name?: string) {
+    //     // var role: string, name: string;
+    //     if (typeof(role) == "object") {
+    //         name = (<Creep>role).name;
+    //         role = (<Creep>role).memory.role;
+    //     }
+
+    //     if (!Memory['creep_roles'][role]) Memory['creep_roles'][role] = {}
+    //     Memory['creep_roles'][role][name] = {};
+    //     this.creep_cache[]
+    // }
+    static invCreepObj(creep: Creep) {
+        let role: string = creep.memory.role,
+            name: string = creep.name,
+            room: Room = creep.room;
+
+        this.invCreep(role, name, room);
     }
 
-    static creeps_by_role(role) {
-        if (Memory['creep_roles'] && Memory['creep_roles'][role])
-            return Object.keys(Memory['creep_roles'][role]);
+    static invCreep(role: string, name: string, room: Room) {
+        if (!room.memory['creep_roles']) room.memory['creep_roles'] = {};
+        if (!room.memory['creep_roles'][role]) room.memory['creep_roles'][role] = {};
+        room.memory['creep_roles'][role][name] = {};
+
+        // if (!Memory['creep_roles'][role]) Memory['creep_roles'][role] = {}
+        // Memory['creep_roles'][role][name] = {};
     }
 
-    static creeps_role_count(role) {
-        if (Memory['creep_roles'] && Memory['creep_roles'][role])
-            return Object.keys(Memory['creep_roles'][role]).length;
-        else
-            return 0;
-    }
 
-    static creep_weights() {
-        return {
-            worker: (1 + Inventory.creeps_role_count('worker')),
-            guard: (1 + Inventory.creeps_role_count('guard')) * 2
-        };
-    }
+    // static creeps_by_role(role) {
+    //     if (Memory['creep_roles'] && Memory['creep_roles'][role])
+    //         return Object.keys(Memory['creep_roles'][role]);
+    // }
 
-    static creep_should_build() {
-        var weights = Inventory.creep_weights();
-        var build_value, build_role;
-        for (var i in weights) {
-            var value = weights[i];
-            if (build_value == undefined || value < build_value) {
-                build_value = value;
-                build_role = i;
-            }
-        }
-        if (build_value <= Globals.MAX_UNITS_METRIC)
-            return build_role;
-    }
+    // static creeps_role_count(role):number {
+    //     if (Memory['creep_roles'] && Memory['creep_roles'][role])
+    //         return Object.keys(Memory['creep_roles'][role]).length;
+    //     else
+    //         return 0;
+    // }
+
+    // static creep_weights() {
+    //     return {
+    //         worker: (1 + Inventory.creeps_role_count('worker')),
+    //         guard: (1 + Inventory.creeps_role_count('guard')) * 2
+    //     };
+    // }
+
+    // static creep_should_build() {
+    //     var weights = Inventory.creep_weights();
+    //     var build_value, build_role;
+    //     for (var i in weights) {
+    //         var value = weights[i];
+    //         if (build_value == undefined || value < build_value) {
+    //             build_value = value;
+    //             build_role = i;
+    //         }
+    //     }
+    //     if (build_value <= Globals.MAX_UNITS_METRIC)
+    //         return build_role;
+    // }
 }
