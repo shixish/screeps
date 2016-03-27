@@ -12,7 +12,6 @@ var Globals = require('Globals'),
     TowerController = require('TowerController'),
     SpawnController = require('SpawnController'),
     SourceController = require('SourceController'),
-    // CreepCache = require('CreepCache'),
     Inventory = require('Inventory');
     // Harvester = require('harvester'),
     // Guard = require('guard'),
@@ -23,10 +22,6 @@ var Globals = require('Globals'),
 //     MIN_TICKS_TO_LIVE = 200,
 //     MAX_UNITS_METRIC = 3,
 //     MAX_HITS_REPAIR = 200000;
-
-
-
-// var CreepCache = Game['CreepCache'] = new CreepCache();
 
 interface Room {
     storeSources();
