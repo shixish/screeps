@@ -11,6 +11,8 @@ declare var module: any;
 
     constructor(creep: Creep) {
         super(creep);
+        // let lab = <Lab>Game.getObjectById('56f0d30a0bf3b09b7db115b5');
+        // lab.mineralCapacity
     }
 
     retarget() {
@@ -33,6 +35,7 @@ declare var module: any;
                 }
             }
         }
+        super.try_targeting('resting');//get the little shits out of the way
     }
 
     // work() {
@@ -61,13 +64,16 @@ declare var module: any;
     // }
 
     static create(budget:number) {
-        if (budget >= 50*3 + 50*10)
+        if (budget >= 50*10 + 50*3)
             return [
+                CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
                 MOVE, MOVE, MOVE,
-                CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY
             ];
         else
-            return [MOVE, MOVE, CARRY, CARRY, CARRY, CARRY];
+            return [
+                CARRY, CARRY, CARRY, CARRY,
+                MOVE, MOVE, 
+            ];
     }
 
 }

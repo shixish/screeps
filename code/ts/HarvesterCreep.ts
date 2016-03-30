@@ -50,9 +50,13 @@ declare var module: any;
             if (source_memory.link) {
                 this.creep.memory.target_id = source_memory.link;
                 this.creep.memory.action_name = 'transferring';
-            } else if (!super.try_targeting('storing')) { 
-                if (!super.try_targeting('transferring')) {
+            } else if (!super.try_targeting('transferring')) { //Behave as a more generic creep if still in low infrastructure
+                if (!super.try_targeting('storing')) {
+                    if (!super.try_targeting('building')) {
+                        if (!super.try_targeting('upgrading')) {
 
+                        }
+                    }
                 }
             }
         } else {
@@ -104,20 +108,30 @@ declare var module: any;
     // }
 
     static create(budget: number) {
-        if (budget >= 50 + 100*6 + 50*6)
-            return [
+        if (budget >= 50 + 100*6 + 50*6) //950
+            return [ //Linker creep
                 MOVE,
                 WORK, WORK, WORK, WORK, WORK, WORK,
                 CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
             ];
-        // if (budget >= 50 + 100 * 5 + 50 * 2)
-        //     return [
-        //         MOVE,
-        //         WORK, WORK, WORK, WORK, WORK,
-        //         CARRY
-        //     ];
-        else
-            return [MOVE, WORK, CARRY, CARRY, CARRY];
+        else if (budget >= 50*4 + 100*4 + 50*4) //800
+            return [ //Walk Miner
+                CARRY, CARRY, CARRY, CARRY,
+                WORK, WORK, WORK, WORK,
+                MOVE, MOVE, MOVE, MOVE,
+            ];
+        else if (budget >= 50*4 + 100*2 + 50*2) //500
+            return [ //Walk Miner
+                CARRY, CARRY, CARRY, CARRY, 
+                WORK, WORK,
+                MOVE, MOVE,
+            ];
+        else //Walk Miner
+            return [
+                CARRY, CARRY, CARRY,
+                WORK,
+                MOVE,
+            ];
     }
 
 }

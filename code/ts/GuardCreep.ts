@@ -7,31 +7,58 @@ var Globals = require('Globals'),
 declare var module: any;
 (module).exports = class GuardCreep extends BaseCreep {
     public creep: Creep;
+    public flag: Flag;
 
     constructor(creep: Creep) {
         super(creep);
+
+        if (!this.creep.memory.flag) {
+            this.creep.memory.flag = this.creep.room.name + '_guard';
+            this.flag = <Flag>Game.flags[this.creep.memory.flag];
+            this.flag.memory.creep = this.creep.name;
+        } else {
+            this.flag = <Flag>Game.flags[this.creep.memory.flag];
+        }
     }
 
     retarget() {
         super.retarget();
-        // this.creep.memory.target_id = this.creep.memory.action_name = null;
+        // this.flag.remove();
         if (!super.try_targeting('fighting')) {
-            if (Game.flags['attack']) {
-                this.creep.memory.target_id = Game.flags['attack'].id;
+            if (this.flag) {
+                this.creep.memory.target_id = this.flag.id;
                 this.creep.memory.action_name = 'moving';
             }
         }
     }
 
     static create(budget: number) {
-        if (budget >= 50*2 + 80 * 3 + 10 * 6)
+        if (budget >= 10*30 + 80*5 + 50*10)
             return [
-                MOVE, MOVE,
-                ATTACK, ATTACK, ATTACK,
-                TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH
+                TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH,
+                TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH,
+                TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH,
+                ATTACK, ATTACK, ATTACK, ATTACK, ATTACK,
+                MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
+            ];
+        else if (budget >= 10*10 + 80*5 + 50*5)
+            return [
+                TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH,
+                ATTACK, ATTACK, ATTACK, ATTACK,
+                MOVE, MOVE, MOVE, MOVE, MOVE,
+            ];
+        else if (budget >= 10*6 + 80*3 + 50*3)
+            return [
+                TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, //60
+                ATTACK, ATTACK, ATTACK, //240
+                MOVE, MOVE, MOVE, //150
             ];
         else
-            return [MOVE, MOVE, ATTACK, ATTACK, TOUGH, TOUGH, TOUGH, TOUGH];
+            return [
+                TOUGH, TOUGH, TOUGH, TOUGH,
+                ATTACK, ATTACK, 
+                MOVE, MOVE, 
+            ];
     }
 
 }

@@ -8,31 +8,44 @@ var _ = require('lodash'),
 declare var module: any;
 (module).exports = class RunnerCreep extends BaseCreep {
     public creep: Creep;
+    public flag: Flag;
 
     constructor(creep: Creep) {
         super(creep);
-        this.creep.memory.obsolete = true;//can't repair creeps that have CLAIM
         // this.retarget();
+
+        // console.log(this.creep, "exists already");
+        if (!this.creep.memory.flag) {
+            this.creep.memory.flag = this.creep.room.name + '_runner';
+            this.flag = <Flag>Game.flags[this.creep.memory.flag];
+            this.flag.memory.creep = this.creep.name;
+        }else{
+            this.flag = <Flag>Game.flags[this.creep.memory.flag];
+        }
     }
 
     retarget() {
         super.retarget();
-        if (Game.flags['running']) {
-            if (this.creep.room.name != (<Flag>Game.flags['running']).room.name) {
-                this.creep.memory.target_id = Game.flags['running'].id;
-                this.creep.memory.action_name = 'moving';
+        
+        if (this.flag && this.creep.room.name != this.flag.pos.roomName) {
+            if (this.creep.carry.energy < this.creep.carryCapacity) {
+                super.try_targeting('energizing');
             } else {
-                if (!super.try_targeting('claiming')) {
-                    if (this.creep.carry.energy > 0) {
-                        if (!super.try_targeting('building')) {
-                            if (!super.try_targeting('upgrading')) {
-                                console.log('Creep is unable to spend energy!?');
-                            }
+                this.creep.memory.target_id = this.flag.id;
+                this.creep.memory.action_name = 'moving';
+            }
+        } else {
+            // this.flag.remove();
+            if (!super.try_targeting('claiming')) {
+                if (this.creep.carry.energy > 0) {
+                    if (!super.try_targeting('building')) {
+                        if (!super.try_targeting('upgrading')) {
+                            console.log('Creep is unable to spend energy!?');
                         }
-                    } else {
-                        if (!super.try_targeting('harvesting')) {
+                    }
+                } else {
+                    if (!super.try_targeting('harvesting')) {
 
-                        }
                     }
                 }
             }
@@ -40,8 +53,18 @@ declare var module: any;
     }
 
     static create(budget:number) {
-        // return [CLAIM, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
-        return [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
+        return [
+            // CLAIM, 
+            WORK, WORK, WORK, WORK, WORK,
+            CARRY, CARRY, CARRY, CARRY, CARRY,
+            MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
+        ];
+        // return [
+        //     // CLAIM, 
+        //     WORK, WORK, 
+        //     CARRY, CARRY, CARRY, CARRY, CARRY, 
+        //     MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
+        // ];
     }
 
 }

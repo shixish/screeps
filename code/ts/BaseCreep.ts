@@ -38,7 +38,7 @@ declare var module: any;
         if (action_name) this.creep.say(action_name);
         else this.creep.say(this.creep.memory.role + ' idle');
 
-        if (!this.creep.memory.obsolete && action_name !== "renewing" && this.creep.ticksToLive < Globals.MIN_TICKS_TO_LIVE) {
+        if (action_name !== "renewing" && !this.creep.room.memory.under_attack && !this.creep.memory.obsolete && this.creep.ticksToLive < Globals.MIN_TICKS_TO_LIVE) {
             target = this.creep.pos.findClosestByPath<Structure>(FIND_MY_STRUCTURES, {
                 filter: function(obj) {
                     return (
@@ -57,6 +57,12 @@ declare var module: any;
         } else if (!target || !action_function) {
             this.retarget();
         }
+
+        //if we're under attack, don't sit there renewing yourself:
+        if (action_name === "renewing" && this.creep.room.memory.under_attack){
+            this.retarget();
+        }
+
         // console.log(action_name, target, action_function);
         if (target && action_function) {
             let applied = action_function.apply(this, [target]);
@@ -111,7 +117,9 @@ declare var module: any;
                 break;
             case 'building':
                 target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES, {
-                    // filter: { owner: { username: 'Invader' } }
+                    // filter: (obj:ConstructionSite) => { 
+                    //     return obj.structureType == STRUCTURE_RAMPART;
+                    // }
                 });
                 break;
             case 'upgrading':
@@ -122,20 +130,27 @@ declare var module: any;
 
             //Energy gaining:
             case 'picking':
-                target = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
+                let total_carrying = _.sum(this.creep.carry),
+                    free_space = this.creep.carryCapacity - total_carrying;
+
+                target = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
+                    filter: (obj) => {
+                        return obj.amount <= free_space;
+                    }
+                });
                 break;
             case 'harvesting':
                 target = creep.pos.findClosestByPath(FIND_SOURCES, {
                     // filter: { owner: { username: 'Invader' } }
-                    filter: function(obj) {
-                        return obj.energy > 0; //Sources can run out as well
+                    filter: function(obj:Source) {
+                        return obj.energy > 0 && obj.room.controller.owner && obj.room.controller.owner.username == Globals.USERNAME;
                     }
                 });
                 break;
             case 'claiming':
                 target = this.creep.pos.findClosestByPath<Structure>(FIND_STRUCTURES, {
                     filter: function(obj) {
-                        return obj.structureType == STRUCTURE_CONTROLLER && !obj.owner;
+                        return obj.structureType == STRUCTURE_CONTROLLER && !obj.owner; //obj.owner.username != Globals.USERNAME
                     }
                 });
                 break;
@@ -154,7 +169,7 @@ declare var module: any;
                     filter: function(obj:Storage) {
                         return (
                             obj.structureType == STRUCTURE_STORAGE
-                            && obj.store.energy > obj.storeCapacity/2
+                            && obj.store.energy > obj.storeCapacity/4
                         );
                     }
                 });
@@ -179,6 +194,11 @@ declare var module: any;
                 target = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
 
                 });
+                break;
+            case 'resting':
+                if (!this.creep.memory.target_id && Game.flags[this.creep.room.name+'_resting']) {
+                    target = Game.flags[this.creep.room.name + '_resting'];
+                }
                 break;
         }
         return target;
@@ -211,15 +231,19 @@ declare var module: any;
     }
 
     claiming(target) {
-        let action = this.creep.claimController(target);
-        if (action == ERR_NOT_IN_RANGE) {
-            this.creep.moveTo(target);
-        } else if (action != 0) {
-            console.log('claiming error:', action);
-            // this.retarget();
+        if ((<Controller>target).owner.username == Globals.USERNAME) {
             return false;
+        } else {
+            let action = this.creep.claimController(target);
+            if (action == ERR_NOT_IN_RANGE) {
+                this.creep.moveTo(target);
+            } else if (action != 0) {
+                console.log('claiming error:', action);
+                // this.retarget();
+                return false;
+            }
+            return true;
         }
-        return true;
     }
 
     //This works for energy and minerals
@@ -418,9 +442,23 @@ declare var module: any;
         }
     }
 
+    resting(target) {
+        return this.moving(target);
+    }
+
     moving(target) {
         let action = this.creep.moveTo(target);
-        // console.log('moving', action);
+        if (action == ERR_TIRED) {
+            this.creep.say('tired');
+        } else if(action == ERR_BUSY) {
+            //just wait
+        } else if (action == ERR_NO_PATH) {
+            //DERP?
+            console.log(this.creep.name, "unable to find a path to", target);
+        }else if (action != 0) {
+            console.log('Error moving:', action);
+        }
+        // console.log(this.creep.name, 'moving', action);
         // this.retarget();
         return false;
     }

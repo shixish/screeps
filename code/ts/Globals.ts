@@ -16,7 +16,7 @@ declare var module: any;
     USERNAME: 'ShiXish',
     MIN_TICKS_TO_LIVE: 500,
     MAX_UNITS_METRIC: 3,
-    MAX_HITS_REPAIR: 1000000,
+    // MAX_HITS_REPAIR: 1000000,
     MAX_COST: 3000,
     PART_COSTS: PartCosts,
 }

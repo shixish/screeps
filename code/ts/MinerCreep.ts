@@ -67,14 +67,18 @@ declare var module: any;
     // }
 
     static create(budget: number) {
-        if (budget >= 50*5 + 100*5 + 50*10)
+        if (budget >= 50*10 + 100*5 + 50*5)
             return [
-                MOVE, MOVE, MOVE, MOVE, MOVE,
+                CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
                 WORK, WORK, WORK, WORK, WORK,
-                CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, 
+                MOVE, MOVE, MOVE, MOVE, MOVE,
             ];
         else
-            return [MOVE, WORK, CARRY, CARRY, CARRY];
+            return [
+                CARRY, CARRY, CARRY,
+                WORK,
+                MOVE,
+            ];
     }
 
 }

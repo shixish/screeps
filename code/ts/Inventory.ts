@@ -19,6 +19,15 @@ declare var module: any;
     //     Inventory.invCreeps();
     // }
     static update() {
+        //garbage collect flags
+        for (let f in Memory.flags){
+            if (!Game.flags[f]) {
+                delete Memory.flags[f];
+            } else if (Memory.flags[f].creep && !Game.creeps[Memory.flags[f].creep]) {
+                delete Memory.flags[f].creep;
+            }
+        }
+
         for (let r in Game.rooms) {
             let room = Game.rooms[r];
             // room.memory['energy'] = room.memory['energyCapacity'] = 0;
@@ -28,6 +37,10 @@ declare var module: any;
             if (!room.memory.mineral) Inventory.invRoomMinerals(room);
 
             Inventory.invRoomStructures(room);
+
+            let hostile_creeps = room.find(FIND_HOSTILE_CREEPS);
+            // console.log(hostile_creeps);
+            room.memory.under_attack = !!hostile_creeps.length;
         }
         Inventory.invCreeps();
     }
@@ -101,7 +114,7 @@ declare var module: any;
         for (let name in Memory.creeps) {
             // Game.getObjectById()
             if (!Game.creeps[name]) {
-                console.log('Deleting ' + Memory.creeps[name].role + " creep " + name + " from memory. Cost(" + Memory.creeps[name].cost + ")");
+                console.log('Deleting ' + Memory.creeps[name].role + " creep " + name + " from memory.");
                 // if (Memory['creep_roles'][Memory.creeps[name].role] && Memory['creep_roles'][Memory.creeps[name].role][name])
                 //     delete Memory['creep_roles'][Memory.creeps[name].role][name];
                 delete Memory['creeps'][name];

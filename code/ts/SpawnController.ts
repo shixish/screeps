@@ -28,16 +28,22 @@ declare var module: any;
     max_creeps() {
         let spawns = Inventory.room_count('spawn', this.structure.room),
             storage = Inventory.room_count('storage', this.structure.room),
-            towers = Inventory.room_count('tower', this.structure.room);
+            towers = Inventory.room_count('tower', this.structure.room),
+            links = Inventory.room_count('link', this.structure.room);
+
+        let guard_flag = Game.flags[this.structure.room.name + '_guard'],
+            runner_flag = Game.flags[this.structure.room.name + '_runner'];
+
+        // console.log(this.structure.room.name + '_runner', runner_flag);
 
         return {
             'harvester': Inventory.room_count('source', this.structure.room),
-            'linker': storage,
+            'linker': links > 0 ? storage : 0,
             'courier': storage > 0 ? spawns + towers : 0,
-            'miner': storage > 0 ? Inventory.room_count('mineral', this.structure.room) : 0,
-            'builder': spawns,
-            'guard': (towers < 1) ? 1 : 0,
-            'runner': Game.flags[this.structure.room.name+'_runner'] ? 1 : 0, 
+            'miner': 0, //storage > 0 ? Inventory.room_count('mineral', this.structure.room) : 0,
+            'builder': spawns + (!storage ? 1 : 0),
+            'guard': guard_flag && !guard_flag.memory.creep ? 1 : 0,
+            'runner': runner_flag && !runner_flag.memory.creep ? 1 : 0,
         }
     }
 
@@ -55,7 +61,7 @@ declare var module: any;
         let room = this.structure.room;
         let repairable = this.structure.pos.findInRange(FIND_MY_CREEPS, 1, {
             filter: function(obj: Creep) {
-                return obj.ticksToLive < 1400
+                return !obj.memory.obsolete && obj.ticksToLive < 1400
             }
         });
         // if (room.name == 'W18S29') {
@@ -85,6 +91,7 @@ declare var module: any;
         } else if (room.energyAvailable == room.energyCapacityAvailable || room.energyAvailable >= Globals.MAX_COST) {
             let max_creeps = this.max_creeps();
             let min_role = null, min_count = null;
+            // console.log(Object.keys(max_creeps));
             for (let role in max_creeps) {
                 let count = Inventory.room_count_creeps(role, room);
                 if (count < max_creeps[role] && (min_count == null || count < min_count)) {
@@ -108,6 +115,9 @@ declare var module: any;
             let creep_memory = {
                 role: role
             };
+            if (_.indexOf(creep_body, CLAIM) !== -1) {
+                creep_memory['obsolete'] = true; //can't repair claim creeps.
+            }
             let response = this.structure.createCreep(creep_body, null, creep_memory);
             if (!(response < 0)) {
                 let name = response;
@@ -120,7 +130,7 @@ declare var module: any;
                 console.log("Create creep response:", response);
             }
         } else {
-            console.log('Unable to create ${role} creep');
+            console.log(`Unable to create ${role} creep`);
         }
     }
 
