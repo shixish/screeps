@@ -44,13 +44,15 @@ class SpawnController {
             // let obj = flagCreeps[c];
             let flag = Game.flags[`${this.structure.room.name}_${name}`];
             if (flag) {
-                if (!flag.memory.creeps) {
+                if (!flag.memory.creeps || flag.memory.creeps == "") {
                     flagCreeps[name] = 1;
                 }else if (flag.memory.max_creeps > 0 && flag.memory.creeps.length < flag.memory.max_creeps){
                     flagCreeps[name] = flag.memory.max_creeps - flag.memory.creeps.length;
                 }
             }
         }
+
+        // console.log(flagCreeps['runner'])
 
         return {
             'harvester': sources,
