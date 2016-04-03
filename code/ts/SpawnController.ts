@@ -53,17 +53,20 @@ class SpawnController {
         }
 
         // console.log(flagCreeps['runner'])
-
-        return {
+        let values = {
             'harvester': sources,
             'linker': links > 0 ? storage : 0,
             'courier': storage > 0 ? Math.ceil(towers / 2) : 0,
             'miner': 0, //storage > 0 ? minerals : 0,
-            'builder': spawns + storage,
+            'builder': (this.controller_level < 8 ? 1 : 0) + (storage ? 1 : 0),
             'guard': flagCreeps['guard'],
             'ranger': flagCreeps['ranger'],
             'runner': flagCreeps['runner'],
         }
+
+        console.log(values.builder);
+
+        return values;
     }
 
     constructor(structure_id) {
