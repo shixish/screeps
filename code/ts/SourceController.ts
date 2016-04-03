@@ -1,11 +1,10 @@
 /// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
+/// <reference path="Globals.ts" />
+/// <reference path="Inventory.ts" />
+/// <reference path="HarvesterCreep.ts" />
 "use strict";
-var Globals = require('Globals'),
-    Inventory = require('Inventory'),
-    HarvesterCreep = require('HarvesterCreep');
 
-declare var module: any;
-(module).exports = class SourceController {
+class SourceController {
     public source: Source;
     public link: Link;
     public container: Container;

@@ -1,12 +1,9 @@
 /// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
+/// <reference path="Globals.ts" />
 /// <reference path="BaseCreep.ts" />
 "use strict";
-var _ = require('lodash'),
-    Globals = require('Globals'),
-    BaseCreep = require('BaseCreep');
 
-declare var module: any;
-(module).exports = class MinerCreep extends BaseCreep {
+class MinerCreep extends BaseCreep {
     public creep: Creep;
 
     constructor(creep: Creep) {

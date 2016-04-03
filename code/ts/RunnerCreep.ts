@@ -1,13 +1,10 @@
 /// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
+/// <reference path="Globals.ts" />
+/// <reference path="Inventory.ts" />
 /// <reference path="BaseCreep.ts" />
 "use strict";
-var _ = require('lodash'),
-    Globals = require('Globals'), 
-    Inventory = require('Inventory'),
-    BaseCreep = require('BaseCreep');
 
-declare var module: any;
-(module).exports = class RunnerCreep extends BaseCreep {
+class RunnerCreep extends BaseCreep {
     public creep: Creep;
     public flag: Flag;
 

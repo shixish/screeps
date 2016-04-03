@@ -1,10 +1,9 @@
 /// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
+/// <reference path="Globals.ts" />
+/// <reference path="Inventory.ts" />
 "use strict";
-var Globals = require('Globals'),
-    Inventory = require('Inventory');
 
-declare var module: any;
-(module).exports = class TowerController {
+class TowerController {
     private structure: Tower;
     private max_repair_tiers = {
         3: 25000,//tower at 3

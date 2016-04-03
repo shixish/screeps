@@ -1,9 +1,8 @@
 /// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
+/// <reference path="Globals.ts" />
 "use strict";
-var Globals = require('Globals');
 
-declare var module: any;
-(module).exports = class Inventory {
+class Inventory {
     // static flush() {
     //     for (let r in Game.rooms) {
     //         let room = Game.rooms[r];

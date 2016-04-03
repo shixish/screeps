@@ -1,12 +1,10 @@
 /// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
+/// <reference path="Globals.ts" />
+/// <reference path="Inventory.ts" />
 /// <reference path="BaseCreep.ts" />
 "use strict";
-var Globals = require('Globals'),
-    Inventory = require('Inventory'),
-    BaseCreep = require('BaseCreep');
 
-declare var module: any;
-(module).exports = class BuilderCreep extends BaseCreep {
+class BuilderCreep extends BaseCreep {
     public creep: Creep;
     public hasStorage: boolean;
 

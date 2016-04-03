@@ -1,20 +1,17 @@
-/// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
+/// <reference path="Globals.ts" />
 /// <reference path="Inventory.ts" />
+/// <reference path="BaseCreep.ts" />
+/// <reference path="CourierCreep.ts" />
+/// <reference path="HarvesterCreep.ts" />
+/// <reference path="MinerCreep.ts" />
+/// <reference path="BuilderCreep.ts" />
+/// <reference path="GuardCreep.ts" />
+/// <reference path="RangerCreep.ts" />
+/// <reference path="RunnerCreep.ts" />
+/// <reference path="LinkerCreep.ts" />
 "use strict";
-var _ = require('lodash'),
-    Globals = require('Globals'),
-    Inventory = require('Inventory'),
-    CourierCreep = require('CourierCreep'),
-    HarvesterCreep = require('HarvesterCreep'),
-    MinerCreep = require('MinerCreep'),
-    BuilderCreep = require('BuilderCreep'),
-    GuardCreep = require('GuardCreep'),
-    RangerCreep = require('RangerCreep'),
-    RunnerCreep = require('RunnerCreep'),
-    LinkerCreep = require('LinkerCreep');
 
-declare var module: any;
-(module).exports = class SpawnController {
+class SpawnController {
     structure: Spawn;
     controller_level: number;
 
@@ -166,9 +163,9 @@ declare var module: any;
                 creep_memory['obsolete'] = true; //can't repair claim creeps.
             }
             //TODO:: USE : creep.getActiveBodyparts
-            let response = this.structure.createCreep(creep_body, null, creep_memory);
+            let response:any = this.structure.createCreep(creep_body, null, creep_memory);
             if (!(response < 0)) {
-                let name = response;
+                let name:string = response;
                 console.log("Making a new " + creep_memory.role + " named " + name + " in room " + room.name);
                 Inventory.invNewCreep(creep_memory.role, name, room);
                 return response;//new creep name

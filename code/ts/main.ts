@@ -1,56 +1,20 @@
 /// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
+/// <reference path="Globals.ts" />
+/// <reference path="Inventory.ts" />
+/// <reference path="BaseCreep.ts" />
+/// <reference path="CourierCreep.ts" />
+/// <reference path="HarvesterCreep.ts" />
+/// <reference path="MinerCreep.ts" />
+/// <reference path="BuilderCreep.ts" />
+/// <reference path="GuardCreep.ts" />
+/// <reference path="RangerCreep.ts" />
+/// <reference path="RunnerCreep.ts" />
+/// <reference path="LinkerCreep.ts" />
+/// <reference path="TowerController.ts" />
+/// <reference path="SpawnController.ts" />
+/// <reference path="SourceController.ts" />
 "use strict";
-// let _ = require('lodash'),
-var Globals = require('Globals'),
-    CourierCreep = require('CourierCreep'),
-    HarvesterCreep = require('HarvesterCreep'),
-    MinerCreep = require('MinerCreep'),
-    LinkerCreep = require('LinkerCreep'),
-    BuilderCreep = require('BuilderCreep'),
-    GuardCreep = require('GuardCreep'),
-    RangerCreep = require('RangerCreep'),
-    RunnerCreep = require('RunnerCreep'),
-    TowerController = require('TowerController'),
-    SpawnController = require('SpawnController'),
-    SourceController = require('SourceController'),
-    Inventory = require('Inventory');
-    // Harvester = require('harvester'),
-    // Guard = require('guard'),
-    // Builder = require('builder'),
-    // Spawn = require('spawn');
 
-// var USERNAME = 'ShiXish',
-//     MIN_TICKS_TO_LIVE = 200,
-//     MAX_UNITS_METRIC = 3,
-//     MAX_HITS_REPAIR = 200000;
-
-// interface Room {
-//     storeSources();
-//     sources();
-// }
-
-// Room.prototype.storeSources = function() {
-//     let sources = this.find(FIND_SOURCES);
-//     this.memory.sources = {};
-//     for (let s in sources) {
-//         let source = sources[s];
-//         this.memory.sources[source.id] = {};
-//         // console.log(source.id);
-//     }
-// }
-
-// Room.prototype.sources = function() {
-//     if (!this.memory.sources) this.storeSources();
-//     // let sources = [];
-//     // for (let s in this.memory.sources){
-//     //     let source_id = this.memory.sources[s];
-//     //     sources.push(Game.getObjectById(source_id));
-//     // }
-//     // return sources;
-//     return this.memory.sources;
-// }
-
-declare var module: any;
 let structure_controllers = {
     'tower': TowerController,
     'spawn': SpawnController,
@@ -74,6 +38,7 @@ function run_structure(type:string, structure: Structure) {
     }
 }
 
+declare var module: any;
 (module).exports.loop = function () {
     Inventory.update();
 
@@ -131,33 +96,5 @@ function run_structure(type:string, structure: Structure) {
         }else {
             console.log("Unknown creep role:", creep);
         }
-
-        /*
-        if (creep.memory.role == 'courier') {
-            let courier = new CourierCreep(creep);
-            courier.work();
-        } else if(creep.memory.role == 'linker') {
-            let linker = new LinkerCreep(creep);
-            linker.work();
-        } else if (creep.memory.role == 'harvester') {
-            let harvester = new HarvesterCreep(creep);
-            harvester.work();
-        } else if (creep.memory.role == 'miner') {
-            let miner = new MinerCreep(creep);
-            miner.work();
-        } else if (creep.memory.role == 'builder') {
-            let builder = new BuilderCreep(creep);
-            builder.work();
-        } else if (creep.memory.role == 'guard') {
-            let guard = new GuardCreep(creep);
-            guard.work();
-        } else if (creep.memory.role == 'ranger') {
-            let ranger = new RangerCreep(creep);
-            ranger.work();
-        } else if (creep.memory.role == 'runner') {
-            let runner = new RunnerCreep(creep);
-            runner.work();
-        } 
-        */
     }
 }

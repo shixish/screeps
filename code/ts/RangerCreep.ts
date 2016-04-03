@@ -1,11 +1,9 @@
 /// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
+/// <reference path="Globals.ts" />
 /// <reference path="BaseCreep.ts" />
 "use strict";
-var Globals = require('Globals'),
-    BaseCreep = require('BaseCreep');
 
-declare var module: any;
-(module).exports = class RangerCreep extends BaseCreep {
+class RangerCreep extends BaseCreep {
     public creep: Creep;
     public flag: Flag;
 

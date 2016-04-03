@@ -1,7 +1,8 @@
 /// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
+/// <reference path="../dts/require.d.ts" />
+
 "use strict";
-// var _ = require('lodash'),
-//     Inventory = require('Inventory');
+var _ = require('lodash');
 
 let PartCosts = {};
     PartCosts[MOVE] = 50;
@@ -14,8 +15,7 @@ let PartCosts = {};
 
 PathFinder.use(true);
 
-declare var module: any;
-(module).exports = {
+var Globals = {
     USERNAME: 'ShiXish',
     MIN_TICKS_TO_LIVE: 500,
     MAX_UNITS_METRIC: 3,

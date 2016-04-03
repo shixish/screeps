@@ -12,9 +12,14 @@ gulp.task('screeps', function() {
 	var tsResult = gulp.src(['code/ts/**.ts', 'code/dts/**.ts', "./node_modules/screeps-typescript-declarations/dist/screeps.d.ts"])
 		.pipe(ts({
 			// noImplicitAny: true,
-			// out: 'main.js',
+			out: 'main.js',
 			// declaration: true,
-			// noExternalResolve: true,
+			noExternalResolve: true,
+			// module: 'commonjs',
+			// module: 'amd',
+			// module: 'umd',
+			// module: 'system',
+			// moduleResolution: 'node',
 			target: 'ES6',
 			removeComments: true,
 		}));
