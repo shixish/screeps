@@ -73,7 +73,7 @@ class RunnerCreep extends BaseCreep {
                 WORK, WORK, WORK, WORK, WORK,
                 CARRY, CARRY, CARRY, CARRY, CARRY,
                 MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
-                // CLAIM, 
+                CLAIM, 
             ];
         // else if (budget >= 100 * 2 + 50 * 4 + 50 * 2) // 500
         //     return [

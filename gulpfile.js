@@ -23,6 +23,9 @@ gulp.task('screeps', function() {
 			target: 'ES6',
 			removeComments: true,
 		}));
+
+	var js = gulp.src('code/lib/**.js']);
+	console.log(js);
 	
 	/* Use this one if you want the definitions to be output as well: */
 	// return merge([
@@ -33,7 +36,7 @@ gulp.task('screeps', function() {
 	// tsResult.js;
 	git.branch(function (branch) {
 		credentials.ptr = (branch == "test");
-		tsResult.js.pipe(gulp.dest('.cache')).pipe(screeps(credentials));
+		tsResult.js.pipe(gulp.dest('.cache'))//.pipe(screeps(credentials));
 	});
 });
 
