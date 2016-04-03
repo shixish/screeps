@@ -72,6 +72,85 @@ class BaseCreep { //Abstract class
             }
         }
     }
+
+    getDirectionFrom(from, to) {
+        var x = from.x
+        var y = from.y
+        // Node is to the left
+        if (to.x < x) {
+            // Node is to the top
+            if (to.y < y) return 8;
+
+            // Node is on the same level
+            if (to.y == y) return 7;
+
+            // Node is to the bottom
+            if (to.y > y) return 6;
+        }
+
+        if (to.x == x) {
+            // Node is to the top
+            if (to.y < y) return 1;
+
+            // Node is to the bottom
+            if (to.y > y) return 5;
+        }
+
+        // Node is to the right
+        if (to.x > x) {
+            // Node is to the top
+            if (to.y < y) return 2;
+
+            // Node is on the same level
+            if (to.y == y) return 3;
+
+            // Node is to the bottom
+            if (to.y > y) return 4;
+        }
+    }
+
+    getClosestByPath(targets, range?) {
+        let target;
+        let target_path = [];
+        range = range == undefined ? 1 : range;
+
+        let goals = _.map(targets, function(obj) {
+            // We can't actually walk on sources-- set `range` to 1 so we path next to it.
+            return { pos: obj.pos, range: range };
+        });
+        let results = PathFinder.search(this.creep.pos, goals);
+        // console.log(goals[0].pos, Object.keys(path), path.path, path.ops);
+
+        if (results.path) {
+            let parent = this.creep.pos;
+            for (let step of results.path) {
+                let dx = step.x - parent.x;
+                let dy = step.y - parent.y;
+                let direction = this.getDirectionFrom(parent, step)
+                target_path.push({
+                    'x': step.x,
+                    'y': step.y,
+                    'dx': dx,
+                    'dy': dy,
+                    'direction': direction
+                })
+                parent = step;
+            }
+            for (let i in targets) {
+                // console.log(parent.x, parent.y, targets[i].pos.x, targets[i].pos.y)
+                // console.log(i, targets[i], targets[i].pos.x, targets[i].pos.y)
+                if (Math.abs(parent.x - targets[i].pos.x) <= range && Math.abs(parent.y - targets[i].pos.y) <= range) {
+                    target = targets[i];
+                    break;
+                }
+            }
+        }
+
+        return {
+            target: target,
+            path: target_path
+        };
+    }
     
     find_target(creep:Creep, type: string) {
         let target;

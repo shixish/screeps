@@ -47,4 +47,5 @@ gulp.task('screeps', function() {
 gulp.task('default', ['screeps'], function(){
 	// gulp.watch("dist/*.js", ['screeps']);
 	gulp.watch("code/*/**.ts", ['screeps']);
+	gulp.watch("code/ts/*/**.ts", ['screeps']);
 });
