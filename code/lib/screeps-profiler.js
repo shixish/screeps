@@ -1,3 +1,4 @@
+"use strict";
 let usedOnStart = 0;
 let enabled = false;
 let depth = 0;

@@ -1,8 +1,11 @@
 /// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
 /// <reference path="../dts/require.d.ts" />
-
 "use strict";
 var _ = require('lodash');
+// var profiler = require('screeps-profiler');
+
+// // This line monkey patches the global prototypes.
+// profiler.enable();
 
 let PartCosts = {};
     PartCosts[MOVE] = 50;

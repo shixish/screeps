@@ -23,6 +23,7 @@
     "gulp-watch": "^4.3.5",
     "gulp-typescript": "^2.12.1",
     "screeps-typescript-declarations": "^1.5.2",
-    "git-rev": "^0.2.1"
+    "git-rev": "^0.2.1",
+    "gulp-add-src": "^0.2.0"
   }
 }

@@ -63,9 +63,6 @@ class SpawnController {
             'ranger': flagCreeps['ranger'],
             'runner': flagCreeps['runner'],
         }
-
-        console.log(values.builder);
-
         return values;
     }
 

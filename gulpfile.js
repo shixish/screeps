@@ -3,7 +3,8 @@ var gulp = require('gulp');
 	watch = require('gulp-watch'),
 	credentials = require('./credentials.js'),
 	ts = require('gulp-typescript'),
-	git = require('git-rev');
+	git = require('git-rev'),
+	addsrc = require('gulp-add-src');
  
 gulp.task('screeps', function() {
 	// gulp.src('dist/*.js')
@@ -24,8 +25,8 @@ gulp.task('screeps', function() {
 			removeComments: true,
 		}));
 
-	var js = gulp.src('code/lib/**.js']);
-	console.log(js);
+	// var js = gulp.src('code/lib/**.js');
+	// console.log(js);
 	
 	/* Use this one if you want the definitions to be output as well: */
 	// return merge([
@@ -36,7 +37,10 @@ gulp.task('screeps', function() {
 	// tsResult.js;
 	git.branch(function (branch) {
 		credentials.ptr = (branch == "test");
-		tsResult.js.pipe(gulp.dest('.cache'))//.pipe(screeps(credentials));
+		tsResult.js
+			.pipe(addsrc('code/lib/**.js'))
+			.pipe(gulp.dest('.cache'))
+			.pipe(screeps(credentials));
 	});
 });
 
