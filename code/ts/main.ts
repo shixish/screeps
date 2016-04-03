@@ -1,35 +1,7 @@
-/// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
-/// <reference path="Globals.ts" />
-/// <reference path="Inventory.ts" />
-/// <reference path="BaseCreep.ts" />
-/// <reference path="CourierCreep.ts" />
-/// <reference path="HarvesterCreep.ts" />
-/// <reference path="MinerCreep.ts" />
-/// <reference path="BuilderCreep.ts" />
-/// <reference path="GuardCreep.ts" />
-/// <reference path="RangerCreep.ts" />
-/// <reference path="RunnerCreep.ts" />
-/// <reference path="LinkerCreep.ts" />
-/// <reference path="TowerController.ts" />
-/// <reference path="SpawnController.ts" />
-/// <reference path="SourceController.ts" />
+/// <reference path="vars/Globals.ts" />
+/// <reference path="vars/CreepInfo.ts" />
+/// <reference path="vars/StructureInfo.ts" />
 "use strict";
-
-let structure_controllers = {
-    'tower': TowerController,
-    'spawn': SpawnController,
-};
-
-let creep_controllers = {
-    'courier': CourierCreep,
-    'harvester': HarvesterCreep,
-    'miner': MinerCreep,
-    'linker': LinkerCreep,
-    'builder': BuilderCreep,
-    'guard': GuardCreep,
-    'ranger': RangerCreep,
-    'runner': RunnerCreep,
-};
 
 function run_structure(type:string, structure: Structure) {
     if (structure_controllers[type]) {

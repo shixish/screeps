@@ -1,5 +1,4 @@
-/// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
-/// <reference path="Globals.ts" />
+/// <reference path="../vars/Globals.ts" />
 "use strict";
 
 class BaseCreep { //Abstract class

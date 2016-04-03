@@ -1,5 +1,5 @@
-/// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
-/// <reference path="../dts/require.d.ts" />
+/// <reference path="../../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
+/// <reference path="../../dts/require.d.ts" />
 "use strict";
 var _ = require('lodash');
 // var profiler = require('screeps-profiler');
@@ -18,7 +18,7 @@ let PartCosts = {};
 
 PathFinder.use(true);
 
-var Globals = {
+const Globals = {
     USERNAME: 'ShiXish',
     MIN_TICKS_TO_LIVE: 500,
     MAX_UNITS_METRIC: 3,

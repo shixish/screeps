@@ -1,6 +1,5 @@
-/// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
-/// <reference path="Globals.ts" />
-/// <reference path="Inventory.ts" />
+/// <reference path="../vars/Globals.ts" />
+/// <reference path="../utils/Inventory.ts" />
 "use strict";
 
 class TowerController {

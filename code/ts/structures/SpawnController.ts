@@ -1,14 +1,6 @@
-/// <reference path="Globals.ts" />
-/// <reference path="Inventory.ts" />
-/// <reference path="BaseCreep.ts" />
-/// <reference path="CourierCreep.ts" />
-/// <reference path="HarvesterCreep.ts" />
-/// <reference path="MinerCreep.ts" />
-/// <reference path="BuilderCreep.ts" />
-/// <reference path="GuardCreep.ts" />
-/// <reference path="RangerCreep.ts" />
-/// <reference path="RunnerCreep.ts" />
-/// <reference path="LinkerCreep.ts" />
+/// <reference path="../vars/Globals.ts" />
+/// <reference path="../utils/Inventory.ts" />
+/// <reference path="../vars/CreepInfo.ts" />
 "use strict";
 
 class SpawnController {
