@@ -10,7 +10,7 @@ gulp.task('screeps', function() {
 	// gulp.src('dist/*.js')
 	// 	.pipe(screeps(credentials));
 
-	var tsResult = gulp.src(['code/ts/**.ts', 'code/dts/**.ts', "./node_modules/screeps-typescript-declarations/dist/screeps.d.ts"])
+	var tsResult = gulp.src(['code/ts/**.ts', 'code/ts/*/**.ts', 'code/dts/**.ts', "./node_modules/screeps-typescript-declarations/dist/screeps.d.ts"])
 		.pipe(ts({
 			// noImplicitAny: true,
 			out: 'main.js',

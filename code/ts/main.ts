@@ -1,4 +1,5 @@
 /// <reference path="vars/Globals.ts" />
+/// <reference path="utils/Inventory.ts" />
 /// <reference path="vars/CreepInfo.ts" />
 /// <reference path="vars/StructureInfo.ts" />
 "use strict";
