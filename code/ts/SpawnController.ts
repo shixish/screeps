@@ -16,6 +16,7 @@ var _ = require('lodash'),
 declare var module: any;
 (module).exports = class SpawnController {
     structure: Spawn;
+    controller_level: number;
 
     creep_creators = {
         'harvester': HarvesterCreep.create,
@@ -72,7 +73,10 @@ declare var module: any;
             console.log('Unable to find Spawn with ID', structure_id);
             throw "Invalid Object ID";
         }
-        this.work();
+        this.controller_level = this.structure.room.controller.level;
+        if (this.controller_level > 0) {//this can happen on the test realm especially.
+            this.work();
+        }
     }
 
     work() {
@@ -127,10 +131,12 @@ declare var module: any;
             } else if (action != 0) {
                 console.log('renewing error:', action);
             }
-        } else if (room.energyAvailable == room.energyCapacityAvailable || room.energyAvailable >= Globals.MAX_COST) {
+        //notice: energyAvailable can be more than energyCapacityAvailable if the controller gets downgraded (test realm).
+        } else if (room.energyAvailable >= room.energyCapacityAvailable || room.energyAvailable >= Globals.MAX_COST) {
             let max_creeps = this.max_creeps();
             let min_role = null, min_count = null;
             // console.log(Object.keys(max_creeps));
+
             for (let role in max_creeps) {
                 let count = Inventory.room_creep_count(role, room);
                 if (count < max_creeps[role] && (min_count == null || count < min_count)) {
@@ -143,6 +149,8 @@ declare var module: any;
                 this.create_creep(min_role, room);
             }
         }
+
+        // console.log('working', room.energyAvailable, room.energyCapacityAvailable);
     }
 
     create_creep(role: string, room: Room) {
@@ -167,7 +175,7 @@ declare var module: any;
             } else if (response == ERR_BUSY) {
                 //just wait
             } else {
-                console.log("Create creep response:", response);
+                console.log(this.structure.room.name, this.structure, "create creep error:", response);
             }
         } else {
             console.log(`Unable to create ${role} creep`);

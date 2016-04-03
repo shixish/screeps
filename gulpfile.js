@@ -2,7 +2,8 @@ var gulp = require('gulp');
 	screeps = require('gulp-screeps'),
 	watch = require('gulp-watch'),
 	credentials = require('./credentials.js'),
-	ts = require('gulp-typescript');
+	ts = require('gulp-typescript'),
+	git = require('git-rev');
  
 gulp.task('screeps', function() {
 	// gulp.src('dist/*.js')
@@ -25,8 +26,10 @@ gulp.task('screeps', function() {
 	// ]).pipe(browserSync.stream());
 
 	// tsResult.js;
-	// console.log(screeps(credentials));
-	tsResult.js.pipe(gulp.dest('.cache')).pipe(screeps(credentials));
+	git.branch(function (branch) {
+		credentials.ptr = (branch == "test");
+		tsResult.js.pipe(gulp.dest('.cache')).pipe(screeps(credentials));
+	});
 });
 
 gulp.task('default', ['screeps'], function(){
