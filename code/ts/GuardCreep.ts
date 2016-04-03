@@ -15,16 +15,28 @@ declare var module: any;
         if (!this.creep.memory.flag) {
             this.creep.memory.flag = this.creep.room.name + '_guard';
             this.flag = <Flag>Game.flags[this.creep.memory.flag];
-            this.flag.memory.creep = this.creep.name;
         } else {
             this.flag = <Flag>Game.flags[this.creep.memory.flag];
         }
+        // console.log(this.creep, this.flag)
+        // this.retarget();
     }
 
     retarget() {
         super.retarget();
         // this.flag.remove();
-        if (!super.try_targeting('fighting')) {
+        // this.creep.room.memory.under_attack
+        // if (!super.try_targeting('fighting')) {
+        
+        // if (!super.try_targeting('kiting')) {
+        //     if (!super.try_targeting('sieging')) {
+        //         if (this.flag) {
+        //             this.creep.memory.target_id = this.flag.id;
+        //             this.creep.memory.action_name = 'moving';
+        //         }
+        //     }
+        // }
+        if (!super.try_targeting('assaulting')) {
             if (this.flag) {
                 this.creep.memory.target_id = this.flag.id;
                 this.creep.memory.action_name = 'moving';
@@ -33,21 +45,27 @@ declare var module: any;
     }
 
     static create(budget: number) {
-        if (budget >= 10*30 + 80*5 + 50*10)
+        // if (budget >= 10*20 + 80*10 + 50*20)
+        //     return [
+        //         TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH,
+        //         TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH,
+        //         ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK,
+        //         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
+        //         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
+        //     ];
+        if (budget >= 10 * 10 + 80 * 5 + 50 * 10)
             return [
                 TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH,
-                TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH,
-                TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH,
-                ATTACK, ATTACK, ATTACK, ATTACK, ATTACK,
+                ATTACK, ATTACK, ATTACK, ATTACK,
                 MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
             ];
-        else if (budget >= 10*10 + 80*5 + 50*5)
+        if (budget >= 10*10 + 80*5 + 50*5)
             return [
                 TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH,
                 ATTACK, ATTACK, ATTACK, ATTACK,
                 MOVE, MOVE, MOVE, MOVE, MOVE,
             ];
-        else if (budget >= 10*6 + 80*3 + 50*3)
+        if (budget >= 10*6 + 80*3 + 50*3)
             return [
                 TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, //60
                 ATTACK, ATTACK, ATTACK, //240

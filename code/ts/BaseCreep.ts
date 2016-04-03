@@ -59,7 +59,7 @@ declare var module: any;
         }
 
         //if we're under attack, don't sit there renewing yourself:
-        if (action_name === "renewing" && this.creep.room.memory.under_attack){
+        if (action_name === "renewing" && (this.creep.room.memory.under_attack || this.creep.memory.obsolete)){
             this.retarget();
         }
 
@@ -130,16 +130,18 @@ declare var module: any;
 
             //Energy gaining:
             case 'picking':
-                let total_carrying = _.sum(this.creep.carry),
-                    free_space = this.creep.carryCapacity - total_carrying;
+                // let total_carrying = _.sum(this.creep.carry),
+                //     free_space = this.creep.carryCapacity - total_carrying;
 
                 target = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
                     filter: (obj) => {
-                        return obj.amount <= free_space;
+                        return true;// return obj.amount <= free_space;
                     }
                 });
+                // console.log(target);
                 break;
             case 'harvesting':
+            case 'extracting':
                 target = creep.pos.findClosestByPath(FIND_SOURCES, {
                     // filter: { owner: { username: 'Invader' } }
                     filter: function(obj:Source) {
@@ -148,11 +150,13 @@ declare var module: any;
                 });
                 break;
             case 'claiming':
-                target = this.creep.pos.findClosestByPath<Structure>(FIND_STRUCTURES, {
-                    filter: function(obj) {
-                        return obj.structureType == STRUCTURE_CONTROLLER && !obj.owner; //obj.owner.username != Globals.USERNAME
-                    }
-                });
+                if (this.creep.getActiveBodyparts(CLAIM) > 0) {
+                    target = this.creep.pos.findClosestByPath<Structure>(FIND_STRUCTURES, {
+                        filter: function(obj) {
+                            return obj.structureType == STRUCTURE_CONTROLLER && (!obj.owner || obj.owner.username != Globals.USERNAME)
+                        }
+                    });
+                }
                 break;
             case 'energizing':
                 target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
@@ -169,7 +173,7 @@ declare var module: any;
                     filter: function(obj:Storage) {
                         return (
                             obj.structureType == STRUCTURE_STORAGE
-                            && obj.store.energy > obj.storeCapacity/4
+                            && obj.store.energy > obj.storeCapacity*0.25
                         );
                     }
                 });
@@ -191,9 +195,74 @@ declare var module: any;
                 }
                 break;
             case 'fighting':
+            // if (this.creep.room.memory.)
                 target = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
 
                 });
+                break;
+            case 'kiting':
+                target = Game.getObjectById('56ff84af595eb14a422bc4d8');
+                if (!target) {
+                    target = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
+
+                    });
+                }
+                break;
+            case 'sieging':
+                target = creep.pos.findClosestByPath(FIND_HOSTILE_SPAWNS, {
+                
+                });
+                if (!target) {
+                    target = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
+                        filter: function(obj) {
+                            return obj.structureType == STRUCTURE_TOWER && obj.structureType != STRUCTURE_CONTROLLER;
+                        }
+                    });
+                }
+                if (!target) {
+                    target = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
+                        filter: function(obj) {
+                            return obj.structureType != STRUCTURE_RAMPART && obj.structureType != STRUCTURE_CONTROLLER;
+                        }
+                    });
+                }
+                break;
+            case 'assaulting':
+                // target = Game.getObjectById('56ff84af595eb14a422bc4d8');
+                if (!target) {
+                    target = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
+                        filter: function(obj) {
+                            let structure = <Structure>obj.pos.lookFor('structure');
+                            return !(structure && structure.structureType == STRUCTURE_RAMPART);
+                        }
+                    });
+                }
+                // if (!target) {
+                //     target = creep.pos.findClosestByPath(FIND_HOSTILE_SPAWNS, {
+
+                //     });
+                // }
+                // if (!target) {
+                //     target = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
+                //         filter: function(obj) {
+                //             return obj.structureType == STRUCTURE_TOWER && obj.structureType != STRUCTURE_CONTROLLER;
+                //         }
+                //     });
+                // }
+                // if (!target) {
+                //     target = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
+                //         filter: function(obj) {
+                //             return obj.structureType != STRUCTURE_RAMPART && obj.structureType != STRUCTURE_CONTROLLER;
+                //         }
+                //     });
+                // }
+                // if (!target) {
+                //     target = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
+                //         filter: function(obj) {
+                //             return obj.structureType != STRUCTURE_CONTROLLER;
+                //         }
+                //     });
+                // }
                 break;
             case 'resting':
                 if (!this.creep.memory.target_id && Game.flags[this.creep.room.name+'_resting']) {
@@ -212,29 +281,35 @@ declare var module: any;
             // this.retarget();
             return false;
         } else {
-            let action = this.creep.harvest(target);
-            if (action == ERR_NOT_IN_RANGE) {
-                this.creep.moveTo(target);
-            } else if (action == ERR_BUSY) {//The creep is still being spawned.
-                //just wait
-            } else if (action == ERR_NOT_ENOUGH_RESOURCES) {
-                // console.log('Depleted an energy source.');
-                // this.retarget();
-                return false;
-            } else if (action != 0) {
-                console.log('harvesting error:', action, this.creep.name);
-                // this.retarget();
-                // return false;
-            }
-            return true;
+            return this.extracting(target);
         }
     }
 
+    //drops the resources on the floor for lesser creeps to pick up...
+    extracting(target) {
+        let action = this.creep.harvest(target);
+        if (action == ERR_NOT_IN_RANGE) {
+            this.creep.moveTo(target);
+        } else if (action == ERR_BUSY) {//The creep is still being spawned.
+            //just wait
+        } else if (action == ERR_NOT_ENOUGH_RESOURCES) {
+            // console.log('Depleted an energy source.');
+            // this.retarget();
+            return false;
+        } else if (action != 0) {
+            console.log('harvesting error:', action, this.creep.name);
+            // this.retarget();
+            // return false;
+        }
+        return true;
+    }
+
     claiming(target) {
-        if ((<Controller>target).owner.username == Globals.USERNAME) {
+        if ((<Controller>target).owner && (<Controller>target).owner.username == Globals.USERNAME) {
             return false;
         } else {
             let action = this.creep.claimController(target);
+            // console.log('claiming', action);
             if (action == ERR_NOT_IN_RANGE) {
                 this.creep.moveTo(target);
             } else if (action != 0) {
@@ -397,6 +472,8 @@ declare var module: any;
         } else if (action == ERR_INVALID_TARGET) {
             // this.retarget();
             return false;
+        } else if (action == ERR_FULL) {
+            return false;
         } else if (action != 0) {
             console.log('picking error:', action);
             // this.retarget();
@@ -406,7 +483,33 @@ declare var module: any;
     }
 
     fighting(target) {
-        let action = this.creep.attack(target);
+        let action;
+        if (this.creep.getActiveBodyparts(ATTACK) > 0) {
+          action = this.creep.attack(target);
+        } else {
+            action = this.creep.rangedAttack(target);
+        }
+        if (action == ERR_NOT_IN_RANGE) {
+            this.creep.moveTo(target);
+        } else if (action == ERR_BUSY) {//The creep is still being spawned.
+            //just wait
+        } else if (action == ERR_INVALID_TARGET) {
+            // this.retarget();
+            return false;
+        } else if (action != 0) {
+            console.log('fighting error:', action);
+            // this.retarget();
+            // return false;
+        }
+        return true;
+    }
+    
+    assaulting(target) {
+        this.fighting(target);
+    }
+
+    kiting(target) {
+        let action = this.creep.rangedAttack(target);
         if (action == ERR_NOT_IN_RANGE) {
             this.creep.moveTo(target);
         } else if (action == ERR_BUSY) {//The creep is still being spawned.
@@ -422,9 +525,21 @@ declare var module: any;
         return true;
     }
 
+    sieging(target) {
+        this.kiting(target);
+        return false;
+    }
+
     renewing(target) {
         if (this.creep.ticksToLive < 1400) {
-            this.creep.moveTo(target);
+            if (this.creep.carry.energy > 0) {
+                let action = this.creep.transfer(target, RESOURCE_ENERGY);
+                if (action != 0) {
+                    this.creep.moveTo(target);
+                }
+            }else{
+                this.creep.moveTo(target);
+            }
             // let action = target.renewCreep(this.creep);
             // if (action == ERR_NOT_IN_RANGE) {
             //     this.creep.moveTo(target);
@@ -446,15 +561,68 @@ declare var module: any;
         return this.moving(target);
     }
 
+    experimental_move(target) {
+        let ret = PathFinder.search(
+            this.creep.pos,
+            { pos: target, range: 1 },
+            {
+                // We need to set the defaults costs higher so that we
+                // can set the road cost lower in `roomCallback`
+                plainCost: 2,
+                swampCost: 10,
+
+                roomCallback: function(roomName) {
+                    let room = Game.rooms[roomName];
+                    // In this example `room` will always exist, but since PathFinder 
+                    // supports searches which span multiple rooms you should be careful!
+                    if (!room) return;
+                    let costs = new PathFinder.CostMatrix;
+                    room.find(FIND_STRUCTURES).forEach(function(structure) {
+                        if (structure.structureType === STRUCTURE_ROAD) {
+                            // Favor roads over plain tiles
+                            costs.set(structure.pos.x, structure.pos.y, 1);
+                        } else if (structure.structureType !== STRUCTURE_RAMPART ||
+                            !structure.my) {
+                            // Can't walk through buildings, except for our own ramparts
+                            costs.set(structure.pos.x, structure.pos.y, 0xff);
+                        }
+                    });
+                    // Avoid creeps in the room
+                    room.find(FIND_CREEPS).forEach(function(creep) {
+                        costs.set(creep.pos.x, creep.pos.y, 0xff);
+                    });
+                    return costs;
+                },
+            }
+        );
+        let pos = ret.path[0];
+        return this.creep.move(this.creep.pos.getDirectionTo(pos));
+    }
+
     moving(target) {
+        // console.log(this.creep);
+        // let action = this.experimental_move(target);
+        // var path = this.creep.pos.findPathTo(target);
+        // console.log(Object.keys(path[0]));
+        // console.log(path[0].x, path[0].y, path[0].dx, path[0].dy, path[0].direction);
         let action = this.creep.moveTo(target);
         if (action == ERR_TIRED) {
             this.creep.say('tired');
         } else if(action == ERR_BUSY) {
             //just wait
         } else if (action == ERR_NO_PATH) {
-            //DERP?
             console.log(this.creep.name, "unable to find a path to", target);
+            // this.creep.move(this.creep.pos.getDirectionTo(target));
+            // action = this.experimental_move(target);
+            // if (action == ERR_TIRED) {
+            //     this.creep.say('tired');
+            // } else if (action == ERR_BUSY) {
+            //     //just wait
+            // } else if (action == ERR_NO_PATH) {
+            //     console.log(this.creep.name, "unable to find a path to", target);
+            // }else if (action != 0) {
+            //     console.log('Error moving:', action);
+            // }
         }else if (action != 0) {
             console.log('Error moving:', action);
         }

@@ -12,7 +12,7 @@ declare var module: any;
 
     constructor(creep: Creep) {
         super(creep);
-        this.hasStorage = Inventory.room_count('storage', this.creep.room) > 0;
+        this.hasStorage = Inventory.room_structure_count('storage', this.creep.room) > 0;
     }
 
     retarget() {
@@ -27,10 +27,12 @@ declare var module: any;
                 }
             }
         } else {
-            if (!super.try_targeting('tenergizing')) {
-                if (!super.try_targeting('harvesting')) {
+            // if (!super.try_targeting('picking')) {
+                if (!super.try_targeting('tenergizing')) {
+                    if (!super.try_targeting('harvesting')) {
+                    }
                 }
-            }
+            // }
         }
         super.try_targeting('resting');//get the little shits out of the way
     }

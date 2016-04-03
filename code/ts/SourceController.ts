@@ -6,8 +6,9 @@ var Globals = require('Globals'),
 
 declare var module: any;
 (module).exports = class SourceController {
-    source: Source;
-    link: Link;
+    public source: Source;
+    public link: Link;
+    public container: Container;
 
     constructor(source_id) {
         this.source = <Source>Game.getObjectById(source_id);

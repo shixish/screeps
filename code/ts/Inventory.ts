@@ -23,8 +23,13 @@ declare var module: any;
         for (let f in Memory.flags){
             if (!Game.flags[f]) {
                 delete Memory.flags[f];
-            } else if (Memory.flags[f].creep && !Game.creeps[Memory.flags[f].creep]) {
-                delete Memory.flags[f].creep;
+            } else if (Memory.flags[f].creeps) {
+                for (let c in Memory.flags[f].creeps){
+                    if (!Game.creeps[Memory.flags[f].creeps[c]]){
+                        // delete Memory.flags[f].creeps[c]
+                        Memory.flags[f].creeps.splice(c, 1);
+                    }
+                }
             }
         }
 
@@ -45,14 +50,35 @@ declare var module: any;
         Inventory.invCreeps();
     }
 
-    static room_count(type: string, room: Room): number {
-        if (room.memory[type])
-            return Object.keys(room.memory[type]).length;
+    // static room_count(type: string, room: Room): number {
+    //     if (room.memory[type])
+    //         return Object.keys(room.memory[type]).length;
+    //     else
+    //         return 0;
+    // }
+
+    static room_sources(room: Room): number {
+        if (room.memory['source'])
+            return Object.keys(room.memory['source']).length;
         else
             return 0;
     }
 
-    static room_count_creeps(role: string, room: Room): number {
+    static room_minerals(room: Room): number {
+        if (room.memory['mineral'])
+            return Object.keys(room.memory['mineral']).length;
+        else
+            return 0;
+    }
+
+    static room_structure_count(type: string, room: Room): number {
+        if (room.memory['structures'] && room.memory['structures'][type])
+            return Object.keys(room.memory['structures'][type]).length;
+        else
+            return 0;
+    }
+
+    static room_creep_count(role: string, room: Room): number {
         if (room.memory['creep_roles'] && room.memory['creep_roles'][role])
             return Object.keys(room.memory['creep_roles'][role]).length;
         else
@@ -91,13 +117,11 @@ declare var module: any;
     static invRoomStructures(room: Room) {
         let structures = <Structure[]>room.find(FIND_STRUCTURES);
         // room.memory.structures = {};
+        let by_type = {};
         for (let s in structures) {
             let structure = structures[s];
-            if (!room.memory[structure.structureType])
-                room.memory[structure.structureType] = {};
-
-            if (!room.memory[structure.structureType][structure.id])
-                room.memory[structure.structureType][structure.id] = {};
+            if (!by_type[structure.structureType]) by_type[structure.structureType] = {};
+            if (!by_type[structure.structureType][structure.id]) by_type[structure.structureType][structure.id] = {};
             // console.log(structure.structureType);
 
             // if (structure.structureType == 'spawn' || structure.structureType == 'extension') {
@@ -105,6 +129,7 @@ declare var module: any;
             //     room.memory['energyCapacity'] += (<Spawn>structure).energyCapacity;
             // }
         }
+        room.memory.structures = by_type;
     }
 
     static invCreeps() {
@@ -168,6 +193,17 @@ declare var module: any;
 
         // if (!Memory['creep_roles'][role]) Memory['creep_roles'][role] = {}
         // Memory['creep_roles'][role][name] = {};
+    }
+
+    static invNewCreep(role: string, name: string, room: Room) {
+        this.invCreep(role, name, room);
+        if (role == "ranger" || role == "guard" || role == "runner") {
+            let flag_name = `${room.name}_${role}`;
+            if (Game.flags[flag_name]) {
+                if (!Game.flags[flag_name].memory.creeps) Game.flags[flag_name].memory.creeps = [];
+                Game.flags[flag_name].memory.creeps.push(name);
+            }
+        }
     }
 
 

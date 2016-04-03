@@ -9,6 +9,7 @@ declare var module: any;
     public creep: Creep;
     public source: Source;
     public link: Link;
+    public container: Container;
 
     constructor(creep: Creep) {
         super(creep);
@@ -42,6 +43,12 @@ declare var module: any;
 
     retarget() {
         super.retarget();
+        if (!this.source) {//creep got screwed up somehow. Just make it into a generic builder class...
+            // console.log(this.creep);
+            this.creep.memory.role = "builder";
+            this.creep.memory.target_id = this.creep.memory.action_name = null;
+            return;
+        }
         if (this.creep.carry.energy > 0) {
             var source_memory = this.source.room.memory.source[this.source.id];
             // if (source_memory.link) {
@@ -128,8 +135,8 @@ declare var module: any;
             ];
         else //Walk Miner
             return [
-                CARRY, CARRY, CARRY,
-                WORK,
+                CARRY,
+                WORK, WORK,
                 MOVE,
             ];
     }

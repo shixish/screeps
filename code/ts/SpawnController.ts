@@ -9,6 +9,7 @@ var _ = require('lodash'),
     MinerCreep = require('MinerCreep'),
     BuilderCreep = require('BuilderCreep'),
     GuardCreep = require('GuardCreep'),
+    RangerCreep = require('RangerCreep'),
     RunnerCreep = require('RunnerCreep'),
     LinkerCreep = require('LinkerCreep');
 
@@ -23,27 +24,45 @@ declare var module: any;
         'miner': MinerCreep.create,
         'builder': BuilderCreep.create,
         'guard': GuardCreep.create,
+        'ranger': RangerCreep.create,
         'runner': RunnerCreep.create
     }
     max_creeps() {
-        let spawns = Inventory.room_count('spawn', this.structure.room),
-            storage = Inventory.room_count('storage', this.structure.room),
-            towers = Inventory.room_count('tower', this.structure.room),
-            links = Inventory.room_count('link', this.structure.room);
+        let sources = Inventory.room_sources(this.structure.room),
+            minerals = Inventory.room_minerals(this.structure.room),
+            spawns = Inventory.room_structure_count('spawn', this.structure.room),
+            storage = Inventory.room_structure_count('storage', this.structure.room),
+            towers = Inventory.room_structure_count('tower', this.structure.room),
+            links = Inventory.room_structure_count('link', this.structure.room),
+            extensions = Inventory.room_structure_count('extension', this.structure.room);
 
-        let guard_flag = Game.flags[this.structure.room.name + '_guard'],
-            runner_flag = Game.flags[this.structure.room.name + '_runner'];
+        let flagCreeps = {
+            'guard': 0, 
+            'ranger': 0, 
+            'runner': 0
+        };
 
-        // console.log(this.structure.room.name + '_runner', runner_flag);
+        for (let name in flagCreeps) {
+            // let obj = flagCreeps[c];
+            let flag = Game.flags[`${this.structure.room.name}_${name}`];
+            if (flag) {
+                if (!flag.memory.creeps) {
+                    flagCreeps[name] = 1;
+                }else if (flag.memory.max_creeps > 0 && flag.memory.creeps.length < flag.memory.max_creeps){
+                    flagCreeps[name] = flag.memory.max_creeps - flag.memory.creeps.length;
+                }
+            }
+        }
 
         return {
-            'harvester': Inventory.room_count('source', this.structure.room),
+            'harvester': sources,
             'linker': links > 0 ? storage : 0,
-            'courier': storage > 0 ? spawns + towers : 0,
-            'miner': 0, //storage > 0 ? Inventory.room_count('mineral', this.structure.room) : 0,
-            'builder': spawns + (!storage ? 1 : 0),
-            'guard': guard_flag && !guard_flag.memory.creep ? 1 : 0,
-            'runner': runner_flag && !runner_flag.memory.creep ? 1 : 0,
+            'courier': storage > 0 ? Math.ceil(towers / 2) : 0,
+            'miner': 0, //storage > 0 ? minerals : 0,
+            'builder': spawns + storage,
+            'guard': flagCreeps['guard'],
+            'ranger': flagCreeps['ranger'],
+            'runner': flagCreeps['runner'],
         }
     }
 
@@ -75,14 +94,34 @@ declare var module: any;
             let lowest_creep = _.min(repairable, function(obj) {
                 return obj.ticksToLive;
             });
+            let highest_creep = _.max(repairable, function(obj) {
+                return obj.ticksToLive;
+            });
+            let target_creep = lowest_creep < 10 ? lowest_creep : highest_creep;
+
             // console.log('renewing ', lowest_creep);
-            let action = this.structure.renewCreep(lowest_creep);
+            let action = this.structure.renewCreep(target_creep);
             if (action == ERR_NOT_IN_RANGE) {
                 //it's ok
             } else if (action == ERR_FULL) {
                 //no problem
             } else if (action == ERR_BUSY) {//The spawn is busy
                 //just wait
+            } else if (action == ERR_NOT_ENOUGH_ENERGY) {
+                let creep_total = 0;
+                //Get total number of creeps in this room.
+                for (let l in room.memory.creep_roles) {
+                    creep_total += Object.keys(room.memory.creep_roles[l]).length;
+                }
+                
+                //if all of the creeps are trying to renew themselves and nobody is actually working, just make them all live out their last breaths.
+                // console.log(repairable.length, creep_total);
+                if (repairable.length == creep_total){
+                    for (let r in repairable){
+                        (<Creep>repairable[r]).memory.obsolete = true;
+                    }
+                    console.log(`Room ${room.name} is on it's last breaths.`);
+                }
             } else if (action == ERR_INVALID_TARGET) {
                 //ok i guess
             } else if (action != 0) {
@@ -93,7 +132,7 @@ declare var module: any;
             let min_role = null, min_count = null;
             // console.log(Object.keys(max_creeps));
             for (let role in max_creeps) {
-                let count = Inventory.room_count_creeps(role, room);
+                let count = Inventory.room_creep_count(role, room);
                 if (count < max_creeps[role] && (min_count == null || count < min_count)) {
                     min_count = count;
                     min_role = role;
@@ -118,11 +157,12 @@ declare var module: any;
             if (_.indexOf(creep_body, CLAIM) !== -1) {
                 creep_memory['obsolete'] = true; //can't repair claim creeps.
             }
+            //TODO:: USE : creep.getActiveBodyparts
             let response = this.structure.createCreep(creep_body, null, creep_memory);
             if (!(response < 0)) {
                 let name = response;
                 console.log("Making a new " + creep_memory.role + " named " + name + " in room " + room.name);
-                Inventory.invCreep(creep_memory.role, name, room);
+                Inventory.invNewCreep(creep_memory.role, name, room);
                 return response;//new creep name
             } else if (response == ERR_BUSY) {
                 //just wait

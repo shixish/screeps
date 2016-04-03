@@ -8,6 +8,7 @@ var Globals = require('Globals'),
     LinkerCreep = require('LinkerCreep'),
     BuilderCreep = require('BuilderCreep'),
     GuardCreep = require('GuardCreep'),
+    RangerCreep = require('RangerCreep'),
     RunnerCreep = require('RunnerCreep'),
     TowerController = require('TowerController'),
     SpawnController = require('SpawnController'),
@@ -50,6 +51,29 @@ var Globals = require('Globals'),
 // }
 
 declare var module: any;
+let structure_controllers = {
+    'tower': TowerController,
+    'spawn': SpawnController,
+};
+
+let creep_controllers = {
+    'courier': CourierCreep,
+    'harvester': HarvesterCreep,
+    'miner': MinerCreep,
+    'linker': LinkerCreep,
+    'builder': BuilderCreep,
+    'guard': GuardCreep,
+    'ranger': RangerCreep,
+    'runner': RunnerCreep,
+};
+
+function run_structure(type:string, structure: Structure) {
+    if (structure_controllers[type]) {
+        let fn = structure_controllers[type];
+        // console.log(type, fn)
+    }
+}
+
 (module).exports.loop = function () {
     Inventory.update();
 
@@ -57,40 +81,25 @@ declare var module: any;
         let room = <Room>Game.rooms[r];
         let memory = Memory.rooms[room.name];
 
-        if (memory.tower) {
-            for (let t in memory.tower) {
-                // let t_obj = memory.tower[t];
-                try {
-                    let tower = new TowerController(t);
-                } catch (e) {
-                    if (e === "Invalid Object ID") {
-                        // console.log('remove tower with id:', t);
-                        // delete t_obj; //Doesn't work
-                        delete memory.tower[t];
-                    }else{
-                        console.log(e);
+        if (memory.structures) {
+            for (let type in memory.structures) {
+                if (structure_controllers[type]) {
+                    let structures = memory.structures[type];
+                    let StructureController = structure_controllers[type];
+                    for (let id in structures) {
+                        try {
+                            let controller = new StructureController(id);
+                        } catch (e) {
+                            if (e === "Invalid Object ID") {
+                                delete memory.structures[type][id];
+                            }else{
+                                console.log(e);
+                            }
+                        }
                     }
                 }
             }
         }
-
-
-        if (memory.spawn) {
-            for (let t in memory.spawn) {
-                try {
-                    let spawn = new SpawnController(t);
-                } catch (e) {
-                    if (e === "Invalid Object ID") {
-                        // console.log('remove spawn with id:', t);
-                        // delete t_obj; //Doesn't work
-                        delete memory.spawn[t];
-                    } else {
-                        console.log(e);
-                    }
-                }
-            }
-        }
-
 
         if (memory.source) {
             for (let t in memory.source) {
@@ -115,7 +124,15 @@ declare var module: any;
         
         // console.log(courier.work);
         // courier.work();
+        if (creep_controllers[creep.memory.role]) {
+            let CreepController = creep_controllers[creep.memory.role];
+            let ctrl = new CreepController(creep);
+            ctrl.work();
+        }else {
+            console.log("Unknown creep role:", creep);
+        }
 
+        /*
         if (creep.memory.role == 'courier') {
             let courier = new CourierCreep(creep);
             courier.work();
@@ -134,11 +151,13 @@ declare var module: any;
         } else if (creep.memory.role == 'guard') {
             let guard = new GuardCreep(creep);
             guard.work();
+        } else if (creep.memory.role == 'ranger') {
+            let ranger = new RangerCreep(creep);
+            ranger.work();
         } else if (creep.memory.role == 'runner') {
             let runner = new RunnerCreep(creep);
             runner.work();
-        } else {
-            console.log("Unknown creep role:", creep);
-        }
+        } 
+        */
     }
 }

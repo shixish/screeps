@@ -14,13 +14,13 @@ declare var module: any;
         super(creep);
         var creep_name = this.creep.name;
         if (!creep.memory.storage) {
-            // console.log(creep.room.memory.storage);
-            for (var s in creep.room.memory.storage) {
-                // creep.room.memory.storage[s].linker = null;
-                creep.room.memory.storage[s].linker
-                var linker_name = creep.room.memory.storage[s].linker;
+            // console.log(creep.room.memory.structures.storage);
+            for (var s in creep.room.memory.structures.storage) {
+                // creep.room.memory.structures.storage[s].linker = null;
+                creep.room.memory.structures.storage[s].linker
+                var linker_name = creep.room.memory.structures.storage[s].linker;
                 if (!linker_name || (linker_name && (!Game.creeps[linker_name] || linker_name == creep_name))) {
-                    creep.room.memory.storage[s].linker = creep_name;
+                    creep.room.memory.structures.storage[s].linker = creep_name;
                     this.creep.memory.storage = s;
                     break;
                 }

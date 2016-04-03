@@ -1,8 +1,9 @@
+/// <reference path="../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
 "use strict";
 // var _ = require('lodash'),
 //     Inventory = require('Inventory');
 
-var PartCosts = {};
+let PartCosts = {};
     PartCosts[MOVE] = 50;
     PartCosts[WORK] = 100;
     PartCosts[CARRY] = 50;
@@ -10,6 +11,8 @@ var PartCosts = {};
     PartCosts[RANGED_ATTACK] = 150;
     PartCosts[HEAL] = 250;
     PartCosts[TOUGH] = 10;
+
+PathFinder.use(true);
 
 declare var module: any;
 (module).exports = {
