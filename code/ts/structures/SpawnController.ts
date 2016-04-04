@@ -123,10 +123,14 @@ class SpawnController {
                 console.log('renewing error:', action);
             }
         //notice: energyAvailable can be more than energyCapacityAvailable if the controller gets downgraded (test realm).
-        } else if (room.energyAvailable >= room.energyCapacityAvailable || room.energyAvailable >= Globals.MAX_COST) {
+        } else if (room.energyAvailable >= room.energyCapacityAvailable || room.energyAvailable >= Globals.MAX_COST || !room.memory.creep_roles) {
             let max_creeps = this.max_creeps();
             let min_role = null, min_count = null;
             // console.log(Object.keys(max_creeps));
+
+            if (this.structure.name == 'Spawn4') {
+                console.log('test');
+            }
 
             for (let role in max_creeps) {
                 let count = Inventory.room_creep_count(role, room);
