@@ -23,11 +23,11 @@ declare var module: any;
 
         if (memory.structures) {
             for (let type in memory.structures) {
-                let structureDiag = debug.diag(['structure.' + type, room.name + '.' + type]);
                 if (structure_controllers[type]) {
                     let structures = memory.structures[type];
                     let StructureController = structure_controllers[type];
                     for (let id in structures) {
+                        let structureDiag = debug.diag(['structure.' + type, room.name + '.' + type]);
                         try {
                             let controller = new StructureController(id);
                         } catch (e) {
@@ -37,15 +37,15 @@ declare var module: any;
                                 console.log(e);
                             }
                         }
+                        structureDiag.stop();
                     }
                 }
-                structureDiag.stop();
             }
         }
 
         if (memory.source) {
-            let sourceDiag = debug.diag(room.name + '.source');
             for (let t in memory.source) {
+                let sourceDiag = debug.diag(room.name + '.source');
                 try {
                     let source = new SourceController(t);
                 } catch (e) {
@@ -55,8 +55,8 @@ declare var module: any;
                     //     console.log(e);
                     // }
                 }
+                sourceDiag.stop();
             }
-            sourceDiag.stop();
         }
     }
     // diag.stop();

@@ -128,10 +128,6 @@ class SpawnController {
             let min_role = null, min_count = null;
             // console.log(Object.keys(max_creeps));
 
-            if (this.structure.name == 'Spawn4') {
-                console.log('test');
-            }
-
             for (let role in max_creeps) {
                 let count = Inventory.room_creep_count(role, room);
                 if (count < max_creeps[role] && (min_count == null || count < min_count)) {

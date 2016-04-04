@@ -1,5 +1,6 @@
 /// <reference path="../vars/Globals.ts" />
 /// <reference path="../vars/CreepInfo.ts" />
+/// <reference path="utils/Debug.ts" />
 "use strict";
 
 class Inventory {
@@ -18,6 +19,7 @@ class Inventory {
     //     Inventory.invCreeps();
     // }
     static update() {
+        var invDiag = debug.diag('Inventory');
         //garbage collect flags
         for (let f in Memory.flags){
             if (!Game.flags[f]) {
@@ -47,6 +49,7 @@ class Inventory {
             room.memory.under_attack = !!hostile_creeps.length;
         }
         Inventory.invCreeps();
+        invDiag.stop();
     }
 
     // static room_count(type: string, room: Room): number {

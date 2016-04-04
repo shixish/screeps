@@ -107,47 +107,48 @@ class RunnerCreep extends BaseCreep {
     }
 
     static creep_tiers = [
-        // // {
-        // //     'cost': 100 * 5 + 50 * 5 + 50 * 10 + 600,
-        // //     'body': [
-        // //         WORK, WORK, WORK, WORK, WORK,
-        // //         CARRY, CARRY, CARRY, CARRY, CARRY,
-        // //         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
-        // //         CLAIM, 
-        // //     ],
-        // // },
         // {
-        //     'cost': 100 * 10 + 50 * 10 + 50 * 10,
-        //     'body': [
-        //         WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK,
-        //         CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
-        //         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
-        //         // CLAIM, 
-        //     ],
-        // },
-        // {
-        //     'cost': 100 * 5 + 50 * 5 + 50 * 10,
+        //     'cost': 100 * 5 + 50 * 5 + 50 * 10 + 600,
         //     'body': [
         //         WORK, WORK, WORK, WORK, WORK,
         //         CARRY, CARRY, CARRY, CARRY, CARRY,
         //         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
-        //         // CLAIM, 
+        //         CLAIM, 
         //     ],
         // },
-        // {
-        //     'cost': 300,
-        //     'body': [
-        //         CARRY, CARRY, CARRY,
-        //         WORK,
-        //         MOVE,
-        //     ],
-        // },
-        {//Path Testing
-            'cost': 50,
+        {
+            'cost': 100 * 10 + 50 * 10 + 50 * 10,
             'body': [
+                WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK,
+                CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
+                MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
+                // CLAIM, 
+            ],
+        },
+        {
+            'cost': 100 * 5 + 50 * 5 + 50 * 10,
+            'body': [
+                WORK, WORK, WORK, WORK, WORK,
+                CARRY, CARRY, CARRY, CARRY, CARRY,
+                MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
+                // CLAIM, 
+            ],
+        },
+        {
+            'cost': 300,
+            'body': [
+                CARRY, CARRY, CARRY,
+                WORK,
                 MOVE,
             ],
         },
+        
+        // {//Path Testing
+        //     'cost': 50,
+        //     'body': [
+        //         MOVE,
+        //     ],
+        // },
     ];
 
 }
