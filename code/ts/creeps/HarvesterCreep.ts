@@ -113,31 +113,66 @@ class HarvesterCreep extends BaseCreep {
     //     super.harvesting(this.source);
     // }
 
-    static create(budget: number) {
-        if (budget >= 50 + 100*6 + 50*6) //950
-            return [ //Linker creep
+    // static create(budget: number) {
+    //     if (budget >= 50 + 100*6 + 50*6) //950
+    //         return [ //Linker creep
+    //             MOVE,
+    //             WORK, WORK, WORK, WORK, WORK, WORK,
+    //             CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
+    //         ];
+    //     else if (budget >= 50*4 + 100*4 + 50*4) //800
+    //         return [ //Walk Miner
+    //             CARRY, CARRY, CARRY, CARRY,
+    //             WORK, WORK, WORK, WORK,
+    //             MOVE, MOVE, MOVE, MOVE,
+    //         ];
+    //     else if (budget >= 50*4 + 100*2 + 50*2) //500
+    //         return [ //Walk Miner
+    //             CARRY, CARRY, CARRY, CARRY, 
+    //             WORK, WORK,
+    //             MOVE, MOVE,
+    //         ];
+    //     else //Walk Miner
+    //         return [
+    //             CARRY,
+    //             WORK, WORK,
+    //             MOVE,
+    //         ];
+    // }
+
+    static creep_tiers = [
+        {
+            'cost': 50 + 100 * 6 + 50 * 6, //950
+            'body': [
                 MOVE,
                 WORK, WORK, WORK, WORK, WORK, WORK,
                 CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
-            ];
-        else if (budget >= 50*4 + 100*4 + 50*4) //800
-            return [ //Walk Miner
+            ],
+        },
+        {
+            'cost': 50 * 4 + 100 * 4 + 50 * 4, //800
+            'body': [
                 CARRY, CARRY, CARRY, CARRY,
                 WORK, WORK, WORK, WORK,
                 MOVE, MOVE, MOVE, MOVE,
-            ];
-        else if (budget >= 50*4 + 100*2 + 50*2) //500
-            return [ //Walk Miner
-                CARRY, CARRY, CARRY, CARRY, 
+            ],
+        },
+        {
+            'cost': 50 * 4 + 100 * 2 + 50 * 2, //500
+            'body': [
+                CARRY, CARRY, CARRY, CARRY,
                 WORK, WORK,
                 MOVE, MOVE,
-            ];
-        else //Walk Miner
-            return [
+            ],
+        },
+        {
+            'cost': 300,
+            'body': [
                 CARRY,
                 WORK, WORK,
                 MOVE,
-            ];
-    }
+            ],
+        },
+    ];
 
 }

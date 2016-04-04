@@ -32,33 +32,56 @@ class RangerCreep extends BaseCreep {
         }
     }
 
-    static create(budget: number) {
-        if (budget >= 50 * 10 + 150 * 10)
-            return [
-                // TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH,
+    // static create(budget: number) {
+    //     if (budget >= 50 * 10 + 150 * 10)
+    //         return [
+    //             // TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH,
+    //             MOVE, RANGED_ATTACK, MOVE, RANGED_ATTACK,
+    //             MOVE, RANGED_ATTACK, MOVE, RANGED_ATTACK,
+    //             MOVE, RANGED_ATTACK, MOVE, RANGED_ATTACK,
+    //             MOVE, RANGED_ATTACK, MOVE, RANGED_ATTACK,
+    //             MOVE, RANGED_ATTACK, MOVE, RANGED_ATTACK,
+    //         ];
+    //     // if (budget >= 10*10 + 50*10 + 150*10)
+    //     //     return [
+    //     //         TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH,
+    //     //         MOVE, RANGED_ATTACK, MOVE, RANGED_ATTACK,
+    //     //         MOVE, RANGED_ATTACK, MOVE, RANGED_ATTACK,
+    //     //         MOVE, RANGED_ATTACK, MOVE, RANGED_ATTACK,
+    //     //         MOVE, RANGED_ATTACK, MOVE, RANGED_ATTACK,
+    //     //         MOVE, RANGED_ATTACK, MOVE, RANGED_ATTACK,
+    //     //     ];
+    //     if (budget >= 50*5 + 150*5)
+    //         return [
+    //             MOVE, RANGED_ATTACK,
+    //             MOVE, RANGED_ATTACK,
+    //             MOVE, RANGED_ATTACK,
+    //             MOVE, RANGED_ATTACK,
+    //             MOVE, RANGED_ATTACK,
+    //         ];
+    // }
+
+    static creep_tiers = [
+        {
+            'cost': 50 * 10 + 150 * 10,
+            'body': [
                 MOVE, RANGED_ATTACK, MOVE, RANGED_ATTACK,
                 MOVE, RANGED_ATTACK, MOVE, RANGED_ATTACK,
                 MOVE, RANGED_ATTACK, MOVE, RANGED_ATTACK,
                 MOVE, RANGED_ATTACK, MOVE, RANGED_ATTACK,
                 MOVE, RANGED_ATTACK, MOVE, RANGED_ATTACK,
-            ];
-        // if (budget >= 10*10 + 50*10 + 150*10)
-        //     return [
-        //         TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH,
-        //         MOVE, RANGED_ATTACK, MOVE, RANGED_ATTACK,
-        //         MOVE, RANGED_ATTACK, MOVE, RANGED_ATTACK,
-        //         MOVE, RANGED_ATTACK, MOVE, RANGED_ATTACK,
-        //         MOVE, RANGED_ATTACK, MOVE, RANGED_ATTACK,
-        //         MOVE, RANGED_ATTACK, MOVE, RANGED_ATTACK,
-        //     ];
-        if (budget >= 50*5 + 150*5)
-            return [
+            ],
+        },
+        {
+            'cost': 50 * 5 + 150 * 5,
+            'body': [
                 MOVE, RANGED_ATTACK,
                 MOVE, RANGED_ATTACK,
                 MOVE, RANGED_ATTACK,
                 MOVE, RANGED_ATTACK,
                 MOVE, RANGED_ATTACK,
-            ];
-    }
+            ],
+        },
+    ];
 
 }

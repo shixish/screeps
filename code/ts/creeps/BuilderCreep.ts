@@ -8,50 +8,6 @@ class BuilderCreep extends BaseCreep {
     public creep: Creep;
     public hasStorage: boolean;
 
-    static creep_tiers = [
-        {
-            'cost':50*20 + 100*10 + 50*10, //2500,
-            'body': [
-                CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
-                CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
-                WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK,
-                MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
-            ],
-        },
-        {
-            'cost': 50 * 10 + 100 * 5 + 50 * 5,
-            'body': [
-                CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
-                WORK, WORK, WORK, WORK, WORK,
-                MOVE, MOVE, MOVE, MOVE, MOVE,
-            ],
-        },
-        {
-            'cost': 50 * 4 + 100 * 4 + 50 * 4, //800 //Walk Miner,
-            'body': [
-                CARRY, CARRY, CARRY, CARRY,
-                WORK, WORK, WORK, WORK,
-                MOVE, MOVE, MOVE, MOVE,
-            ],
-        },
-        {
-            'cost': 50 * 4 + 100 * 2 + 50 * 2, // 500,
-            'body': [
-                CARRY, CARRY, CARRY, CARRY,
-                WORK, WORK,
-                MOVE, MOVE,
-            ],
-        },
-        {
-            'cost': 300,
-            'body': [
-                CARRY, CARRY, CARRY,
-                WORK,
-                MOVE,
-            ],
-        },
-    ];
-
     constructor(creep: Creep) {
         super(creep);
         this.hasStorage = Inventory.room_structure_count('storage', this.creep.room) > 0;
@@ -119,5 +75,49 @@ class BuilderCreep extends BaseCreep {
     //             MOVE,
     //         ];
     // }
+
+    static creep_tiers = [
+        {
+            'cost': 50 * 20 + 100 * 10 + 50 * 10, //2500,
+            'body': [
+                CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
+                CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
+                WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK,
+                MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
+            ],
+        },
+        {
+            'cost': 50 * 10 + 100 * 5 + 50 * 5,
+            'body': [
+                CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
+                WORK, WORK, WORK, WORK, WORK,
+                MOVE, MOVE, MOVE, MOVE, MOVE,
+            ],
+        },
+        {
+            'cost': 50 * 4 + 100 * 4 + 50 * 4, //800 //Walk Miner,
+            'body': [
+                CARRY, CARRY, CARRY, CARRY,
+                WORK, WORK, WORK, WORK,
+                MOVE, MOVE, MOVE, MOVE,
+            ],
+        },
+        {
+            'cost': 50 * 4 + 100 * 2 + 50 * 2, // 500,
+            'body': [
+                CARRY, CARRY, CARRY, CARRY,
+                WORK, WORK,
+                MOVE, MOVE,
+            ],
+        },
+        {
+            'cost': 300,
+            'body': [
+                CARRY, CARRY, CARRY,
+                WORK,
+                MOVE,
+            ],
+        },
+    ];
 
 }

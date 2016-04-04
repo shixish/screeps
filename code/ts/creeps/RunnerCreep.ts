@@ -1,6 +1,7 @@
 /// <reference path="../vars/Globals.ts" />
 /// <reference path="../utils/Inventory.ts" />
 /// <reference path="../creeps/BaseCreep.ts" />
+/// <reference path="../utils/Debug.ts" />
 "use strict";
 
 class RunnerCreep extends BaseCreep {
@@ -9,8 +10,6 @@ class RunnerCreep extends BaseCreep {
 
     constructor(creep: Creep) {
         super(creep);
-
-        // console.log(this.creep, "exists already");
         if (!this.creep.memory.flag) {
             this.creep.memory.flag = this.creep.room.name + '_runner';
             this.flag = <Flag>Game.flags[this.creep.memory.flag];
@@ -18,6 +17,22 @@ class RunnerCreep extends BaseCreep {
             this.flag = <Flag>Game.flags[this.creep.memory.flag];
         }
         // this.retarget();
+        // debug.log(this.flag);
+        // debug.log('test2');
+    }
+
+    static get_heighest_tier(room: Room) {
+        let flag = <Flag>Game.flags[room.name + '_runner'];
+        debug.log('runner', flag);
+
+        let budget = room.energyCapacityAvailable;
+        for (let t in this.creep_tiers) {
+            let tier = this.creep_tiers[t];
+            // console.log(tier, tier.cost, room.energyCapacityAvailable);
+            if (tier.cost < budget) {
+                return tier;
+            }
+        }
     }
 
     retarget() {
@@ -90,5 +105,49 @@ class RunnerCreep extends BaseCreep {
         //     MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
         // ];
     }
+
+    static creep_tiers = [
+        // // {
+        // //     'cost': 100 * 5 + 50 * 5 + 50 * 10 + 600,
+        // //     'body': [
+        // //         WORK, WORK, WORK, WORK, WORK,
+        // //         CARRY, CARRY, CARRY, CARRY, CARRY,
+        // //         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
+        // //         CLAIM, 
+        // //     ],
+        // // },
+        // {
+        //     'cost': 100 * 10 + 50 * 10 + 50 * 10,
+        //     'body': [
+        //         WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK,
+        //         CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
+        //         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
+        //         // CLAIM, 
+        //     ],
+        // },
+        // {
+        //     'cost': 100 * 5 + 50 * 5 + 50 * 10,
+        //     'body': [
+        //         WORK, WORK, WORK, WORK, WORK,
+        //         CARRY, CARRY, CARRY, CARRY, CARRY,
+        //         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
+        //         // CLAIM, 
+        //     ],
+        // },
+        // {
+        //     'cost': 300,
+        //     'body': [
+        //         CARRY, CARRY, CARRY,
+        //         WORK,
+        //         MOVE,
+        //     ],
+        // },
+        {//Path Testing
+            'cost': 50,
+            'body': [
+                MOVE,
+            ],
+        },
+    ];
 
 }

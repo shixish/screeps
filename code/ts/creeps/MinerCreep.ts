@@ -62,19 +62,38 @@ class MinerCreep extends BaseCreep {
     //     super.harvesting(this.mineral);
     // }
 
-    static create(budget: number) {
-        if (budget >= 50*10 + 100*5 + 50*5)
-            return [
+    // static create(budget: number) {
+    //     if (budget >= 50*10 + 100*5 + 50*5)
+    //         return [
+    //             CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
+    //             WORK, WORK, WORK, WORK, WORK,
+    //             MOVE, MOVE, MOVE, MOVE, MOVE,
+    //         ];
+    //     else
+    //         return [
+    //             CARRY, CARRY, CARRY,
+    //             WORK,
+    //             MOVE,
+    //         ];
+    // }
+
+    static creep_tiers = [
+        {
+            'cost': 50 * 10 + 100 * 5 + 50 * 5,
+            'body': [
                 CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
                 WORK, WORK, WORK, WORK, WORK,
                 MOVE, MOVE, MOVE, MOVE, MOVE,
-            ];
-        else
-            return [
+            ],
+        },
+        {
+            'cost': 300,
+            'body': [
                 CARRY, CARRY, CARRY,
                 WORK,
                 MOVE,
-            ];
-    }
+            ],
+        },
+    ];
 
 }

@@ -81,14 +81,30 @@ class LinkerCreep extends BaseCreep {
     //     }
     // }
 
-    static create(budget: number) {
-        if (budget >= 50 + 50 * 8)
-            return [
-                MOVE,
-                CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
-            ];
-        else
-            return [MOVE, CARRY, CARRY, CARRY, CARRY, CARRY];
-    }
+    // static create(budget: number) {
+    //     if (budget >= 50 + 50 * 8)
+    //         return [
+    //             MOVE,
+    //             CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
+    //         ];
+    //     else
+    //         return [MOVE, CARRY, CARRY, CARRY, CARRY, CARRY];
+    // }
 
+    static creep_tiers = [
+        {
+            'cost': 50 * 8 + 50,
+            'body': [
+                CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
+                MOVE,
+            ],
+        },
+        {
+            'cost': 300,
+            'body': [
+                CARRY, CARRY, CARRY, CARRY, CARRY,
+                MOVE,
+            ],
+        },
+    ];
 }

@@ -59,17 +59,34 @@ class CourierCreep extends BaseCreep {
     //     }
     // }
 
-    static create(budget:number) {
-        if (budget >= 50*10 + 50*3)
-            return [
+    // static create(budget:number) {
+    //     if (budget >= 50*10 + 50*3)
+    //         return [
+    //             CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
+    //             MOVE, MOVE, MOVE,
+    //         ];
+    //     else
+    //         return [
+    //             CARRY, CARRY, CARRY, CARRY,
+    //             MOVE, MOVE, 
+    //         ];
+    // }
+
+    static creep_tiers = [
+        {
+            'cost': 50*10 + 50*3,
+            'body': [
                 CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
                 MOVE, MOVE, MOVE,
-            ];
-        else
-            return [
+            ],
+        },
+        {
+            'cost': 300,
+            'body': [
                 CARRY, CARRY, CARRY, CARRY,
                 MOVE, MOVE, 
-            ];
-    }
+            ],
+        },
+    ];
 
 }

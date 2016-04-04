@@ -41,39 +41,84 @@ class GuardCreep extends BaseCreep {
         }
     }
 
-    static create(budget: number) {
-        // if (budget >= 10*20 + 80*10 + 50*20)
-        //     return [
+    // static create(budget: number) {
+    //     // if (budget >= 10*20 + 80*10 + 50*20)
+    //     //     return [
+    //     //         TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH,
+    //     //         TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH,
+    //     //         ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK,
+    //     //         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
+    //     //         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
+    //     //     ];
+    //     if (budget >= 10 * 10 + 80 * 5 + 50 * 10)
+    //         return [
+    //             TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH,
+    //             ATTACK, ATTACK, ATTACK, ATTACK,
+    //             MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
+    //         ];
+    //     if (budget >= 10*10 + 80*5 + 50*5)
+    //         return [
+    //             TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH,
+    //             ATTACK, ATTACK, ATTACK, ATTACK,
+    //             MOVE, MOVE, MOVE, MOVE, MOVE,
+    //         ];
+    //     if (budget >= 10*6 + 80*3 + 50*3)
+    //         return [
+    //             TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, //60
+    //             ATTACK, ATTACK, ATTACK, //240
+    //             MOVE, MOVE, MOVE, //150
+    //         ];
+    //     else
+    //         return [
+    //             TOUGH, TOUGH, TOUGH, TOUGH,
+    //             ATTACK, ATTACK, 
+    //             MOVE, MOVE, 
+    //         ];
+    // }
+
+    static creep_tiers = [
+        // {
+        //     'cost': 10 * 20 + 80 * 10 + 50 * 20,
+        //     'body': [
         //         TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH,
         //         TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH,
         //         ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK,
         //         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
         //         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
-        //     ];
-        if (budget >= 10 * 10 + 80 * 5 + 50 * 10)
-            return [
+        //     ],
+        // },
+        {
+            'cost': 10 * 10 + 80 * 5 + 50 * 10,
+            'body': [
                 TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH,
                 ATTACK, ATTACK, ATTACK, ATTACK,
                 MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
-            ];
-        if (budget >= 10*10 + 80*5 + 50*5)
-            return [
+            ],
+        },
+        {
+            'cost': 10 * 10 + 80 * 5 + 50 * 5,
+            'body': [
                 TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH,
                 ATTACK, ATTACK, ATTACK, ATTACK,
                 MOVE, MOVE, MOVE, MOVE, MOVE,
-            ];
-        if (budget >= 10*6 + 80*3 + 50*3)
-            return [
+            ],
+        },
+        {
+            'cost': 10 * 6 + 80 * 3 + 50 * 3,
+            'body': [
                 TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, //60
                 ATTACK, ATTACK, ATTACK, //240
                 MOVE, MOVE, MOVE, //150
-            ];
-        else
-            return [
+            ],
+        },
+        {
+            'cost': 300,
+            'body': [
                 TOUGH, TOUGH, TOUGH, TOUGH,
-                ATTACK, ATTACK, 
+                ATTACK, ATTACK,
                 MOVE, MOVE, 
-            ];
-    }
+            ],
+        },
+    ];
 
 }

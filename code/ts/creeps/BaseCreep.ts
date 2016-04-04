@@ -1,6 +1,5 @@
 /// <reference path="../vars/Globals.ts" />
 "use strict";
-
 class BaseCreep { //Abstract class
     public creep: Creep;
     protected target;
@@ -12,24 +11,39 @@ class BaseCreep { //Abstract class
         this.action_name = this.creep.memory.action_name;
     }
 
-    static creep_is_obsolete(creep, budget){
+    // static get_creep_flag(creep: Creep){
+    //     if (!creep.memory.flag) {
+    //         //if not set, initialize the creep's flag based on it's room of birth.
+    //         creep.memory.flag = creep.room.name + '_runner';
+    //         return <Flag>Game.flags[creep.memory.flag];
+    //     }else{
+    //         return <Flag>Game.flags[creep.memory.flag];
+    //     }
+    // }
+
+    static creep_is_obsolete(creep:Creep, room:Room){
         if (this.creep_tiers) {
             //If it's not the highest tier creep and the room budget supports a higher tier:
-            return this.creep_tiers[0].cost > creep.memory.cost && budget > creep.memory.cost;
+            return this.creep_tiers[0].cost > creep.memory.cost && room.energyCapacityAvailable > creep.memory.cost;
         }
     }
 
-    static produce_new(budget){
-        if (this.creep_tiers) {
-            // console.log(Controller.creep_tiers);
-            for (let t in this.creep_tiers) {
-                let tier = this.creep_tiers[t];
-                if (tier.cost < budget){
-                    return tier;
-                }
+    static get_heighest_tier(room:Room){
+        let budget = room.energyCapacityAvailable;
+        for (let t in this.creep_tiers) {
+            let tier = this.creep_tiers[t];
+            // console.log(tier, tier.cost, room.energyCapacityAvailable);
+            if (tier.cost < budget){
+                return tier;
             }
+        }
+    }
+
+    static produce_new(room:Room){
+        if (this.creep_tiers) {
+            return this.get_heighest_tier(room);
         }else if (this.create){
-            let body = this.create(budget);
+            let body = this.create(room.energyCapacityAvailable);
             return {
                 'cost': _.reduce(body, (a,b) => { return a+BODYPART_COST[b] }, 0),
                 'body': body,
@@ -225,7 +239,6 @@ class BaseCreep { //Abstract class
                 
                 break;
             case 'upgrading':
-                console.log(creep.room.controller.progress, creep.room.controller.progressTotal);
                 if (creep.room.controller && (creep.room.controller.progress != creep.room.controller.progressTotal || creep.room.controller.ticksToDowngrade < 30000)){
                     targets = [creep.room.controller];
                 }
@@ -740,26 +753,26 @@ class BaseCreep { //Abstract class
         //     let path = Room.deserializePath(this.creep.memory.target_path);
         //     console.log(this.creep.memory.target_path, Object.keys(path[0]), path[0].x);
         // }
-        // if (this.target.id == this.creep.memory.target_id && this.creep.memory.target_path) {
-        //     let path = Room.deserializePath(this.creep.memory.target_path);
-        //     let test = this.creep.moveByPath(path);
-        //     if (test == ERR_NOT_FOUND) {
-        //         // console.log('ERR_NOT_FOUND', Object.keys(path[0]), path[0].x, path[0].y);
-        //         // var ezpath = this.creep.pos.findPathTo(this.target);
-        //         // // if (ezpath.length) {
-        //         // //     console.log('ERR_NOT_FOUND2', Object.keys(ezpath[0]), ezpath[0].x, ezpath[0].y);
-        //         // // } else { 
-        //         // //     console.log('no path found');
-        //         // // }
-        //         // test = this.creep.moveByPath(ezpath);
-        //         // console.log('ezpath', test);
-        //         return this.creep.moveTo(this.target);
-        //     }else if (test == 0) {
-        //         // console.log('excellent');
-        //     }
-        //     return test;
-        // } else {
+        if (false && this.target.id == this.creep.memory.target_id && this.creep.memory.target_path) {
+            let path = Room.deserializePath(this.creep.memory.target_path);
+            let test = this.creep.moveByPath(path);
+            if (test == ERR_NOT_FOUND) {
+                // console.log('ERR_NOT_FOUND', Object.keys(path[0]), path[0].x, path[0].y);
+                // var ezpath = this.creep.pos.findPathTo(this.target);
+                // // if (ezpath.length) {
+                // //     console.log('ERR_NOT_FOUND2', Object.keys(ezpath[0]), ezpath[0].x, ezpath[0].y);
+                // // } else { 
+                // //     console.log('no path found');
+                // // }
+                // test = this.creep.moveByPath(ezpath);
+                // console.log('ezpath', test);
+                return this.creep.moveTo(this.target);
+            }else if (test == 0) {
+                // console.log('excellent');
+            }
+            return test;
+        } else {
             return this.creep.moveTo(this.target);
-        // }
+        }
     }
 }

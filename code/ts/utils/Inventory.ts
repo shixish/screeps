@@ -177,18 +177,30 @@ class Inventory {
     //     Memory['creep_roles'][role][name] = {};
     //     this.creep_cache[]
     // }
+
+    //Shouldn't really be necessary anymore:
+    static calculateCreepCost(creep) {
+        return _.reduce(_.map(creep.body, (obj) => { return obj.type; }), (a, b) => { return a + BODYPART_COST[b] }, 0);
+    }
+
     static invCreepObj(creep: Creep) {
+        // console.log(creep);
         let role: string = creep.memory.role,
             name: string = creep.name,
             room: Room = creep.room;
 
         this.invCreep(role, name, room);
+        //This should only be temporarily necessary:
+        if (!creep.memory.cost) {
+            // console.log(_.map(creep.body, (obj) => { return obj.type; }));
+            creep.memory.cost = this.calculateCreepCost(creep);
+        }
         if (!creep.memory.obsolete) { //room.controller.level < 8 && 
-            let Controller = creep_controllers[role];
-            if (Controller) {
-                if (Controller.creep_is_obsolete(creep, room.energyCapacityAvailable) === true) {
-                    creep.memory.obsolete == true;
-                    console.log(`Detected obsolete creep ${creep}`);
+            let ctrl = creep_controllers[role];
+            if (ctrl) {
+                if (ctrl.creep_is_obsolete(creep, room) === true) {
+                    creep.memory.obsolete = true;
+                    console.log(`Detected obsolete ${creep.memory.role} creep named ${name} in room ${room.name}`);
                 }
             } else {
                 console.log(`Inventory unable to find creep controller for ${creep}`);
