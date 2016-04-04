@@ -11,12 +11,6 @@ class BuilderCreep extends BaseCreep {
     constructor(creep: Creep) {
         super(creep);
         this.hasStorage = Inventory.room_structure_count('storage', this.creep.room) > 0;
-        this.prices = new Map();
-        var map = new Map([
-            [new Date(), function today() { }],
-            [() => 'key', { pony: 'foo' }],
-            [Symbol('items'), [1, 2]]
-        ])
     }
 
     retarget() {

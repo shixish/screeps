@@ -11,6 +11,14 @@ class BaseCreep { //Abstract class
         this.action_name = this.creep.memory.action_name;
     }
 
+    //This should be extended...
+    static creep_tiers = [
+        {
+            'cost': 50,
+            'body': [],
+        },
+    ];
+
     // static get_creep_flag(creep: Creep){
     //     if (!creep.memory.flag) {
     //         //if not set, initialize the creep's flag based on it's room of birth.
@@ -42,13 +50,14 @@ class BaseCreep { //Abstract class
     static produce_new(room:Room){
         if (this.creep_tiers) {
             return this.get_heighest_tier(room);
-        }else if (this.create){
-            let body = this.create(room.energyCapacityAvailable);
-            return {
-                'cost': _.reduce(body, (a,b) => { return a+BODYPART_COST[b] }, 0),
-                'body': body,
-            }
         }
+        // else if (this.create){
+        //     let body = this.create(room.energyCapacityAvailable);
+        //     return {
+        //         'cost': _.reduce(body, (a,b) => { return a+BODYPART_COST[b] }, 0),
+        //         'body': body,
+        //     }
+        // }
     }
 
     retarget() {
@@ -775,4 +784,6 @@ class BaseCreep { //Abstract class
             return this.creep.moveTo(this.target);
         }
     }
+
+
 }

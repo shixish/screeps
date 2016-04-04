@@ -36,7 +36,11 @@ gulp.task('screeps', function() {
 
 	// tsResult.js;
 	git.branch(function (branch) {
-		credentials.ptr = (branch == "test");
+		if (branch === "test"){
+			credentials.ptr = true;	
+		}else{
+			delete credentials.ptr;
+		}
 		tsResult.js
 			.pipe(addsrc('code/lib/**.js'))
 			.pipe(gulp.dest('.cache'))

@@ -213,8 +213,6 @@ class Inventory {
         if (!room.memory['creep_roles'][role]) room.memory['creep_roles'][role] = {};
         room.memory['creep_roles'][role][name] = {};
 
-        if (Memory.creeps[name].cost)
-
         // if (!Memory['creep_roles'][role]) Memory['creep_roles'][role] = {}
         // Memory['creep_roles'][role][name] = {};
     }
