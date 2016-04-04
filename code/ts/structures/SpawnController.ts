@@ -148,26 +148,53 @@ class SpawnController {
         // if (this.structure.room.name == 'W18S29')
         //     console.log(this.structure.room.name, role, totalEnergy);
         if (role && this.creep_creators[role]) {
-            let fn = this.creep_creators[role];
-            let creep_body = fn(room.energyCapacityAvailable);
-            let creep_memory = {
-                role: role
-            };
-            if (_.indexOf(creep_body, CLAIM) !== -1) {
-                creep_memory['obsolete'] = true; //can't repair claim creeps.
-            }
-            //TODO:: USE : creep.getActiveBodyparts
-            let response:any = this.structure.createCreep(creep_body, null, creep_memory);
-            if (!(response < 0)) {
-                let name:string = response;
-                console.log("Making a new " + creep_memory.role + " named " + name + " in room " + room.name);
-                Inventory.invNewCreep(creep_memory.role, name, room);
-                return response;//new creep name
-            } else if (response == ERR_BUSY) {
-                //just wait
+            if (creep_controllers[role]) {
+                let Controller = creep_controllers[role];
+                let roomCapacity = room.energyCapacityAvailable;
+                let tier = Controller.produce_new(roomCapacity);
+                let memory = tier.memory ? tier.memory : {};
+                memory.role = role;
+                memory.cost = tier.cost;
+
+                if (_.indexOf(tier.body, CLAIM) !== -1) {
+                    memory.obsolete = true; //can't repair claim creeps.
+                }
+                let response: any = this.structure.createCreep(tier.body, null, memory);
+                if (!(response < 0)) {
+                    let name: string = response;
+                    console.log("Making a new " + role + " named " + name + " in room " + room.name);
+                    Inventory.invNewCreep(role, name, room);
+                    return response;//new creep name
+                } else if (response == ERR_BUSY) {
+                    //just wait
+                } else {
+                    console.log(this.structure.room.name, this.structure, "create creep error:", response);
+                }
             } else {
-                console.log(this.structure.room.name, this.structure, "create creep error:", response);
+                console.log(`Spawn detected invalid creep role ${role}!`);
             }
+
+
+            // let fn = this.creep_creators[role];
+            // let creep_body = fn(room.energyCapacityAvailable);
+            // let creep_memory = {
+            //     role: role
+            // };
+            // if (_.indexOf(creep_body, CLAIM) !== -1) {
+            //     creep_memory['obsolete'] = true; //can't repair claim creeps.
+            // }
+            // //TODO:: USE : creep.getActiveBodyparts
+            // let response:any = this.structure.createCreep(creep_body, null, creep_memory);
+            // if (!(response < 0)) {
+            //     let name:string = response;
+            //     console.log("Making a new " + creep_memory.role + " named " + name + " in room " + room.name);
+            //     Inventory.invNewCreep(creep_memory.role, name, room);
+            //     return response;//new creep name
+            // } else if (response == ERR_BUSY) {
+            //     //just wait
+            // } else {
+            //     console.log(this.structure.room.name, this.structure, "create creep error:", response);
+            // }
         } else {
             console.log(`Unable to create ${role} creep`);
         }

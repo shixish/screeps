@@ -1,5 +1,6 @@
 /// <reference path="../../../node_modules/screeps-typescript-declarations/dist/screeps.d.ts" />
 /// <reference path="../../dts/require.d.ts" />
+/// <reference path="../../dts/map.d.ts" />
 "use strict";
 var _ = require('lodash');
 // var profiler = require('screeps-profiler');

@@ -1,4 +1,5 @@
 /// <reference path="../vars/Globals.ts" />
+/// <reference path="../vars/CreepInfo.ts" />
 "use strict";
 
 class Inventory {
@@ -182,6 +183,17 @@ class Inventory {
             room: Room = creep.room;
 
         this.invCreep(role, name, room);
+        if (!creep.memory.obsolete) { //room.controller.level < 8 && 
+            let Controller = creep_controllers[role];
+            if (Controller) {
+                if (Controller.creep_is_obsolete(creep, room.energyCapacityAvailable) === true) {
+                    creep.memory.obsolete == true;
+                    console.log(`Detected obsolete creep ${creep}`);
+                }
+            } else {
+                console.log(`Inventory unable to find creep controller for ${creep}`);
+            }
+        }
     }
 
     static invCreep(role: string, name: string, room: Room) {
@@ -189,18 +201,19 @@ class Inventory {
         if (!room.memory['creep_roles'][role]) room.memory['creep_roles'][role] = {};
         room.memory['creep_roles'][role][name] = {};
 
+        if (Memory.creeps[name].cost)
+
         // if (!Memory['creep_roles'][role]) Memory['creep_roles'][role] = {}
         // Memory['creep_roles'][role][name] = {};
     }
 
     static invNewCreep(role: string, name: string, room: Room) {
         this.invCreep(role, name, room);
-        if (role == "ranger" || role == "guard" || role == "runner") {
-            let flag_name = `${room.name}_${role}`;
-            if (Game.flags[flag_name]) {
-                if (!Game.flags[flag_name].memory.creeps) Game.flags[flag_name].memory.creeps = [];
-                Game.flags[flag_name].memory.creeps.push(name);
-            }
+        // currently used by (role == "ranger" || role == "guard" || role == "runner") :
+        let flag_name = `${room.name}_${role}`;
+        if (Game.flags[flag_name]) {
+            if (!Game.flags[flag_name].memory.creeps) Game.flags[flag_name].memory.creeps = [];
+            Game.flags[flag_name].memory.creeps.push(name);
         }
     }
 

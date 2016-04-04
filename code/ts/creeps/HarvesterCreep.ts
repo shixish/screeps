@@ -54,11 +54,13 @@ class HarvesterCreep extends BaseCreep {
             if (source_memory.link) {
                 this.creep.memory.target_id = source_memory.link;
                 this.creep.memory.action_name = 'transferring';
-            } else if (!super.try_targeting('transferring')) { //Behave as a more generic creep if still in low infrastructure
-                if (!super.try_targeting('storing')) {
-                    if (!super.try_targeting('building')) {
-                        if (!super.try_targeting('upgrading')) {
+            } else {
+                if (!super.try_targeting('transferring')) { //Behave as a more generic creep if still in low infrastructure
+                    if (!super.try_targeting('storing')) {
+                        if (!super.try_targeting('building')) {
+                            if (!super.try_targeting('upgrading')) {
 
+                            }
                         }
                     }
                 }

@@ -5,7 +5,7 @@
 class TowerController {
     private structure: Tower;
     private max_repair_tiers = {
-        3: 25000,//tower at 3
+        3: 25000,//tower starts at 3
         4: 50000,
         5: 250000,
         6: 500000,

@@ -55,17 +55,6 @@ class LinkerCreep extends BaseCreep {
         //         }
         //     }
         // }
-        // let targets = this.creep.room.find<Structure[]>(FIND_MY_STRUCTURES, {
-        //     filter: function(obj) {
-        //         return (
-        //             obj.structureType == STRUCTURE_STORAGE && obj.store.energy < obj.storeCapacity
-        //         );
-        //     }
-        // });
-        // // let targets = this.creep.room.find(FIND_SOURCES);
-        // var ret = this.getClosestByPath(targets);
-        // // console.log(ret.target, ret.path);
-        // // console.log("target:", ret.target, ret.path);
 
         if (this.creep.carry.energy > 0) {
             this.creep.memory.target_id = this.storage.id;

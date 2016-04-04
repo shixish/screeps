@@ -67,7 +67,7 @@ declare var module: any;
             let ctrl = new CreepController(creep);
             ctrl.work();
         }else {
-            console.log("Unknown creep role:", creep);
+            console.log("Unknown creep role:", creep, creep.role);
         }
     }
 }

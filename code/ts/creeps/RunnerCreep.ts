@@ -38,7 +38,9 @@ class RunnerCreep extends BaseCreep {
                     if (!super.try_targeting('transferring')) {
                         if (!super.try_targeting('building')) {
                             if (!super.try_targeting('upgrading')) {
-                                console.log('Creep is unable to spend energy!?');
+                                if (!super.try_targeting('storing')) {
+                                    // console.log('Creep is unable to spend energy!?');
+                                }
                             }
                         }
                     }
