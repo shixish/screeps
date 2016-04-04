@@ -2,6 +2,7 @@
 /// <reference path="utils/Inventory.ts" />
 /// <reference path="vars/CreepInfo.ts" />
 /// <reference path="vars/StructureInfo.ts" />
+/// <reference path="utils/Debug.ts" />
 "use strict";
 
 function run_structure(type:string, structure: Structure) {
@@ -13,6 +14,7 @@ function run_structure(type:string, structure: Structure) {
 
 declare var module: any;
 (module).exports.loop = function () {
+    var totalDiag = debug.diag('Total');
     Inventory.update();
 
     for (let r in Game.rooms){
@@ -21,6 +23,7 @@ declare var module: any;
 
         if (memory.structures) {
             for (let type in memory.structures) {
+                let structureDiag = debug.diag(['structure.' + type, room.name + '.' + type]);
                 if (structure_controllers[type]) {
                     let structures = memory.structures[type];
                     let StructureController = structure_controllers[type];
@@ -36,10 +39,12 @@ declare var module: any;
                         }
                     }
                 }
+                structureDiag.stop();
             }
         }
 
         if (memory.source) {
+            let sourceDiag = debug.diag(room.name + '.source');
             for (let t in memory.source) {
                 try {
                     let source = new SourceController(t);
@@ -51,12 +56,15 @@ declare var module: any;
                     // }
                 }
             }
+            sourceDiag.stop();
         }
     }
+    // diag.stop();
+    
     
     for(let c in Game.creeps) {
-       // console.log(c);
         let creep = Game.creeps[c];
+        var creepDiag = debug.diag('creeps.' + creep.memory.role);
         // Cache.add(creep);
 
         
@@ -69,5 +77,10 @@ declare var module: any;
         }else {
             console.log("Unknown creep role:", creep, creep.memory.role);
         }
+        creepDiag.stop();
     }
+
+    totalDiag.stop();
+    
+    // debug.printDiag();
 }
