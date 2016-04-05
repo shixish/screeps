@@ -76,15 +76,22 @@ class CourierCreep extends BaseCreep {
         {
             'cost': 50*10 + 50*3,
             'body': [
-                CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
-                MOVE, MOVE, MOVE,
+                MOVE, 
+                CARRY, CARRY, 
+                CARRY, CARRY, 
+                CARRY, 
+                MOVE, 
+                CARRY, CARRY, CARRY, CARRY, CARRY,
+                MOVE,
             ],
         },
         {
             'cost': 300,
             'body': [
-                CARRY, CARRY, CARRY, CARRY,
-                MOVE, MOVE, 
+                CARRY, CARRY, 
+                MOVE, 
+                CARRY, CARRY,
+                MOVE, 
             ],
         },
     ];

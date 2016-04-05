@@ -7,16 +7,19 @@ class SpawnController {
     structure: Spawn;
     controller_level: number;
 
-    // creep_creators = {
-    //     'harvester': HarvesterCreep.create,
-    //     'linker': LinkerCreep.create,
-    //     'courier': CourierCreep.create,
-    //     'miner': MinerCreep.create,
-    //     'builder': BuilderCreep.create,
-    //     'guard': GuardCreep.create,
-    //     'ranger': RangerCreep.create,
-    //     'runner': RunnerCreep.create
-    // }
+    constructor(structure_id) {
+        this.structure = <Spawn>Game.getObjectById(structure_id);
+        if (!this.structure) {
+            console.log('Unable to find Spawn with ID', structure_id);
+            throw "Invalid Object ID";
+        }
+        // this.controller_level = this.structure.room.controller.level;
+        if (this.structure.isActive()) {//this can happen on the test realm especially.
+            this.work();
+        }
+        // console.log(this.structure.isActive);
+    }
+
     max_creeps() {
         let sources = Inventory.room_sources(this.structure.room),
             minerals = Inventory.room_minerals(this.structure.room),
@@ -54,21 +57,28 @@ class SpawnController {
             'guard': flagCreeps['guard'],
             'ranger': flagCreeps['ranger'],
             'runner': flagCreeps['runner'],
+            'healer': 0,
         }
+
+        let attack_flag = Game.flags[`${this.structure.room.name}_attack`];
+        if (attack_flag) {
+            values.guard += 2;
+            values.healer += 2;
+            values.ranger += 2;
+        }
+
+        
+        let under_attack_by = this.structure.room.memory.under_attack;
+        if (this.structure.room.memory.under_attack > 0){
+            values.courier += Math.floor(under_attack_by / 3);
+            values.healer += Math.floor(under_attack_by / 2);
+            values.guard += Math.ceil(under_attack_by / 4);
+            values.ranger += Math.ceil(under_attack_by);
+        }
+        //Need to make these obsolete... ^
         return values;
     }
 
-    constructor(structure_id) {
-        this.structure = <Spawn>Game.getObjectById(structure_id);
-        if (!this.structure) {
-            console.log('Unable to find Spawn with ID', structure_id);
-            throw "Invalid Object ID";
-        }
-        this.controller_level = this.structure.room.controller.level;
-        if (this.controller_level > 0) {//this can happen on the test realm especially.
-            this.work();
-        }
-    }
 
     work() {
         //These get set by the Inventory process
@@ -137,7 +147,10 @@ class SpawnController {
             }
 
             if (min_role) {
-                this.create_creep(min_role, room);
+                var response = this.create_creep(min_role, room);
+                if (response !== false) {
+
+                }
             }
         }
 
@@ -173,6 +186,9 @@ class SpawnController {
                     return response;//new creep name
                 } else if (response == ERR_BUSY) {
                     //just wait
+                } else if (response == ERR_NOT_ENOUGH_ENERGY) {
+                    //the base was likely attacked...
+                    // console.log(this.structure.room.name, 'is dead.');
                 } else {
                     console.log(this.structure.room.name, this.structure, "create creep error:", response);
                 }
@@ -182,6 +198,7 @@ class SpawnController {
         } else {
             console.log(`Spawn detected invalid creep role ${role}!`);
         }
+        return false;
 
 
         // let fn = this.creep_creators[role];

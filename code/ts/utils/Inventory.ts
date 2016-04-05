@@ -1,6 +1,6 @@
 /// <reference path="../vars/Globals.ts" />
 /// <reference path="../vars/CreepInfo.ts" />
-/// <reference path="utils/Debug.ts" />
+/// <reference path="../utils/Debug.ts" />
 "use strict";
 
 class Inventory {
@@ -46,7 +46,7 @@ class Inventory {
 
             let hostile_creeps = room.find(FIND_HOSTILE_CREEPS);
             // console.log(hostile_creeps);
-            room.memory.under_attack = !!hostile_creeps.length;
+            room.memory.under_attack = hostile_creeps.length;
         }
         Inventory.invCreeps();
         invDiag.stop();

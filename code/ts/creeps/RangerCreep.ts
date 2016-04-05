@@ -10,7 +10,7 @@ class RangerCreep extends BaseCreep {
         super(creep);
 
         if (!this.creep.memory.flag) {
-            this.creep.memory.flag = this.creep.room.name + '_ranger';
+            this.creep.memory.flag = this.creep.room.name + '_attack';
             this.flag = <Flag>Game.flags[this.creep.memory.flag];
         } else {
             this.flag = <Flag>Game.flags[this.creep.memory.flag];
@@ -26,8 +26,7 @@ class RangerCreep extends BaseCreep {
 
         if (!super.try_targeting('assaulting')) {
             if (this.flag) {
-                this.creep.memory.target_id = this.flag.id;
-                this.creep.memory.action_name = 'moving';
+                super.set_target(this.flag);
             }
         }
     }

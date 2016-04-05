@@ -15,8 +15,6 @@ class HarvesterCreep extends BaseCreep {
         if (!creep.memory.source) {
             // console.log(creep.room.memory.source);
             for (var s in creep.room.memory.source) {
-                // creep.room.memory.source[s].harvester = null;
-                creep.room.memory.source[s].harvester
                 var harvester_name = creep.room.memory.source[s].harvester;
                 if (!harvester_name || (harvester_name && (!Game.creeps[harvester_name] || harvester_name == creep_name))) {
                     creep.room.memory.source[s].harvester = creep_name;
@@ -26,16 +24,10 @@ class HarvesterCreep extends BaseCreep {
             }
         }
         this.source = <Source>Game.getObjectById(creep.memory.source);
-        // this.source.pos.findClosestByRange(FIND_MY_STRUCTURES, {
-        //     filter: function(obj) {
-        //         return obj.structureType == STRUCTURE_LINK;
-        //     }
-        // });
-        // var source_memory = this.source.room.memory.source[this.source.id];
-        // if (source_memory.link) {
-        //     this.link = <Link>Game.getObjectById(source_memory.link);
-        // }
-        // console.log(this.link);
+        if (this.source) {
+            var source_memory = this.source.room.memory.source[this.source.id];
+            this.link = <Link>Game.getObjectById(source_memory.link);
+        }
     }
 
     retarget() {
@@ -46,14 +38,14 @@ class HarvesterCreep extends BaseCreep {
             this.creep.memory.target_id = this.creep.memory.action_name = null;
             return;
         }
+        // console.log(this.link);
         if (this.creep.carry.energy > 0) {
-            var source_memory = this.source.room.memory.source[this.source.id];
+            // var source_memory = this.source.room.memory.source[this.source.id];
             // if (source_memory.link) {
             //     this.link = <Link>Game.getObjectById(source_memory.link);
             // }
-            if (source_memory.link) {
-                this.creep.memory.target_id = source_memory.link;
-                this.creep.memory.action_name = 'transferring';
+            if (this.link && this.link.energy != this.link.energyCapacity) {
+                super.set_target(this.link, 'transferring');
             } else {
                 if (!super.try_targeting('transferring')) { //Behave as a more generic creep if still in low infrastructure
                     if (!super.try_targeting('storing')) {
@@ -66,8 +58,7 @@ class HarvesterCreep extends BaseCreep {
                 }
             }
         } else {
-            this.creep.memory.target_id = this.source.id;
-            this.creep.memory.action_name = 'harvesting';
+            super.set_target(this.source, 'harvesting');
         }
     }
 

@@ -57,11 +57,9 @@ class LinkerCreep extends BaseCreep {
         // }
 
         if (this.creep.carry.energy > 0) {
-            this.creep.memory.target_id = this.storage.id;
-            this.creep.memory.action_name = 'transferring';
+            super.set_target(this.storage, 'transferring');
         } else {
-            this.creep.memory.target_id = this.link.id;
-            this.creep.memory.action_name = 'energizing';
+            super.set_target(this.link, 'energizing');
         }
     }
 

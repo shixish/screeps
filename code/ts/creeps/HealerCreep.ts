@@ -2,7 +2,7 @@
 /// <reference path="../creeps/BaseCreep.ts" />
 "use strict";
 
-class GuardCreep extends BaseCreep {
+class HealerCreep extends BaseCreep {
     public creep: Creep;
     public flag: Flag;
 
@@ -33,10 +33,11 @@ class GuardCreep extends BaseCreep {
         //         }
         //     }
         // }
-        // console.log('guard retargeting');
-        if (!super.try_targeting('assaulting')) {
-            if (this.flag) {
-                super.set_target(this.flag);
+        if (!super.try_targeting('healing')) {
+            if (!super.try_targeting('following')) {
+                if (this.flag) {
+                    super.set_target(this.flag);
+                }
             }
         }
     }
@@ -78,45 +79,31 @@ class GuardCreep extends BaseCreep {
 
     static creep_tiers = [
         {
-            'cost': 10 * 20 + 80 * 10 + 50 * 20,
+            'cost': 250 * 10 + 50 * 10,
             'body': [
-                TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH,
-                TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH,
-                ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK,
-                MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
-                MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
+                HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, //2500
+                MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE  //500
             ],
         },
         {
-            'cost': 10 * 10 + 80 * 5 + 50 * 10,
+            'cost': 250 * 5 + 50 * 5,
             'body': [
-                TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH,
-                ATTACK, ATTACK, ATTACK, ATTACK,
-                MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
+                HEAL, HEAL, HEAL, HEAL, HEAL,
+                MOVE, MOVE, MOVE, MOVE, MOVE
             ],
         },
         {
-            'cost': 10 * 10 + 80 * 5 + 50 * 5,
+            'cost': 250 * 2 + 50 * 2,
             'body': [
-                TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH,
-                ATTACK, ATTACK, ATTACK, ATTACK,
-                MOVE, MOVE, MOVE, MOVE, MOVE,
-            ],
-        },
-        {
-            'cost': 10 * 6 + 80 * 3 + 50 * 3,
-            'body': [
-                TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, //60
-                ATTACK, ATTACK, ATTACK, //240
-                MOVE, MOVE, MOVE, //150
+                HEAL, HEAL, //500
+                MOVE, MOVE, //100
             ],
         },
         {
             'cost': 300,
             'body': [
-                TOUGH, TOUGH, TOUGH, TOUGH,
-                ATTACK, ATTACK,
-                MOVE, MOVE, 
+                HEAL,
+                MOVE, 
             ],
         },
     ];

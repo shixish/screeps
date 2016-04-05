@@ -8,8 +8,8 @@ class debug {
 			let depth:number = _depth == undefined ? 0 : _depth;
 			let type = typeof arg, type_label = type;
 			if (type == 'object') {
-				// if (arg.constructor.name) type_label = arg.constructor.name;
-				type_label = arg.toString();
+				if (arg.constructor.name) type_label = arg.constructor.name;
+				else type_label = arg.toString();
 			}
 			// output += '    '.repeat(depth) + '&lt;' + type_label + '&gt;' + name + ': ';
 			output += '    '.repeat(depth) + (name ? '<u>' + name + '</u>:' : '') + type_label + ' = ';

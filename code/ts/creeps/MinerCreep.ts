@@ -12,15 +12,9 @@ class MinerCreep extends BaseCreep {
     retarget() {
         super.retarget();
         if (_.sum(this.creep.carry) > 0) {
-            if (!super.try_targeting('storing')) {
-
-            }
+            super.try_targeting('storing');
         } else {
-            var target = <Mineral>this.creep.pos.findClosestByPath(FIND_MINERALS);
-            if (target){
-                this.creep.memory.target_id = target.id;
-                this.creep.memory.action_name = 'harvesting';
-            }
+            super.try_targeting('mining');
         }
     }
 

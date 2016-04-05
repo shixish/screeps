@@ -19,6 +19,7 @@ class RunnerCreep extends BaseCreep {
         // this.retarget();
         // debug.log(this.flag);
         // debug.log('test2');
+        // console.log('test');
     }
 
     static get_heighest_tier(room: Room) {
@@ -37,14 +38,18 @@ class RunnerCreep extends BaseCreep {
 
     retarget() {
         super.retarget();
+
+        // this.creep.memory.target_id = this.flag.id;
+        // this.creep.memory.action_name = 'moving';
         
         if (this.flag && this.creep.room.name != this.flag.pos.roomName) {
             // console.log(this.creep);
             if (Inventory.room_structure_count('storage', this.creep.room) > 0 && this.creep.carry.energy < this.creep.carryCapacity) {
                 super.try_targeting('energizing');
             } else {
-                this.creep.memory.target_id = this.flag.id;
-                this.creep.memory.action_name = 'moving';
+                // this.creep.memory.target_id = this.flag.id;
+                // this.creep.memory.action_name = 'moving';
+                super.set_target(this.flag);
             }
         } else {
             // this.flag.remove();
@@ -70,85 +75,86 @@ class RunnerCreep extends BaseCreep {
         }
     }
 
-    static create(budget:number) {
-        // if (budget >= 600 * 5 + 50 * 10)
-        //     return [
-        //         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
-        //         CLAIM, CLAIM, CLAIM, CLAIM, CLAIM
-        //     ];
+    // static create(budget:number) {
+    //     // if (budget >= 600 * 5 + 50 * 10)
+    //     //     return [
+    //     //         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
+    //     //         CLAIM, CLAIM, CLAIM, CLAIM, CLAIM
+    //     //     ];
 
-        // if (budget >= 100 * 10 + 50 * 10 + 50 * 10)// + 600)
-        //     return [
+    //     // if (budget >= 100 * 10 + 50 * 10 + 50 * 10)// + 600)
+    //     //     return [
+    //     //         WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK,
+    //     //         CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
+    //     //         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
+    //     //         // CLAIM, 
+    //     //     ];
+    //     if (budget >= 100 * 5 + 50 * 5 + 50 * 10)// + 600)
+    //         return [
+    //             WORK, WORK, WORK, WORK, WORK,
+    //             CARRY, CARRY, CARRY, CARRY, CARRY,
+    //             MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
+    //             // CLAIM, 
+    //         ];
+    //     // else if (budget >= 100 * 2 + 50 * 4 + 50 * 2) // 500
+    //     //     return [
+    //     //         WORK, WORK,
+    //     //         CARRY, CARRY, CARRY, CARRY,
+    //     //         MOVE, MOVE,
+    //     //     ];
+        
+    //     // return [
+    //     //     // CLAIM, 
+    //     //     WORK, WORK, 
+    //     //     CARRY, CARRY, CARRY, CARRY, CARRY, 
+    //     //     MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
+    //     // ];
+    // }
+
+    static creep_tiers = [
+        // // {
+        // //     'cost': 100 * 5 + 50 * 5 + 50 * 10 + 600,
+        // //     'body': [
+        // //         WORK, WORK, WORK, WORK, WORK,
+        // //         CARRY, CARRY, CARRY, CARRY, CARRY,
+        // //         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
+        // //         CLAIM, 
+        // //     ],
+        // // },
+
+        // {
+        //     'cost': 100 * 10 + 50 * 10 + 50 * 10,
+        //     'body': [
         //         WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK,
         //         CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
         //         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
         //         // CLAIM, 
-        //     ];
-        if (budget >= 100 * 5 + 50 * 5 + 50 * 10)// + 600)
-            return [
-                WORK, WORK, WORK, WORK, WORK,
-                CARRY, CARRY, CARRY, CARRY, CARRY,
-                MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
-                // CLAIM, 
-            ];
-        // else if (budget >= 100 * 2 + 50 * 4 + 50 * 2) // 500
-        //     return [
-        //         WORK, WORK,
-        //         CARRY, CARRY, CARRY, CARRY,
-        //         MOVE, MOVE,
-        //     ];
-        
-        // return [
-        //     // CLAIM, 
-        //     WORK, WORK, 
-        //     CARRY, CARRY, CARRY, CARRY, CARRY, 
-        //     MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
-        // ];
-    }
-
-    static creep_tiers = [
+        //     ],
+        // },
         // {
-        //     'cost': 100 * 5 + 50 * 5 + 50 * 10 + 600,
+        //     'cost': 100 * 5 + 50 * 5 + 50 * 10,
         //     'body': [
         //         WORK, WORK, WORK, WORK, WORK,
         //         CARRY, CARRY, CARRY, CARRY, CARRY,
         //         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
-        //         CLAIM, 
+        //         // CLAIM, 
         //     ],
         // },
-        {
-            'cost': 100 * 10 + 50 * 10 + 50 * 10,
-            'body': [
-                WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK,
-                CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
-                MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
-                // CLAIM, 
-            ],
-        },
-        {
-            'cost': 100 * 5 + 50 * 5 + 50 * 10,
-            'body': [
-                WORK, WORK, WORK, WORK, WORK,
-                CARRY, CARRY, CARRY, CARRY, CARRY,
-                MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
-                // CLAIM, 
-            ],
-        },
-        {
-            'cost': 300,
-            'body': [
-                CARRY, CARRY, CARRY,
-                WORK,
-                MOVE,
-            ],
-        },
-        
-        // {//Path Testing
-        //     'cost': 50,
+        // {
+        //     'cost': 300,
         //     'body': [
+        //         CARRY, CARRY, CARRY,
+        //         WORK,
         //         MOVE,
         //     ],
         // },
+        
+        {//Path Testing
+            'cost': 50,
+            'body': [
+                MOVE,
+            ],
+        },
     ];
 
 }

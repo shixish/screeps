@@ -7,6 +7,7 @@
 /// <reference path="../creeps/RangerCreep.ts" />
 /// <reference path="../creeps/RunnerCreep.ts" />
 /// <reference path="../creeps/LinkerCreep.ts" />
+/// <reference path="../creeps/HealerCreep.ts" />
 
 let creep_controllers = {
     'courier': CourierCreep,
@@ -17,4 +18,5 @@ let creep_controllers = {
     'guard': GuardCreep,
     'ranger': RangerCreep,
     'runner': RunnerCreep,
+    'healer': HealerCreep,
 };
