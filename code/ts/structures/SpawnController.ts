@@ -13,7 +13,7 @@ class SpawnController {
             console.log('Unable to find Spawn with ID', structure_id);
             throw "Invalid Object ID";
         }
-        // this.controller_level = this.structure.room.controller.level;
+        this.controller_level = this.structure.room.controller.level;
         if (this.structure.isActive()) {//this can happen on the test realm especially.
             this.work();
         }
@@ -49,16 +49,19 @@ class SpawnController {
 
         // console.log(flagCreeps['runner'])
         let values = {
+            'builder': (this.controller_level < 8 ? 1 : 0) + (storage ? 1 : 0),
             'harvester': sources,
             'linker': links > 0 ? storage : 0,
             'courier': storage > 0 ? Math.ceil(towers / 2) : 0,
             'miner': 0, //storage > 0 ? minerals : 0,
-            'builder': (this.controller_level < 8 ? 1 : 0) + (storage ? 1 : 0),
             'guard': flagCreeps['guard'],
             'ranger': flagCreeps['ranger'],
             'runner': flagCreeps['runner'],
             'healer': 0,
         }
+
+        // if (this.structure.name == "Spawn6")
+        //     debug.log(this.structure.name, values, this.structure.room.energyAvailable, this.structure.room.energyCapacityAvailable);
 
         let attack_flag = Game.flags[`${this.structure.room.name}_attack`];
         if (attack_flag) {

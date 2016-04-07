@@ -498,7 +498,7 @@ class BaseCreep { //Abstract class
     extracting() {
         let action = this.creep.harvest(this.target);
         if (action == ERR_NOT_IN_RANGE) {
-            this.move();
+            this.move_creep();
         } else if (action == ERR_BUSY) {//The creep is still being spawned.
             //just wait
         } else if (action == ERR_NOT_ENOUGH_RESOURCES) {
@@ -518,7 +518,7 @@ class BaseCreep { //Abstract class
             let action = this.creep.claimController(this.target);
             // console.log('claiming', action);
             if (action == ERR_NOT_IN_RANGE) {
-                this.move();
+                this.move_creep();
             } else if (action != 0) {
                 console.log('claiming error:', action);
                 return false;
@@ -552,7 +552,7 @@ class BaseCreep { //Abstract class
                 // if (transfer_type != RESOURCE_ENERGY)
                 //     console.log(this.creep.name + ' transferring ' + transferring + ' ' + transfer_type + ' to ' + this.target);
                 if (action == ERR_NOT_IN_RANGE) {
-                    this.move();
+                    this.move_creep();
                 } else if (action != 0) {
                     console.log('storing error:', action);
                     // return false;
@@ -579,7 +579,7 @@ class BaseCreep { //Abstract class
             if (transferring > 0) {
                 let action = this.creep.transfer(this.target, RESOURCE_ENERGY, transferring);
                 if (action == ERR_NOT_IN_RANGE) {
-                    this.move();
+                    this.move_creep();
                 } else if (action != 0) {
                     console.log('transferring error:', action);
                     // return false;
@@ -602,7 +602,7 @@ class BaseCreep { //Abstract class
                 //     this.retarget(this);
                 // }
                 if (action == ERR_NOT_IN_RANGE) {
-                    this.move();
+                    this.move_creep();
                 } else if (action != 0) {
                     console.log('energizing error:', action);
                     // return false;
@@ -625,7 +625,7 @@ class BaseCreep { //Abstract class
         } else {
             let action = this.creep.build(this.target);
             if (action == ERR_NOT_IN_RANGE) {
-                this.move();
+                this.move_creep();
             } else if (action == ERR_BUSY) {//The creep is still being spawned.
                 //just wait
                 // }else if (action == ERR_INVALID_TARGET){
@@ -645,7 +645,7 @@ class BaseCreep { //Abstract class
         } else {
             let action = this.creep.upgradeController(this.target);
             if (action == ERR_NOT_IN_RANGE) {
-                this.move();
+                this.move_creep();
             } else if (action == ERR_BUSY) {//The creep is still being spawned.
                 //just wait
                 // }else if (action == ERR_INVALID_TARGET){
@@ -660,7 +660,7 @@ class BaseCreep { //Abstract class
     picking() {
         let action = this.creep.pickup(this.target);
         if (action == ERR_NOT_IN_RANGE) {
-            this.move();
+            this.move_creep();
         } else if (action == ERR_BUSY) {//The creep is still being spawned.
             //just wait
         } else if (action == ERR_INVALID_TARGET) {
@@ -682,7 +682,7 @@ class BaseCreep { //Abstract class
             return false
         }
         if (action == ERR_NOT_IN_RANGE) {
-            this.move();
+            this.move_creep();
         } else if (action == ERR_BUSY) {//The creep is still being spawned.
             //just wait
         } else if (action == ERR_INVALID_TARGET) {
@@ -702,7 +702,7 @@ class BaseCreep { //Abstract class
         let range = this.creep.pos.getRangeTo(this.target);
 
         if (range > 3 && is_ranged) {
-            let move = this.move();
+            let move = this.move_creep();
         }
 
         if (is_ranged) {
@@ -725,7 +725,7 @@ class BaseCreep { //Abstract class
         //     console.log('kite');
         // } else 
         if (action == ERR_NOT_IN_RANGE) {
-            this.move();
+            this.move_creep();
         } else if (action == ERR_BUSY) {//The creep is still being spawned.
             //just wait
         } else if (action == ERR_INVALID_TARGET) {
@@ -745,7 +745,7 @@ class BaseCreep { //Abstract class
     kiting() {
         let action = this.creep.rangedAttack(this.target);
         if (action == ERR_NOT_IN_RANGE) {
-            this.move();
+            this.move_creep();
         } else if (action == ERR_BUSY) {//The creep is still being spawned.
             //just wait
         } else if (action == ERR_INVALID_TARGET) {
@@ -767,10 +767,10 @@ class BaseCreep { //Abstract class
             if (this.creep.carry.energy > 0) {
                 let action = this.creep.transfer(this.target, RESOURCE_ENERGY);
                 if (action != 0) {
-                    this.move();
+                    this.move_creep();
                 }
             }else{
-                this.move();
+                this.move_creep();
             }
             // let action = target.renewCreep(this.creep);
             // if (action == ERR_NOT_IN_RANGE) {
@@ -840,7 +840,7 @@ class BaseCreep { //Abstract class
         // console.log(Object.keys(path[0]));
         // console.log(path[0].x, path[0].y, path[0].dx, path[0].dy, path[0].direction);
         if (this.target.pos.x == this.creep.pos.x && this.target.pos.y == this.creep.pos.y) return false;
-        let action = this.move();
+        let action = this.move_creep();
         if (action == ERR_TIRED) {
             this.creep.say('tired');
         } else if(action == ERR_BUSY) {
@@ -867,7 +867,7 @@ class BaseCreep { //Abstract class
         // return false;
     }
 
-    move(force_move?:boolean) {
+    move_creep(force_move?:boolean) {
         // console.log(this.creep.name, this.creep.memory.role, this.creep.pos.x, this.creep.memory.target_x, ', ', this.creep.pos.y, this.creep.memory.target_y);
         return this.creep.moveTo(this.target);
 

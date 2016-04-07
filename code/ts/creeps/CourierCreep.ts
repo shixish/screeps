@@ -27,7 +27,7 @@ class CourierCreep extends BaseCreep {
             if (!super.try_targeting('picking')) { //picking isn't smart enough, it makes the screeps behave stupidly. chasing everything down... 
             //todo: Can make a routine that looks for nearest CARRY creep nearby the dropped resource and retarget it to pick it up
                 if (!super.try_targeting('energizing')) {
-
+                    
                 }
             }
         }

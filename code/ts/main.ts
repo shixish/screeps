@@ -80,6 +80,8 @@ declare var module: any;
         creepDiag.stop();
     }
 
+    Inventory.teardown();
+    
     totalDiag.stop();
     
     // debug.printDiag();
