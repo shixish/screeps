@@ -12,16 +12,17 @@ class LinkerCreep extends BaseCreep {
         var creep_name = this.creep.name;
         if (!creep.memory.storage) {
             // console.log(creep.room.memory.structures.storage);
-            for (var s in creep.room.memory.structures.storage) {
-                // creep.room.memory.structures.storage[s].linker = null;
-                creep.room.memory.structures.storage[s].linker
-                var linker_name = creep.room.memory.structures.storage[s].linker;
-                if (!linker_name || (linker_name && (!Game.creeps[linker_name] || linker_name == creep_name))) {
-                    creep.room.memory.structures.storage[s].linker = creep_name;
-                    this.creep.memory.storage = s;
-                    break;
-                }
+            if (creep.room.memory.structures.storage.length) {
+                this.creep.memory.storage = creep.room.memory.structures.storage[0];//there can only be one storage tank.
             }
+            // for (var s in creep.room.memory.structures.storage) {
+            //     var linker_name = creep.room.memory.structures.storage[s].linker;
+            //     if (!linker_name || (linker_name && (!Game.creeps[linker_name] || linker_name == creep_name))) {
+            //         creep.room.memory.structures.storage[s].linker = creep_name;
+            //         this.creep.memory.storage = s;
+            //         break;
+            //     }
+            // }
         }
         this.storage = <Storage>Game.getObjectById(creep.memory.storage);
         if (this.storage) {
@@ -44,18 +45,6 @@ class LinkerCreep extends BaseCreep {
 
     retarget() {
         super.retarget();
-        // if (this.creep.carry.energy > 0) {
-        //     if (!super.try_targeting('transferring')) {
-
-        //     }
-        // } else {
-        //     if (!super.try_targeting('picking')) {
-        //         if (!super.try_targeting('energizing')) {
-
-        //         }
-        //     }
-        // }
-
         if (this.creep.carry.energy > 0) {
             super.set_target(this.storage, 'transferring');
         } else {

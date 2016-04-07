@@ -37,11 +37,23 @@ class BaseCreep { //Abstract class
     }
 
     static get_heighest_tier(room:Room){
-        let budget = room.energyCapacityAvailable;
+        let budget = room.energyAvailable;
         for (let t in this.creep_tiers) {
             let tier = this.creep_tiers[t];
             // console.log(tier, tier.cost, room.energyCapacityAvailable);
             if (tier.cost < budget){
+                return tier;
+            }
+        }
+    }
+
+    //not sure this is necessary...
+    static get_affordable_tier(room: Room) {
+        let budget = room.energyAvailable;
+        for (let t in this.creep_tiers) {
+            let tier = this.creep_tiers[t];
+            // console.log(tier, tier.cost, room.energyCapacityAvailable);
+            if (tier.cost < budget) {
                 return tier;
             }
         }
@@ -581,7 +593,7 @@ class BaseCreep { //Abstract class
                 if (action == ERR_NOT_IN_RANGE) {
                     this.move_creep();
                 } else if (action != 0) {
-                    console.log('transferring error:', action);
+                    // console.log('transferring error:', action);
                     // return false;
                 }
             } else {

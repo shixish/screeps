@@ -36,8 +36,15 @@ class Inventory {
 
         for (let r in Game.rooms) {
             let room = Game.rooms[r];
-            // room.memory['energy'] = room.memory['energyCapacity'] = 0;
             delete room.memory['creep_roles']; //needs to be rebuilt.
+        }
+
+        Inventory.invCreeps();
+
+        for (let r in Game.rooms) {
+            let room = Game.rooms[r];
+            // room.memory['energy'] = room.memory['energyCapacity'] = 0;
+            // delete room.memory['creep_roles']; //needs to be rebuilt.
 
             if (!room.memory.source) Inventory.invRoomSources(room);
             if (!room.memory.mineral) Inventory.invRoomMinerals(room);
@@ -49,17 +56,8 @@ class Inventory {
             // console.log(hostile_creeps);
             room.memory.under_attack = hostile_creeps.length;
         }
-        Inventory.invCreeps();
         invDiag.stop();
     }
-
-    static teardown() { 
-        for (let r in Game.rooms) {
-            let room = Game.rooms[r];
-            delete room.memory['creep_roles']; //should be rebuilt each tick
-        }
-    }
-
 
     static invRoomSources(room:Room) {
         let sources = <Source[]>room.find(FIND_SOURCES);
@@ -174,10 +172,13 @@ class Inventory {
 
     //Shouldn't really be necessary anymore:
     static calculateCreepCost(creep) {
-        return _.reduce(_.map(creep.body, (obj) => { return obj.type; }), (a, b) => { return a + BODYPART_COST[b] }, 0);
+        console.log(creep);
+        // return _.reduce(_.map(creep.body, (obj) => { return obj.type; }), (a, b) => { return a + BODYPART_COST[b] }, 0);
     }
 
     static updateSpawnQueue(room: Room){
+        if (!room.controller.owner || room.controller.owner.username != Globals.USERNAME) return;
+
         let sources = Inventory.room_sources(room),
             minerals = Inventory.room_minerals(room),
             spawns = Inventory.room_structure_count('spawn', room),
@@ -199,11 +200,6 @@ class Inventory {
             'healer': 0,
         }
 
-        let current_creeps = {};
-        for (let role in max_creeps) {
-            current_creeps[role] = Inventory.room_creep_count(role, room);
-        }
-
         let under_attack_by = room.memory.under_attack;
         if (room.memory.under_attack > 0){
             max_creeps.courier += Math.floor(under_attack_by / 3);
@@ -211,10 +207,15 @@ class Inventory {
             max_creeps.guard += Math.ceil(under_attack_by / 4);
             max_creeps.ranger += Math.ceil(under_attack_by);
         }
+
+        let current_creeps = {};
+        for (let role in max_creeps) {
+            current_creeps[role] = Inventory.room_creep_count(role, room);
+        }
+        // debug.log(current_creeps);
         
         let queue = [];
         for (let role in max_creeps) {
-            let count = Inventory.room_creep_count(role, room);
             if (current_creeps[role] < max_creeps[role]) {
                 queue.push(role);
                 current_creeps[role]++;
@@ -223,8 +224,8 @@ class Inventory {
             }
         }
 
-        room.memory['SpawnQueue'] = queue;
-        room.memory['MaxCreeps'] = max_creeps;
+        room.memory['spawn_queue'] = queue;
+        room.memory['max_creeps'] = max_creeps;
     }
 
     static invCreepObj(creep: Creep) {
@@ -260,6 +261,7 @@ class Inventory {
         if (!room.memory['creep_roles']) room.memory['creep_roles'] = {};
         if (!room.memory['creep_roles'][role]) room.memory['creep_roles'][role] = [];
         room.memory['creep_roles'][role].push(name);
+        // debug.log(room.memory['creep_roles']);
     }
 
     static invNewCreep(role: string, name: string, room: Room) {

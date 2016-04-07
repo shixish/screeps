@@ -29,7 +29,7 @@ class TakeAction extends BaseAction {
             return false;
         } else {
             if (this.target.energy > 0 || (this.target.store && this.target.store.energy > 0)) { //Storage uses .store, others don't
-                let action = this.target.transferEnergy(creep);
+                let action = this.target.transferEnergy(this.actor);
                 // if (target.energy <= 5){
                 //     this.retarget(this);
                 // }

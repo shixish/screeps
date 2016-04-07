@@ -26,7 +26,8 @@ declare var module: any;
                 if (structure_controllers[type]) {
                     let structures = memory.structures[type];
                     let StructureController = structure_controllers[type];
-                    for (let id in structures) {
+                    for (let s in structures) {
+                        let id = structures[s];
                         let structureDiag = debug.diag(['structure.' + type, room.name + '.' + type]);
                         try {
                             let controller = new StructureController(id);
@@ -79,8 +80,6 @@ declare var module: any;
         }
         creepDiag.stop();
     }
-
-    Inventory.teardown();
     
     totalDiag.stop();
     

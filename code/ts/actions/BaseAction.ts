@@ -37,12 +37,7 @@ class BaseAction{ //Abstract class
         // debug.log(targets);
 
         if (targets && targets.length > 0) {
-            let goals = _.map(targets, function(obj) {
-                // We can't actually walk on sources-- set `range` to 1 so we path next to it.
-                return { pos: obj.pos, range: this.getRange(obj) };
-            });
-
-            let target_obj = BaseAction.getClosestByPath(this.actor, goals);
+            let target_obj = BaseAction.getClosestByPath(this.actor, targets);
             if (target_obj.target) {
                 this.actor.memory.target_id = target_obj.target.id;
                 this.actor.memory.target_path = Room.serializePath(target_obj.path);
@@ -105,12 +100,23 @@ class BaseAction{ //Abstract class
         }
     }
 
-    static getClosestByPath(actor, goals) {
+    static getClosestByPath(actor, targets) {
 
         let target;
         let target_path = [];
 
-        if (goals && goals.length > 0) {
+        if (targets && targets.length > 0) {
+            // let goals = _.map(targets, function(obj) {
+            //     // We can't actually walk on sources-- set `range` to 1 so we path next to it.
+            //     let range = 1;
+            //     if (obj.structureType && obj.structureType == STRUCTURE_CONTAINER) range = 0;
+            //     return { pos: obj.pos, range: range };
+            // });
+
+            let goals = _.map(targets, function(obj) {
+                // We can't actually walk on sources-- set `range` to 1 so we path next to it.
+                return { pos: obj.pos, range: this.getRange(obj) };
+            });
 
             // debug.log(goals);
 
@@ -178,41 +184,41 @@ class BaseAction{ //Abstract class
         };
     }
     
-    moving() {
-        // console.log(creep);
-        // let action = this.experimental_move(this.target);
-        // var path = this.actor.pos.findPathTo(this.target);
-        // console.log(Object.keys(path[0]));
-        // console.log(path[0].x, path[0].y, path[0].dx, path[0].dy, path[0].direction);
-        if (this.target.pos.x == this.actor.pos.x && this.target.pos.y == this.actor.pos.y) return false;
-        let action = this.move();
-        if (action == ERR_TIRED) {
-            this.actor.say('tired');
-        } else if (action == ERR_BUSY) {
-            //just wait
-        } else if (action == ERR_NO_PATH) {
-            console.log(this.actor.name, "unable to find a path to", this.target);
-            // this.actor.move(this.actor.pos.getDirectionTo(this.target));
-            // action = this.experimental_move(this.target);
-            // if (action == ERR_TIRED) {
-            //     this.actor.say('tired');
-            // } else if (action == ERR_BUSY) {
-            //     //just wait
-            // } else if (action == ERR_NO_PATH) {
-            //     console.log(this.actor.name, "unable to find a path to", target);
-            // }else if (action != 0) {
-            //     console.log('Error moving:', action);
-            // }
-        } else if (action != 0) {
-            console.log('Error moving:', action);
-            return false;
-        }
-        return false;
-        // console.log(this.actor.name, 'moving', action);
-        // return false;
-    }
+    // moving() {
+    //     // console.log(creep);
+    //     // let action = this.experimental_move(this.target);
+    //     // var path = this.actor.pos.findPathTo(this.target);
+    //     // console.log(Object.keys(path[0]));
+    //     // console.log(path[0].x, path[0].y, path[0].dx, path[0].dy, path[0].direction);
+    //     if (this.target.pos.x == this.actor.pos.x && this.target.pos.y == this.actor.pos.y) return false;
+    //     let action = this.move();
+    //     if (action == ERR_TIRED) {
+    //         this.actor.say('tired');
+    //     } else if (action == ERR_BUSY) {
+    //         //just wait
+    //     } else if (action == ERR_NO_PATH) {
+    //         console.log(this.actor.name, "unable to find a path to", this.target);
+    //         // this.actor.move(this.actor.pos.getDirectionTo(this.target));
+    //         // action = this.experimental_move(this.target);
+    //         // if (action == ERR_TIRED) {
+    //         //     this.actor.say('tired');
+    //         // } else if (action == ERR_BUSY) {
+    //         //     //just wait
+    //         // } else if (action == ERR_NO_PATH) {
+    //         //     console.log(this.actor.name, "unable to find a path to", target);
+    //         // }else if (action != 0) {
+    //         //     console.log('Error moving:', action);
+    //         // }
+    //     } else if (action != 0) {
+    //         console.log('Error moving:', action);
+    //         return false;
+    //     }
+    //     return false;
+    //     // console.log(this.actor.name, 'moving', action);
+    //     // return false;
+    // }
 
-    move(force_move?: boolean) {
+    move() {
         // console.log(this.actor.name, this.actor.memory.role, this.actor.pos.x, this.actor.memory.target_x, ', ', this.actor.pos.y, this.actor.memory.target_y);
         return this.actor.moveTo(this.target);
 
@@ -227,10 +233,10 @@ class BaseAction{ //Abstract class
         // }
 
         //As long as the stored target object is the right target, and we have the stored target_path, try to use it.
-        if (this.target.id != this.actor.memory.target_id) {
-            console.log('weirdo movement!?');
-            this.retarget();
-        }
+        // if (this.target.id != this.actor.memory.target_id) {
+        //     console.log('weirdo movement!?');
+        //     this.retarget();
+        // }
 
         let path;
         if (!this.actor.memory.target_path) {
