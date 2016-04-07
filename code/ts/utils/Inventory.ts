@@ -99,7 +99,7 @@ class Inventory {
         let by_type = {};
         for (let s in structures) {
             let structure = structures[s];
-            if (!by_type[structure.structureType]) by_type[structure.structureType] = {};
+            if (!by_type[structure.structureType]) by_type[structure.structureType] = [];
             by_type[structure.structureType].push(structure.id);
             // if (!by_type[structure.structureType][structure.id]) by_type[structure.structureType][structure.id] = {};
 

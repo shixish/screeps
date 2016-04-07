@@ -1,10 +1,10 @@
 /// <reference path="../vars/Globals.ts" />
 /// <reference path="BaseAction.ts" />
 "use strict";
-class BuildAction extends BaseAction {
+class RenewAction extends BaseAction {
     public actor;
     public target;
-    public action_name = 'Build';
+    public action_name = 'Renew';
 
     constructor(actor) {
         super(actor);
