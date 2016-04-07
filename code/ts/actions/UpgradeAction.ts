@@ -11,12 +11,14 @@ class UpgradeAction extends BaseAction {
     }
 
     getTargets() {
-        if (this.actor.room.controller && (this.actor.room.controller.progress != this.actor.room.controller.progressTotal || this.actor.room.controller.ticksToDowngrade < 30000)) {
+        if (this.actor.room.controller && (this.actor.room.controller.progress < this.actor.room.controller.progressTotal || this.actor.room.controller.ticksToDowngrade < 30000)) {
             return [this.actor.room.controller];
         }
     }
 
     perform() {
+        super.perform();
+
         if (this.actor.carry.energy == 0) {//end condition:
             this.actor.say('Built');
             return false;
@@ -36,3 +38,4 @@ class UpgradeAction extends BaseAction {
     }
 
 }
+CreepActions['Upgrade'] = UpgradeAction;

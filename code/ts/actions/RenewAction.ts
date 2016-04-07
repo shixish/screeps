@@ -25,6 +25,13 @@ class RenewAction extends BaseAction {
     }
 
     perform() {
+        super.perform();
+
+        //if we're under attack, don't sit there renewing yourself:
+        if (this.actor.room.memory.under_attack || this.actor.memory.obsolete) {
+            return false;
+        }
+
         if (this.actor.ticksToLive < 1400) {
             if (this.actor.carry.energy > 0) {
                 let action = this.actor.transfer(this.target, RESOURCE_ENERGY);
@@ -50,3 +57,4 @@ class RenewAction extends BaseAction {
     }
 
 }
+CreepActions['Renew'] = RenewAction;

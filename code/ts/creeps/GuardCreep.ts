@@ -23,10 +23,10 @@ class GuardCreep extends BaseCreep {
         super.retarget();
         // this.flag.remove();
         // this.creep.room.memory.under_attack
-        // if (!super.try_targeting('fighting')) {
+        // if (!super.try_to('fighting')) {
         
-        // if (!super.try_targeting('kiting')) {
-        //     if (!super.try_targeting('sieging')) {
+        // if (!super.try_to('kiting')) {
+        //     if (!super.try_to('sieging')) {
         //         if (this.flag) {
         //             this.creep.memory.target_id = this.flag.id;
         //             this.creep.memory.action_name = 'moving';
@@ -34,7 +34,7 @@ class GuardCreep extends BaseCreep {
         //     }
         // }
         // console.log('guard retargeting');
-        if (!super.try_targeting('assaulting')) {
+        if (!super.try_to('Attack')) {
             if (this.flag) {
                 super.set_target(this.flag);
             }
@@ -122,3 +122,4 @@ class GuardCreep extends BaseCreep {
     ];
 
 }
+CreepControllers['Guard'] = GuardCreep;

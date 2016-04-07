@@ -52,3 +52,4 @@ class AttackAction extends FightAction {
     }
 
 }
+CreepActions['Attack'] = AttackAction;

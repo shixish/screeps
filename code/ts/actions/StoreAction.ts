@@ -23,6 +23,8 @@ class StoreAction extends BaseAction {
 
     //This works for energy and minerals
     perform() {
+        super.perform();
+
         let total_carrying = _.sum(this.actor.carry);
         if (total_carrying == 0) {
             this.actor.say('Stored');
@@ -59,3 +61,4 @@ class StoreAction extends BaseAction {
     }
 
 }
+CreepActions['Store'] = StoreAction;

@@ -40,6 +40,8 @@ class GiveAction extends BaseAction {
 
     //This only transfers energy, not minerals
     perform() {
+        super.perform();
+
         if (this.actor.carry.energy == 0) {
             this.actor.say('Transfered');
             return false;
@@ -66,3 +68,4 @@ class GiveAction extends BaseAction {
     }
 
 }
+CreepActions['Give'] = GiveAction;

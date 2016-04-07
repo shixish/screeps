@@ -24,3 +24,4 @@ class AskAction extends TakeAction { //Abstract class
     }
 
 }
+CreepActions['Ask'] = AskAction;

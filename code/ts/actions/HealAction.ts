@@ -20,6 +20,8 @@ class HealAction extends BaseAction {
     }
 
     perform() {
+        super.perform();
+
         let action;
         if (this.actor.getActiveBodyparts(HEAL) > 0) {
             action = this.actor.rangedHeal(this.target);
@@ -40,3 +42,4 @@ class HealAction extends BaseAction {
     }
 
 }
+CreepActions['Heal'] = HealAction;

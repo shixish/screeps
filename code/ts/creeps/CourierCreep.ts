@@ -15,23 +15,17 @@ class CourierCreep extends BaseCreep {
         super.retarget();
         if (_.sum(this.creep.carry) > this.creep.carryCapacity/2) {
             if (this.creep.carry.energy > 0) {
-                if (!super.try_targeting('transferring')) {
-
-                }
+                super.try_to('Give');
             } else { //if it's not energy, it needs to be put into storage.
-                if (!super.try_targeting('storing')) {
-
-                }
+                super.try_to('Store');
             }
         } else {
-            if (!super.try_targeting('picking')) { //picking isn't smart enough, it makes the screeps behave stupidly. chasing everything down... 
+            if (!super.try_to('Pickup')) { //picking isn't smart enough, it makes the screeps behave stupidly. chasing everything down... 
             //todo: Can make a routine that looks for nearest CARRY creep nearby the dropped resource and retarget it to pick it up
-                if (!super.try_targeting('energizing')) {
-                    
-                }
+                super.try_to('Take');
             }
         }
-        super.try_targeting('resting');//get the little shits out of the way
+        super.try_to('Rest');//get the little shits out of the way
     }
 
     // work() {
@@ -97,3 +91,4 @@ class CourierCreep extends BaseCreep {
     ];
 
 }
+CreepControllers['Courier'] = CourierCreep;

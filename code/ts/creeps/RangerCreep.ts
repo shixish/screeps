@@ -24,7 +24,7 @@ class RangerCreep extends BaseCreep {
         // this.flag.remove();
         // this.creep.room.memory.under_attack
 
-        if (!super.try_targeting('assaulting')) {
+        if (!super.try_to('Attack')) {
             if (this.flag) {
                 super.set_target(this.flag);
             }
@@ -84,3 +84,4 @@ class RangerCreep extends BaseCreep {
     ];
 
 }
+CreepControllers['Ranger'] = RangerCreep;

@@ -1,19 +1,19 @@
 /// <reference path="../vars/Globals.ts" />
 /// <reference path="BaseAction.ts" />
-/// <reference path="HarvestAction.ts" />
 "use strict";
-class MineAction extends HarvestAction {
+class MoveAction extends BaseAction {
     public actor;
     public target;
-    public action_name = 'Mine';
+    public action_name = 'Move';
 
     constructor(actor) {
         super(actor);
     }
 
     getTargets() {
-        return this.actor.room.find(FIND_MINERALS);
+        console.log('invalid creep movement command...');
+        return false;
     }
 
 }
-CreepActions['Mine'] = MineAction;
+CreepActions['Move'] = MoveAction;

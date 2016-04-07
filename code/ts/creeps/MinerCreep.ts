@@ -12,9 +12,9 @@ class MinerCreep extends BaseCreep {
     retarget() {
         super.retarget();
         if (_.sum(this.creep.carry) > 0) {
-            super.try_targeting('storing');
+            super.try_to('Store');
         } else {
-            super.try_targeting('mining');
+            super.try_to('Mine');
         }
     }
 
@@ -91,3 +91,4 @@ class MinerCreep extends BaseCreep {
     ];
 
 }
+CreepControllers['Miner'] = MinerCreep;

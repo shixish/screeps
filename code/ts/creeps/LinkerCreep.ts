@@ -15,14 +15,6 @@ class LinkerCreep extends BaseCreep {
             if (creep.room.memory.structures.storage.length) {
                 this.creep.memory.storage = creep.room.memory.structures.storage[0];//there can only be one storage tank.
             }
-            // for (var s in creep.room.memory.structures.storage) {
-            //     var linker_name = creep.room.memory.structures.storage[s].linker;
-            //     if (!linker_name || (linker_name && (!Game.creeps[linker_name] || linker_name == creep_name))) {
-            //         creep.room.memory.structures.storage[s].linker = creep_name;
-            //         this.creep.memory.storage = s;
-            //         break;
-            //     }
-            // }
         }
         this.storage = <Storage>Game.getObjectById(creep.memory.storage);
         if (this.storage) {
@@ -46,9 +38,9 @@ class LinkerCreep extends BaseCreep {
     retarget() {
         super.retarget();
         if (this.creep.carry.energy > 0) {
-            super.set_target(this.storage, 'transferring');
+            super.set_target(this.storage, 'Give');
         } else {
-            super.set_target(this.link, 'energizing');
+            super.set_target(this.link, 'Take');
         }
     }
 
@@ -95,3 +87,4 @@ class LinkerCreep extends BaseCreep {
         },
     ];
 }
+CreepControllers['Linker'] = LinkerCreep;

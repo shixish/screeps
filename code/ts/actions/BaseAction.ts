@@ -7,7 +7,9 @@ class BaseAction{ //Abstract class
 
     constructor(actor) {
         this.actor = actor;
-        this.target = Game.getObjectById(this.actor.memory.target_id);
+        // console.log(this.actor);
+        if (this.actor.memory.target_id)
+            this.target = Game.getObjectById(this.actor.memory.target_id);
         // this.action_name = this.actor.memory.action_name;
     }
 
@@ -17,11 +19,13 @@ class BaseAction{ //Abstract class
     
     try() {
         let targets = this.getTargets();
-        return this.setTargets(targets);
+        if (targets){
+            return this.setTargets(targets);
+        }
     }
 
     perform() {
-
+        this.move();
     }
 
     getTargetRange(obj) {
@@ -37,7 +41,7 @@ class BaseAction{ //Abstract class
         // debug.log(targets);
 
         if (targets && targets.length > 0) {
-            let target_obj = BaseAction.getClosestByPath(this.actor, targets);
+            let target_obj = BaseAction.getClosestByPath(this.actor, targets, this.getTargetRange);
             if (target_obj.target) {
                 this.actor.memory.target_id = target_obj.target.id;
                 this.actor.memory.target_path = Room.serializePath(target_obj.path);
@@ -100,10 +104,12 @@ class BaseAction{ //Abstract class
         }
     }
 
-    static getClosestByPath(actor, targets) {
+    static getClosestByPath(actor, targets, range?:Function) {
 
         let target;
         let target_path = [];
+
+        // range = range == undefined ? 1 : range;
 
         if (targets && targets.length > 0) {
             // let goals = _.map(targets, function(obj) {
@@ -112,10 +118,9 @@ class BaseAction{ //Abstract class
             //     if (obj.structureType && obj.structureType == STRUCTURE_CONTAINER) range = 0;
             //     return { pos: obj.pos, range: range };
             // });
-
             let goals = _.map(targets, function(obj) {
                 // We can't actually walk on sources-- set `range` to 1 so we path next to it.
-                return { pos: obj.pos, range: this.getRange(obj) };
+                return { pos: obj.pos, range: range(obj) };
             });
 
             // debug.log(goals);
@@ -219,8 +224,12 @@ class BaseAction{ //Abstract class
     // }
 
     move() {
-        // console.log(this.actor.name, this.actor.memory.role, this.actor.pos.x, this.actor.memory.target_x, ', ', this.actor.pos.y, this.actor.memory.target_y);
-        return this.actor.moveTo(this.target);
+        // if (this.actor.name == 'Katherine')
+        //     console.log(this.actor.name, this.actor.memory.role, this.actor.pos.x, this.actor.memory.target_x, ', ', this.actor.pos.y, this.actor.memory.target_y);
+        if (this.target && this.actor && !this.actor.pos.inRangeTo(this.target, this.getTargetRange(this.target))) {
+            return this.actor.moveTo(this.target);
+        }
+        return;
 
         // let p = this.actor.pos.findPathTo(this.target);
         // return this.actor.moveByPath(p);

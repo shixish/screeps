@@ -17,23 +17,23 @@ class BuilderCreep extends BaseCreep {
         super.retarget();
         // this.creep.memory.target_id = this.creep.memory.action_name = null;
         if (this.creep.carry.energy > 0) {
-            if (this.hasStorage || !super.try_targeting('transferring')) {
-                if (!super.try_targeting('building')) {
-                    if (!super.try_targeting('upgrading')) {
+            if (this.hasStorage || !super.try_to('Give')) {
+                if (!super.try_to('Build')) {
+                    if (!super.try_to('Upgrade')) {
 
                     }
                 }
             }
         } else {
-            // if (!super.try_targeting('picking')) {
-                if (!super.try_targeting('tenergizing')) {
-                    if (!super.try_targeting('harvesting')) {
+            // if (!super.try_to('picking')) {
+                if (!super.try_to('Ask')) {
+                    if (!super.try_to('Harvest')) {
 
                     }
                 }
             // }
         }
-        super.try_targeting('resting');//get the little shits out of the way
+        super.try_to('Rest');//get the little shits out of the way
     }
 
     // static create(budget: number) {
@@ -115,3 +115,4 @@ class BuilderCreep extends BaseCreep {
     ];
 
 }
+CreepControllers['Builder'] = BuilderCreep;

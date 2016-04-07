@@ -20,6 +20,8 @@ class BuildAction extends BaseAction {
     }
 
     perform() {
+        super.perform();
+
         if (this.actor.carry.energy == 0) {//end condition:
             this.actor.say('Built');
             return false;
@@ -39,3 +41,4 @@ class BuildAction extends BaseAction {
     }
 
 }
+CreepActions['Build'] = BuildAction;

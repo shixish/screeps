@@ -32,12 +32,12 @@ class HarvesterCreep extends BaseCreep {
 
     retarget() {
         super.retarget();
-        if (!this.source) {//creep got screwed up somehow. Just make it into a generic builder class...
-            // console.log(this.creep);
-            this.creep.memory.role = "builder";
-            this.creep.memory.target_id = this.creep.memory.action_name = null;
-            return;
-        }
+        // if (!this.source) {//creep got screwed up somehow. Just make it into a generic builder class...
+        //     // console.log(this.creep);
+        //     this.creep.memory.role = "builder";
+        //     this.creep.memory.target_id = this.creep.memory.action_name = null;
+        //     return;
+        // }
         // console.log(this.link);
         if (this.creep.carry.energy > 0) {
             // var source_memory = this.source.room.memory.source[this.source.id];
@@ -45,12 +45,12 @@ class HarvesterCreep extends BaseCreep {
             //     this.link = <Link>Game.getObjectById(source_memory.link);
             // }
             if (this.link && this.link.energy != this.link.energyCapacity) {
-                super.set_target(this.link, 'transferring');
+                super.set_target(this.link, 'Give');
             } else {
-                if (!super.try_targeting('transferring')) { //Behave as a more generic creep if still in low infrastructure
-                    if (!super.try_targeting('storing')) {
-                        if (!super.try_targeting('building')) {
-                            if (!super.try_targeting('upgrading')) {
+                if (!super.try_to('Give')) { //Behave as a more generic creep if still in low infrastructure
+                    if (!super.try_to('Store')) {
+                        if (!super.try_to('Build')) {
+                            if (!super.try_to('Upgrade')) {
 
                             }
                         }
@@ -58,51 +58,9 @@ class HarvesterCreep extends BaseCreep {
                 }
             }
         } else {
-            super.set_target(this.source, 'harvesting');
+            super.set_target(this.source, 'Harvest');
         }
     }
-
-    // work(is_retry) {
-    //     var target = Game.getObjectById(this.creep.memory.target_id),
-    //         action_name = this.creep.memory.action_name,
-    //         action_function = this[action_name];
-
-    //     this.creep.say(action_name);
-    //     if (!this.creep.memory.obsolete && action_name !== "renewing" && this.creep.ticksToLive < Globals.MIN_TICKS_TO_LIVE) {
-    //         target = this.creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
-    //             filter: function(obj) {
-    //                 return (
-    //                     obj.structureType == STRUCTURE_SPAWN
-    //                 );
-    //             }
-    //         });
-    //         if (target) {
-    //             action_function = this['renewing'];
-    //             this.creep.memory.target_id = target.id;
-    //             this.creep.memory.action_name = 'renewing';
-    //             console.log('Renewing ' + this.creep.memory.role + ' creep ' + this.creep.name);
-    //         } else {
-    //             console.log('cannot renew. spawn is busy...');
-    //         }
-    //     }else if (!target || !action_function) {
-    //         this.retarget();
-    //     }
-    //     // console.log(action_name, target, action_function);
-    //     if (target && action_function) {
-    //         if (!action_function.apply(this, [target]) && !is_retry) {
-    //             //if not, try again. but only once.
-    //             this.retarget();
-    //             this.work(true);
-    //         }
-    //     }
-    // }
-
-    // work() {
-    //     if (this.creep.carry.energy == this.creep.carryCapacity) {
-    //         super.transferring(this.link);
-    //     }
-    //     super.harvesting(this.source);
-    // }
 
     // static create(budget: number) {
     //     if (budget >= 50 + 100*6 + 50*6) //950
@@ -167,3 +125,4 @@ class HarvesterCreep extends BaseCreep {
     ];
 
 }
+CreepControllers['Harvester'] = HarvesterCreep;

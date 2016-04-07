@@ -16,15 +16,17 @@ class FightAction extends BaseAction {
     }
 
     perform() {
+        super.perform();
+
         let action;
         let my_pos = this.actor.pos;
         let is_ranged = this.actor.getActiveBodyparts(RANGED_ATTACK) > 0;
 
         let range = this.actor.pos.getRangeTo(this.target);
 
-        if (range > 3 && is_ranged) {
-            let move = this.move();
-        }
+        // if (range > 3 && is_ranged) {
+        //     let move = this.move();
+        // }
 
         if (is_ranged) {
             action = this.actor.rangedAttack(this.target);
@@ -59,3 +61,4 @@ class FightAction extends BaseAction {
     }
 
 }
+CreepActions['Fight'] = FightAction;

@@ -24,6 +24,8 @@ class TakeAction extends BaseAction {
 
     //only works on storage tanks
     perform() {
+        super.perform();
+
         if (this.actor.carry.energy == this.actor.carryCapacity || this.target.energy == 0) {//end condition:
             this.actor.say('Energized');
             return false;
@@ -47,3 +49,4 @@ class TakeAction extends BaseAction {
     }
 
 }
+CreepActions['Take'] = TakeAction;

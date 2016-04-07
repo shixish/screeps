@@ -27,3 +27,7 @@ const Globals = {
     MAX_COST: 3000,
     PART_COSTS: PartCosts,
 }
+
+//These get filled in during the definition of the classes:
+let CreepActions = {};
+let CreepControllers = {};

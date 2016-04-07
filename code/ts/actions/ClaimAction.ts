@@ -21,6 +21,8 @@ class ClaimAction extends BaseAction {
     }
 
     perform() {
+        super.perform();
+
         if ((<Controller>this.target).owner && (<Controller>this.target).owner.username == Globals.USERNAME) {
             return false;
         } else {
@@ -37,3 +39,4 @@ class ClaimAction extends BaseAction {
     }
 
 }
+CreepActions['Claim'] = ClaimAction;

@@ -45,28 +45,26 @@ class RunnerCreep extends BaseCreep {
         if (this.flag && this.creep.room.name != this.flag.pos.roomName) {
             // console.log(this.creep);
             if (Inventory.room_structure_count('storage', this.creep.room) > 0 && this.creep.carry.energy < this.creep.carryCapacity) {
-                super.try_targeting('energizing');
+                super.try_to('Take'); //fill up before leaving
             } else {
-                // this.creep.memory.target_id = this.flag.id;
-                // this.creep.memory.action_name = 'moving';
-                super.set_target(this.flag);
+                super.set_target(this.flag); //set off on the journey
             }
         } else {
             // this.flag.remove();
-            if (!super.try_targeting('claiming')) {
+            if (!super.try_to('Claim')) {
                 if (this.creep.carry.energy > 0) {
-                    if (!super.try_targeting('transferring')) {
-                        if (!super.try_targeting('building')) {
-                            if (!super.try_targeting('upgrading')) {
-                                if (!super.try_targeting('storing')) {
+                    if (!super.try_to('Give')) {
+                        if (!super.try_to('Build')) {
+                            if (!super.try_to('Upgrade')) {
+                                if (!super.try_to('Store')) {
                                     // console.log('Creep is unable to spend energy!?');
                                 }
                             }
                         }
                     }
                 } else {
-                    if (!super.try_targeting('picking')) {
-                        if (!super.try_targeting('harvesting')) {
+                    if (!super.try_to('Pickup')) {
+                        if (!super.try_to('Harvest')) {
 
                         }
                     }
@@ -158,3 +156,4 @@ class RunnerCreep extends BaseCreep {
     ];
 
 }
+CreepControllers['Runner'] = RunnerCreep;

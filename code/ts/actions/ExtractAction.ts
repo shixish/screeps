@@ -19,6 +19,8 @@ class ExtractAction extends BaseAction {
     }
 
     perform() {
+        super.perform();
+
         let action = this.actor.harvest(this.target);
         if (action == ERR_NOT_IN_RANGE) {
             this.move();
@@ -35,3 +37,4 @@ class ExtractAction extends BaseAction {
     }
 
 }
+CreepActions['Extract'] = ExtractAction;

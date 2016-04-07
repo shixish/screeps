@@ -21,20 +21,27 @@ class PickupAction extends BaseAction {
     }
 
     perform() {
-        let action = this.actor.pickup(this.target);
-        if (action == ERR_NOT_IN_RANGE) {
-            this.move();
-        } else if (action == ERR_BUSY) {//The creep is still being spawned.
-            //just wait
-        } else if (action == ERR_INVALID_TARGET) {
+        super.perform();
+
+        if (this.target) {
+            let action = this.actor.pickup(this.target);
+            if (action == ERR_NOT_IN_RANGE) {
+                this.move();
+            } else if (action == ERR_BUSY) {//The creep is still being spawned.
+                //just wait
+            } else if (action == ERR_INVALID_TARGET) {
+                return false;
+            } else if (action == ERR_FULL) {
+                return false;
+            } else if (action != 0) {
+                console.log('picking error:', action);
+                // return false;
+            }
+            return true;
+        } else { 
             return false;
-        } else if (action == ERR_FULL) {
-            return false;
-        } else if (action != 0) {
-            console.log('picking error:', action);
-            // return false;
         }
-        return true;
     }
 
 }
+CreepActions['Pickup'] = PickupAction;

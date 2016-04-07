@@ -21,3 +21,4 @@ class HarvestAction extends ExtractAction { //Abstract class
         }
     }
 }
+CreepActions['Harvest'] = HarvestAction;

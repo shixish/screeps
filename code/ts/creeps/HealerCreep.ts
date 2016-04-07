@@ -23,18 +23,18 @@ class HealerCreep extends BaseCreep {
         super.retarget();
         // this.flag.remove();
         // this.creep.room.memory.under_attack
-        // if (!super.try_targeting('fighting')) {
+        // if (!super.try_to('fighting')) {
         
-        // if (!super.try_targeting('kiting')) {
-        //     if (!super.try_targeting('sieging')) {
+        // if (!super.try_to('kiting')) {
+        //     if (!super.try_to('sieging')) {
         //         if (this.flag) {
         //             this.creep.memory.target_id = this.flag.id;
         //             this.creep.memory.action_name = 'moving';
         //         }
         //     }
         // }
-        if (!super.try_targeting('healing')) {
-            if (!super.try_targeting('following')) {
+        if (!super.try_to('Heal')) {
+            if (!super.try_to('Follow')) {
                 if (this.flag) {
                     super.set_target(this.flag);
                 }
@@ -109,3 +109,4 @@ class HealerCreep extends BaseCreep {
     ];
 
 }
+CreepControllers['Healer'] = HealerCreep;
