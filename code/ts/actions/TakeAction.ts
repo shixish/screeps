@@ -27,7 +27,7 @@ class TakeAction extends BaseAction {
         super.perform();
 
         if (this.actor.carry.energy == this.actor.carryCapacity || this.target.energy == 0) {//end condition:
-            this.actor.say('Energized');
+            // this.actor.say('Energized');
             return false;
         } else {
             if (this.target.energy > 0 || (this.target.store && this.target.store.energy > 0)) { //Storage uses .store, others don't

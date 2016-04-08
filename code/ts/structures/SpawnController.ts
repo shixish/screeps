@@ -140,7 +140,7 @@ class SpawnController {
             let queue = room.memory['spawn_queue'];
             if (queue.length) { 
                 let name = this.create_creep(queue[0], room);
-                console.log(name);
+                console.log('new creep name:', name);
                 if (name != undefined && name < 0) queue.shift(); //creep was created...
             }
 

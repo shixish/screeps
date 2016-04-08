@@ -81,6 +81,14 @@ class RangerCreep extends BaseCreep {
                 MOVE, RANGED_ATTACK,
             ],
         },
+        {
+            'cost': 50 * 3 + 150 * 3,
+            'body': [
+                MOVE, RANGED_ATTACK,
+                MOVE, RANGED_ATTACK,
+                MOVE, RANGED_ATTACK,
+            ],
+        },
     ];
 
 }

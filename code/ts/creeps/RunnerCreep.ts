@@ -22,20 +22,6 @@ class RunnerCreep extends BaseCreep {
         // console.log('test');
     }
 
-    // static get_heighest_tier(room: Room) {
-    //     let flag = <Flag>Game.flags[room.name + '_runner'];
-    //     // debug.log('runner', flag);
-
-    //     let budget = room.energyCapacityAvailable;
-    //     for (let t in this.creep_tiers) {
-    //         let tier = this.creep_tiers[t];
-    //         // console.log(tier, tier.cost, room.energyCapacityAvailable);
-    //         if (tier.cost < budget) {
-    //             return tier;
-    //         }
-    //     }
-    // }
-
     retarget() {
         super.retarget();
 

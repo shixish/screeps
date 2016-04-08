@@ -27,7 +27,7 @@ class StoreAction extends BaseAction {
 
         let total_carrying = _.sum(this.actor.carry);
         if (total_carrying == 0) {
-            this.actor.say('Stored');
+            // this.actor.say('Stored');
             return false;
         } else {
             let transferring, transfer_type;

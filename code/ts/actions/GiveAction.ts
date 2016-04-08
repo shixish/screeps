@@ -43,7 +43,6 @@ class GiveAction extends BaseAction {
         super.perform();
 
         if (this.actor.carry.energy == 0) {
-            this.actor.say('Transfered');
             return false;
         } else {
             let transferring;

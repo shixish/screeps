@@ -20,7 +20,7 @@ class UpgradeAction extends BaseAction {
         super.perform();
 
         if (this.actor.carry.energy == 0) {//end condition:
-            this.actor.say('Built');
+            // this.actor.say('Built');
             return false;
         } else {
             let action = this.actor.upgradeController(this.target);

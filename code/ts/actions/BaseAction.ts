@@ -226,8 +226,12 @@ class BaseAction{ //Abstract class
     move() {
         // if (this.actor.name == 'Katherine')
         //     console.log(this.actor.name, this.actor.memory.role, this.actor.pos.x, this.actor.memory.target_x, ', ', this.actor.pos.y, this.actor.memory.target_y);
+
+
         if (this.target && this.actor && !this.actor.pos.inRangeTo(this.target, this.getTargetRange(this.target))) {
-            return this.actor.moveTo(this.target);
+            let move = this.actor.moveTo(this.target);
+            // console.log(move);
+            return move;
         }
         return;
 
