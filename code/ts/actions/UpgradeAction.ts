@@ -11,7 +11,7 @@ class UpgradeAction extends BaseAction {
     }
 
     getTargets() {
-        if (this.actor.room.controller && (this.actor.room.controller.progress < this.actor.room.controller.progressTotal || this.actor.room.controller.ticksToDowngrade < 30000)) {
+        if (this.actor.room.controller && (this.actor.room.controller.progress < this.actor.room.controller.progressTotal || this.actor.room.controller.ticksToDowngrade < 80000)) {
             return [this.actor.room.controller];
         }
     }

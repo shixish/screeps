@@ -26,6 +26,7 @@ const Globals = {
     // MAX_HITS_REPAIR: 1000000,
     MAX_COST: 3000,
     PART_COSTS: PartCosts,
+    MAX_MINERALS_IN_STORE: 0.25,//%
 }
 
 //These get filled in during the definition of the classes:

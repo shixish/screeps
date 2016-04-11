@@ -138,10 +138,10 @@ class SpawnController {
         } else {
             // console.log(room.memory['spawn_queue']);
             let queue = room.memory['spawn_queue'];
-            if (queue.length) { 
+            if (queue.length && !this.structure.spawning) { 
                 let name = this.create_creep(queue[0], room);
-                console.log('new creep name:', name);
-                if (name != undefined && name < 0) queue.shift(); //creep was created...
+                // console.log('new creep name:', name);
+                if (name != undefined && name < 0) room.memory['spawn_queue'].shift(); //creep was created...
             }
 
             // if (room.energyAvailable >= room.energyCapacityAvailable || room.energyAvailable >= Globals.MAX_COST || !room.memory.creep_roles) {
@@ -198,9 +198,11 @@ class SpawnController {
                     return response;//new creep name
                 } else if (response == ERR_BUSY) {
                     //just wait
+                    console.log("Spawn is busy");
                 } else if (response == ERR_NOT_ENOUGH_ENERGY) {
                     //the base was likely attacked...
                     // console.log(this.structure.room.name, 'is dead.');
+                    console.log("Spawn doesn't have enough energy");
                 } else {
                     console.log(this.structure.room.name, this.structure, "create creep error:", response);
                 }

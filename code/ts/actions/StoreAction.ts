@@ -14,7 +14,7 @@ class StoreAction extends BaseAction {
         let targets = this.actor.room.find(FIND_MY_STRUCTURES, {
             filter: function(obj) {
                 return (
-                    obj.structureType == STRUCTURE_STORAGE && obj.store.energy < obj.storeCapacity
+                    obj.structureType == STRUCTURE_STORAGE && _.sum(obj.store) < obj.storeCapacity
                 );
             }
         });
@@ -31,7 +31,8 @@ class StoreAction extends BaseAction {
             return false;
         } else {
             let transferring, transfer_type;
-            let empty_space = (<Storage>this.target).storeCapacity - _.sum((<Storage>this.target).store);
+            let capacity = (<Storage>this.target).storeCapacity, fullness = _.sum((<Storage>this.target).store);
+            let empty_space = capacity - fullness;
             for (let t in this.actor.carry) {
                 let amount = this.actor.carry[t];
                 if (amount > 0) {
@@ -42,6 +43,10 @@ class StoreAction extends BaseAction {
                         break;
                     }
                 }
+            }
+            if (transfer_type != RESOURCE_ENERGY && this.target.store[transfer_type] >= capacity * Globals.MAX_MINERALS_IN_STORE) {
+                //don't overfill the storage...
+                return false;
             }
             if (transferring > 0) {
                 let action = this.actor.transfer(this.target, transfer_type, transferring);

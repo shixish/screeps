@@ -1,7 +1,6 @@
 /// <reference path="../vars/Globals.ts" />
 /// <reference path="../utils/Inventory.ts" />
 /// <reference path="BaseCreep.ts" />
-/// <reference path="../../dts/map.d.ts" />
 "use strict";
 
 class BuilderCreep extends BaseCreep {
@@ -72,18 +71,37 @@ class BuilderCreep extends BaseCreep {
 
     static creep_tiers = [
         {
+            'cost': 50 * 25 + 100 * 15 + 50 * 10, //2500,
+            'body': [
+                CARRY, CARRY, CARRY, CARRY, CARRY, 
+                CARRY, CARRY, CARRY, CARRY, CARRY,
+                CARRY, CARRY, CARRY, CARRY, CARRY, 
+                CARRY, CARRY, CARRY, CARRY, CARRY,
+                CARRY, CARRY, CARRY, CARRY, CARRY, 
+                WORK, WORK, WORK, WORK, WORK, 
+                WORK, WORK, WORK, WORK, WORK,
+                WORK, WORK, WORK, WORK, WORK,
+                MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
+            ],
+        },
+        {
             'cost': 50 * 20 + 100 * 10 + 50 * 10, //2500,
             'body': [
-                CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
-                CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
-                WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK,
-                MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
+                CARRY, CARRY, CARRY, CARRY, CARRY, 
+                CARRY, CARRY, CARRY, CARRY, CARRY,
+                CARRY, CARRY, CARRY, CARRY, CARRY, 
+                CARRY, CARRY, CARRY, CARRY, CARRY,
+                WORK, WORK, WORK, WORK, WORK, 
+                WORK, WORK, WORK, WORK, WORK,
+                MOVE, MOVE, MOVE, MOVE, MOVE, 
+                MOVE, MOVE, MOVE, MOVE, MOVE,
             ],
         },
         {
             'cost': 50 * 10 + 100 * 5 + 50 * 5,
             'body': [
-                CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
+                CARRY, CARRY, CARRY, CARRY, CARRY, 
+                CARRY, CARRY, CARRY, CARRY, CARRY,
                 WORK, WORK, WORK, WORK, WORK,
                 MOVE, MOVE, MOVE, MOVE, MOVE,
             ],

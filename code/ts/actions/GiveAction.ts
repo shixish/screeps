@@ -47,7 +47,7 @@ class GiveAction extends BaseAction {
         } else {
             let transferring;
             if ((<Storage>this.target).store) {
-                transferring = Math.min((<Storage>this.target).storeCapacity - (<Storage>this.target).store.energy, this.actor.carry.energy);
+                transferring = Math.min(this.target.storeCapacity - _.sum(this.target.store), this.actor.carry.energy);
             } else {
                 transferring = Math.min(this.target.energyCapacity - this.target.energy, this.actor.carry.energy);
             }
@@ -56,7 +56,7 @@ class GiveAction extends BaseAction {
                 if (action == ERR_NOT_IN_RANGE) {
                     this.move();
                 } else if (action != 0) {
-                    console.log('transferring error:', action);
+                    console.log('Give action error:', action, "trying to give:", transferring, 'to:', this.target);
                     // return false;
                 }
             } else {

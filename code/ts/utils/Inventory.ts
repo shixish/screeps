@@ -20,19 +20,8 @@ class Inventory {
     // }
     static update() {
         var invDiag = debug.diag('Inventory');
-        //garbage collect flags
-        for (let f in Memory.flags){
-            if (!Game.flags[f]) {
-                delete Memory.flags[f];
-            } else if (Memory.flags[f].creeps) {
-                for (let c in Memory.flags[f].creeps){
-                    if (!Game.creeps[Memory.flags[f].creeps[c]]){
-                        // delete Memory.flags[f].creeps[c]
-                        Memory.flags[f].creeps.splice(c, 1);
-                    }
-                }
-            }
-        }
+        
+        Inventory.invFlags();
 
         for (let r in Game.rooms) {
             let room = Game.rooms[r];
@@ -50,6 +39,7 @@ class Inventory {
             if (!room.memory.mineral) Inventory.invRoomMinerals(room);
 
             Inventory.invRoomStructures(room);
+            Inventory.generateMaxCreepCount(room);
             Inventory.updateSpawnQueue(room);
 
             let hostile_creeps = room.find(FIND_HOSTILE_CREEPS);
@@ -117,6 +107,35 @@ class Inventory {
             return 0;
     }
 
+    static invFlags() {
+        //garbage collect flags
+        for (let f in Memory.flags) {
+            if (!Game.flags[f]) {
+                delete Memory.flags[f];
+            } else if (Memory.flags[f].creeps) {
+                for (let c in Memory.flags[f].creeps) {
+                    if (!Game.creeps[Memory.flags[f].creeps[c]]) {
+                        // delete Memory.flags[f].creeps[c]
+                        Memory.flags[f].creeps.splice(c, 1);
+                    }
+                }
+            }
+        }
+
+        let flag_types = ['attack', 'harvest'];
+        for (let f in Game.flags) {
+            let flag = Game.flags[f];
+            // console.log(flag);
+
+            // let attack_flag = Game.flags[`${this.structure.room.name}_attack`];
+            // if (attack_flag) {
+            //     values.guard += 2;
+            //     values.healer += 2;
+            //     values.ranger += 2;
+            // }
+        }
+    }
+
     static invCreeps() {
         // if (!Memory['creep_roles']) Memory['creep_roles'] = {};
 
@@ -176,20 +195,21 @@ class Inventory {
         // return _.reduce(_.map(creep.body, (obj) => { return obj.type; }), (a, b) => { return a + BODYPART_COST[b] }, 0);
     }
 
-    static updateSpawnQueue(room: Room){
+    static generateMaxCreepCount(room: Room) {
         if (!room.controller.owner || room.controller.owner.username != Globals.USERNAME) return;
 
         let sources = Inventory.room_sources(room),
-            minerals = Inventory.room_minerals(room),
+            // minerals = Inventory.room_minerals(room),
             spawns = Inventory.room_structure_count('spawn', room),
             storage = Inventory.room_structure_count('storage', room),
             towers = Inventory.room_structure_count('tower', room),
             links = Inventory.room_structure_count('link', room),
-            extensions = Inventory.room_structure_count('extension', room);
+            extensions = Inventory.room_structure_count('extension', room),
+            extractors = Inventory.room_structure_count('extractor', room);
 
         // console.log(flagCreeps['runner'])
         let max_creeps = {
-            'builder': (room.controller.level < 8 ? 1 : 0) + (storage ? 1 : 0),
+            'builder': 1 + (storage ? 1 : 0), //(room.controller.level < 8 ? 1 : 0)
             'harvester': sources,
             'linker': links > 0 ? storage : 0,
             'courier': storage > 0 ? Math.ceil(towers / 2) : 0,
@@ -200,6 +220,13 @@ class Inventory {
             'healer': 0,
         }
 
+        if (storage && extractors) {
+            let storage = <Storage>Game.getObjectById(room.memory['structures']['storage'][0]);
+            if (_.sum(storage.store) - storage.store[RESOURCE_ENERGY] < storage.storeCapacity * Globals.MAX_MINERALS_IN_STORE) {
+                max_creeps['miner'] = 1;
+            }
+        }
+
         let under_attack_by = room.memory.under_attack;
         if (room.memory.under_attack > 0){
             max_creeps.courier += Math.floor(under_attack_by / 3);
@@ -208,24 +235,77 @@ class Inventory {
             max_creeps.ranger += Math.ceil(under_attack_by);
         }
 
-        let current_creeps = {};
-        for (let role in max_creeps) {
-            current_creeps[role] = Inventory.room_creep_count(role, room);
-        }
-        // debug.log(current_creeps);
-        
+        room.memory['max_creeps'] = max_creeps;
+    }
+
+    static generateQueue(room: Room) {
         let queue = [];
+        let max_creeps = room.memory['max_creeps'];
         for (let role in max_creeps) {
-            if (current_creeps[role] < max_creeps[role]) {
+            let current_creeps = Inventory.room_creep_count(role, room);
+            if (current_creeps < max_creeps[role]) {
                 queue.push(role);
-                current_creeps[role]++;
-            }else if (current_creeps[role] > max_creeps[role]){
+                // current_creeps++;
+            } else if (current_creeps > max_creeps[role]) {
                 //should obsolete some existing creeps...
             }
         }
+        return queue;
+    }
 
-        room.memory['spawn_queue'] = queue;
-        room.memory['max_creeps'] = max_creeps;
+    static updateSpawnQueue(room: Room){
+        if (!room.controller.owner || room.controller.owner.username != Globals.USERNAME) return;
+
+        // let sources = Inventory.room_sources(room),
+        //     // minerals = Inventory.room_minerals(room),
+        //     spawns = Inventory.room_structure_count('spawn', room),
+        //     storage = Inventory.room_structure_count('storage', room),
+        //     towers = Inventory.room_structure_count('tower', room),
+        //     links = Inventory.room_structure_count('link', room),
+        //     extensions = Inventory.room_structure_count('extension', room),
+        //     extractors = Inventory.room_structure_count('extractor', room);
+
+        // // console.log(flagCreeps['runner'])
+        // let max_creeps = {
+        //     'builder': 1 + (storage ? 1 : 0), //(room.controller.level < 8 ? 1 : 0)
+        //     'harvester': sources,
+        //     'linker': links > 0 ? storage : 0,
+        //     'courier': storage > 0 ? Math.ceil(towers / 2) : 0,
+        //     'miner': extractors, //storage > 0 ? minerals : 0,
+        //     'guard': 0,
+        //     'ranger': 0,
+        //     'runner': 0,
+        //     'healer': 0,
+        // }
+
+        // let under_attack_by = room.memory.under_attack;
+        // if (room.memory.under_attack > 0){
+        //     max_creeps.courier += Math.floor(under_attack_by / 3);
+        //     max_creeps.healer += Math.floor(under_attack_by / 2);
+        //     max_creeps.guard += Math.ceil(under_attack_by / 4);
+        //     max_creeps.ranger += Math.ceil(under_attack_by);
+        // }
+
+        // let current_creeps = {};
+        // for (let role in max_creeps) {
+        //     current_creeps[role] = Inventory.room_creep_count(role, room);
+        // }
+        // // debug.log(current_creeps);
+        
+        // let queue = [];
+        // for (let role in max_creeps) {
+        //     if (current_creeps[role] < max_creeps[role]) {
+        //         queue.push(role);
+        //         current_creeps[role]++;
+        //     }else if (current_creeps[role] > max_creeps[role]){
+        //         //should obsolete some existing creeps...
+        //     }
+        // }
+
+        // room.memory['spawn_queue'] = queue;
+        // room.memory['max_creeps'] = max_creeps;
+        
+        room.memory['spawn_queue'] = Inventory.generateQueue(room);
     }
 
     static invCreepObj(creep: Creep) {
@@ -235,9 +315,14 @@ class Inventory {
             home: string = creep.memory.home;
 
         if (!creep.memory.home) home = creep.memory.home = creep.room.name;
-        
+
         let room: Room = Game.rooms[home];
         this.invCreep(role, name, room);
+        
+        if (creep.memory.home == creep.room.name && Inventory.room_creep_count(role, room)) {
+
+        }
+
 
         // //This should only be temporarily necessary:
         // if (!creep.memory.cost) {

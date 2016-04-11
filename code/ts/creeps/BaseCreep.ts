@@ -47,9 +47,15 @@ class BaseCreep { //Abstract class
     // }
 
     static creep_is_obsolete(creep:Creep, room:Room){
-        if (this.creep_tiers) {
+        if (this.creep_tiers && this.creep_tiers[0].cost > creep.memory.cost && room.energyCapacityAvailable > creep.memory.cost) {
             //If it's not the highest tier creep and the room budget supports a higher tier:
-            return this.creep_tiers[0].cost > creep.memory.cost && room.energyCapacityAvailable > creep.memory.cost;
+            return true;
+        } else {
+            let role = creep.memory.role;
+            // console.log(creep.room.memory.max_creeps[role]);
+            if (creep.memory.home == creep.room.name && Inventory.room_creep_count(role, room) > creep.room.memory.max_creeps[role]) {
+                return true;
+            }
         }
     }
 
