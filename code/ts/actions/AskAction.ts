@@ -16,7 +16,7 @@ class AskAction extends TakeAction { //Abstract class
             filter: function(obj: Storage) {
                 return (
                     obj.structureType == STRUCTURE_STORAGE
-                    && obj.store.energy > obj.storeCapacity * 0.25
+                    && obj.store.energy > obj.storeCapacity * 0.20
                 );
             }
         });

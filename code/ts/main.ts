@@ -1,6 +1,5 @@
 /// <reference path="vars/Globals.ts" />
 /// <reference path="utils/Inventory.ts" />
-/// <reference path="vars/CreepInfo.ts" />
 /// <reference path="vars/StructureInfo.ts" />
 /// <reference path="utils/Debug.ts" />
 "use strict";
@@ -64,19 +63,24 @@ declare var module: any;
     
     
     for(let c in Game.creeps) {
-        let creep = Game.creeps[c];
-        var creepDiag = debug.diag('creeps.' + creep.memory.role);
+        let creep = Game.creeps[c],
+            role = creep.memory.role;
+        var creepDiag = debug.diag('creeps.' + role)
         // Cache.add(creep);
-
-        
+       
         // console.log(courier.work);
         // courier.work();
-        if (creep_controllers[creep.memory.role]) {
-            let CreepController = creep_controllers[creep.memory.role];
-            let ctrl = new CreepController(creep);
-            ctrl.work();
+        if (CreepControllers[role]) {
+            // try{
+                let CreepController = CreepControllers[role];
+                let ctrl = new CreepController(creep);
+                ctrl.work();
+            // }catch (e) {
+            //     console.log(e);
+            //     debug.log(e.stack);
+            // }
         }else {
-            console.log("Unknown creep role:", creep, creep.memory.role);
+            console.log("Unknown creep role:", creep, role);
         }
         creepDiag.stop();
     }

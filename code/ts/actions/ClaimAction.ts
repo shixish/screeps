@@ -30,8 +30,16 @@ class ClaimAction extends BaseAction {
             // console.log('claiming', action);
             if (action == ERR_NOT_IN_RANGE) {
                 this.move();
+            }else if (action == ERR_GCL_NOT_ENOUGH) {
+                action = this.actor.reserveController(this.target);
+                if (action == ERR_NOT_IN_RANGE) {
+                    // this.move(); //should already be handled
+                }else if (action != 0) {
+                    console.log('reserveController error:', action);
+                    return false;
+                }
             } else if (action != 0) {
-                console.log('claiming error:', action);
+                console.log('claimController error:', action);
                 return false;
             }
             return true;

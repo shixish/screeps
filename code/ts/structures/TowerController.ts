@@ -41,7 +41,7 @@ class TowerController {
                 });
                 if (target){
                     var action = this.structure.heal(target);
-                }else{
+                }else if (this.structure.room.memory.storage > 20000){//don't sap the place dry repairing walls...
                     target = this.structure.pos.findClosestByRange(FIND_STRUCTURES, {
                         filter: obj =>(
                             (

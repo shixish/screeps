@@ -25,8 +25,10 @@ class TakeAction extends BaseAction {
     //only works on storage tanks
     perform() {
         super.perform();
-
-        if (this.actor.carry.energy == this.actor.carryCapacity || this.target.energy == 0) {//end condition:
+        // if (this.actor.name == 'Lucy')
+        //     console.log('Take:', this.actor.name, this.actor.memory.role, this.actor.room);
+        let fullness = _.sum(this.actor.carry); //creep can have multiple resources on board
+        if (fullness == this.actor.carryCapacity || this.target.energy == 0) {//end condition:
             // this.actor.say('Energized');
             return false;
         } else {
@@ -38,7 +40,7 @@ class TakeAction extends BaseAction {
                 if (action == ERR_NOT_IN_RANGE) {
                     this.move();
                 } else if (action != 0) {
-                    console.log('energizing error:', action);
+                    console.log('Take action error:', action, this.actor.name, this.actor.memory.role, this.actor.room);
                     // return false;
                 }
             } else {

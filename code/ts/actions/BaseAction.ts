@@ -226,8 +226,6 @@ class BaseAction{ //Abstract class
     move() {
         // if (this.actor.name == 'Katherine')
         //     console.log(this.actor.name, this.actor.memory.role, this.actor.pos.x, this.actor.memory.target_x, ', ', this.actor.pos.y, this.actor.memory.target_y);
-
-
         if (this.target && this.actor && !this.actor.pos.inRangeTo(this.target, this.getTargetRange(this.target))) {
             let move = this.actor.moveTo(this.target);
             // console.log(move);
@@ -251,20 +249,20 @@ class BaseAction{ //Abstract class
         //     this.retarget();
         // }
 
-        let path;
-        if (!this.actor.memory.target_path) {
-            path = this.actor.pos.findPathTo(this.target);
-            this.actor.memory.target_path = Room.serializePath(path);
-        } else {
-            path = Room.deserializePath(this.actor.memory.target_path);
-        }
+        // let path;
+        // if (!this.actor.memory.target_path) {
+        //     path = this.actor.pos.findPathTo(this.target);
+        //     this.actor.memory.target_path = Room.serializePath(path);
+        // } else {
+        //     path = Room.deserializePath(this.actor.memory.target_path);
+        // }
 
-        let move = this.actor.moveByPath(path);
-        if (move == ERR_NOT_FOUND) {
-            var new_path = this.actor.pos.findPathTo(this.target);
-            this.actor.memory.target_path = Room.serializePath(new_path);
-            move = this.actor.moveByPath(path);
-        }
+        // let move = this.actor.moveByPath(path);
+        // if (move == ERR_NOT_FOUND) {
+        //     var new_path = this.actor.pos.findPathTo(this.target);
+        //     this.actor.memory.target_path = Room.serializePath(new_path);
+        //     move = this.actor.moveByPath(path);
+        // }
 
         // if (move == ERR_TIRED) {
         //     this.actor.say('tired');
@@ -291,7 +289,7 @@ class BaseAction{ //Abstract class
         // }else if (move != 0) {
         //     console.log(creep, 'generic path finding error:', move);
         // }
-        return move;
+        // return move;
     }
 
 

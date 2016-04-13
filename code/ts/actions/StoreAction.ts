@@ -11,10 +11,17 @@ class StoreAction extends BaseAction {
     }
 
     getTargets() {
+        // let storage = <Storage>Game.getObjectById(room.memory['structures']['storage'][0]);
+        // if (_.sum(storage.store) - storage.store[RESOURCE_ENERGY] < storage.storeCapacity * Globals.MAX_MINERALS_IN_STORE) {
+        //    
+        // }
         let targets = this.actor.room.find(FIND_MY_STRUCTURES, {
             filter: function(obj) {
+                let fullness = _.sum(obj.store);
                 return (
-                    obj.structureType == STRUCTURE_STORAGE && _.sum(obj.store) < obj.storeCapacity
+                    obj.structureType == STRUCTURE_STORAGE
+                     && fullness < obj.storeCapacity //needs to not be totally full
+                    // && fullness - obj.store[RESOURCE_ENERGY] < obj.storeCapacity * Globals.MAX_MINERALS_IN_STORE
                 );
             }
         });
@@ -44,10 +51,11 @@ class StoreAction extends BaseAction {
                     }
                 }
             }
-            if (transfer_type != RESOURCE_ENERGY && this.target.store[transfer_type] >= capacity * Globals.MAX_MINERALS_IN_STORE) {
-                //don't overfill the storage...
-                return false;
-            }
+            ////This makes the creeps get stuck trying to get rid of their minerals:
+            // if (transfer_type != RESOURCE_ENERGY && this.target.store[transfer_type] >= capacity * Globals.MAX_MINERALS_IN_STORE) {
+            //     //don't overfill the storage...
+            //     return false;
+            // }
             if (transferring > 0) {
                 let action = this.actor.transfer(this.target, transfer_type, transferring);
                 // if (transfer_type != RESOURCE_ENERGY)

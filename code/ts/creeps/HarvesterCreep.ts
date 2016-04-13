@@ -1,5 +1,6 @@
 /// <reference path="../vars/Globals.ts" />
 /// <reference path="../creeps/BaseCreep.ts" />
+/// <reference path="../utils/Inventory.ts" />
 "use strict";
 
 class HarvesterCreep extends BaseCreep {
@@ -44,7 +45,7 @@ class HarvesterCreep extends BaseCreep {
             // if (source_memory.link) {
             //     this.link = <Link>Game.getObjectById(source_memory.link);
             // }
-            if (this.link && this.link.energy != this.link.energyCapacity) {
+            if (Inventory.room_creep_count('Courier', this.creep.room) > 0 && this.link && this.link.energy < this.link.energyCapacity*0.90) { //mostly full, links slowly lose energy while they sit...
                 super.set_target(this.link, 'Give');
             } else {
                 if (!super.try_to('Give')) { //Behave as a more generic creep if still in low infrastructure
@@ -91,9 +92,9 @@ class HarvesterCreep extends BaseCreep {
 
     static creep_tiers = [
         {
-            'cost': 50 + 100 * 6 + 50 * 6, //950
+            'cost': 50*2 + 100 * 6 + 50 * 6, //950
             'body': [
-                MOVE,
+                MOVE, MOVE,
                 WORK, WORK, WORK, WORK, WORK, WORK,
                 CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
             ],

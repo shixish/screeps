@@ -1,5 +1,6 @@
 /// <reference path="../vars/Globals.ts" />
 /// <reference path="../creeps/BaseCreep.ts" />
+/// <reference path="../utils/Inventory.ts" />
 "use strict";
 
 class LinkerCreep extends BaseCreep {
@@ -38,9 +39,15 @@ class LinkerCreep extends BaseCreep {
     retarget() {
         super.retarget();
         if (this.creep.carry.energy > 0) {
-            super.set_target(this.storage, 'Give');
+            if (Inventory.room_creep_count('Courier', this.creep.room) > 0) {
+                super.set_target(this.storage, 'Give');
+            } else {
+                super.try_to('Give');
+            }
         } else {
             super.set_target(this.link, 'Take');
+            // console.log(this.creep);
+            // super.try_to('Take');
         }
     }
 

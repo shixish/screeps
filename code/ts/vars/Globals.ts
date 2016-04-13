@@ -8,7 +8,7 @@ var _ = require('lodash');
 // // This line monkey patches the global prototypes.
 // profiler.enable();
 
-let PartCosts = {};
+var PartCosts = {};
     PartCosts[MOVE] = 50;
     PartCosts[WORK] = 100;
     PartCosts[CARRY] = 50;
@@ -27,8 +27,10 @@ const Globals = {
     MAX_COST: 3000,
     PART_COSTS: PartCosts,
     MAX_MINERALS_IN_STORE: 0.25,//%
+    ALL_CLEAR_AFTER: 250,//game ticks till we look for changes to structure counts after an attack
 }
 
 //These get filled in during the definition of the classes:
-let CreepActions = {};
-let CreepControllers = {};
+var CreepActions = {};
+var CreepControllers = {};
+var StructureControllers = {};

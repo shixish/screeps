@@ -1,6 +1,6 @@
 /// <reference path="../vars/Globals.ts" />
-/// <reference path="../vars/CreepInfo.ts" />
 /// <reference path="../utils/Debug.ts" />
+/// <reference path="../structures/SpawnController.ts" />
 "use strict";
 
 class Inventory {
@@ -38,13 +38,48 @@ class Inventory {
             if (!room.memory.source) Inventory.invRoomSources(room);
             if (!room.memory.mineral) Inventory.invRoomMinerals(room);
 
-            Inventory.invRoomStructures(room);
-            Inventory.generateMaxCreepCount(room);
-            Inventory.updateSpawnQueue(room);
-
             let hostile_creeps = room.find(FIND_HOSTILE_CREEPS);
             // console.log(hostile_creeps);
             room.memory.under_attack = hostile_creeps.length;
+            if (hostile_creeps.length > 0)
+                room.memory.last_attack = Game.time;
+
+            let construction_sites = room.find(FIND_MY_CONSTRUCTION_SITES);
+            let construction_finished = false;
+            if (construction_sites.length < room.memory.constructing) { //something finished building
+                console.log('Some construction finished in room ', room.name);
+                construction_finished = true;
+            }
+
+            room.memory.constructing = construction_sites.length;
+            
+            //Only update structure counts if need be.
+            if (!room.memory.last_attack) room.memory.last_attack = Game.time;
+            let attack_cd = room.memory.last_attack > room.memory.last_updated && Game.time - room.memory.last_attack > Globals.ALL_CLEAR_AFTER;
+            let reload = !room.memory.last_updated || attack_cd || construction_finished;
+            // console.log(room.memory.last_attack > room.memory.last_updated, Game.time - room.memory.last_attack, room);
+            if (reload) {
+                console.log('Refreshing structure counts for room', room.name);
+                Inventory.invRoomStructures(room);
+                room.memory.last_updated = Game.time;
+            }
+            
+            // Inventory.generateMaxCreepCount(room);
+            // Inventory.updateSpawnQueue(room);
+
+            //Do this only once per room, not once per spawn:
+            SpawnController.generateMaxCreepCount(room);
+            SpawnController.generateQueue(room);
+
+            //Note: this should be run after generateMaxCreepCount
+            Inventory.updateObsoleteCreeps(room);
+
+            if (room.memory['structures']['storage'] && room.memory['structures']['storage'].length) {
+                let storage = <Storage>Game.getObjectById(room.memory['structures']['storage'][0]);
+                room.memory.storage = storage.store.energy;
+            } else {
+                room.memory.storage = 0;
+            }
         }
         invDiag.stop();
     }
@@ -89,6 +124,7 @@ class Inventory {
             let structure = structures[s];
             if (!by_type[structure.structureType]) by_type[structure.structureType] = [];
             by_type[structure.structureType].push(structure.id);
+
             // if (!by_type[structure.structureType][structure.id]) by_type[structure.structureType][structure.id] = {};
 
             // console.log(structure.structureType);
@@ -111,6 +147,8 @@ class Inventory {
         //garbage collect flags
         for (let f in Memory.flags) {
             if (!Game.flags[f]) {
+                if (Memory.flags[f].room_name)
+                    delete Memory.rooms[Memory.flags[f].room_name]['flags'][f];
                 delete Memory.flags[f];
             } else if (Memory.flags[f].creeps) {
                 for (let c in Memory.flags[f].creeps) {
@@ -122,9 +160,35 @@ class Inventory {
             }
         }
 
-        let flag_types = ['attack', 'harvest'];
         for (let f in Game.flags) {
-            let flag = Game.flags[f];
+            let flag = <Flag>Game.flags[f],
+                split_loc = flag.name.indexOf('_');
+
+            if (!flag.memory.flag_type && split_loc != -1) {
+                let room_name = flag.name.substr(0, split_loc),
+                    flag_id = flag.name.substr(split_loc + 1),
+                    flag_type = flag_id,
+                    flag_num = 0;
+
+                let id_split_loc = flag_id.indexOf('-');
+                if (id_split_loc != -1) {
+                    flag_type = flag_id.substr(0, id_split_loc);
+                    flag_num = parseInt(flag_id.substr(id_split_loc + 1));
+                }
+
+                flag.memory.room_name = room_name;
+                flag.memory.flag_type = flag_type;
+                flag.memory.flag_num = flag_num;
+
+            }
+
+            if (flag.memory.room_name) {
+                if (!Memory.rooms[flag.memory.room_name]) Memory.rooms[flag.memory.room_name] = {};
+                if (!Memory.rooms[flag.memory.room_name]['flags']) Memory.rooms[flag.memory.room_name]['flags'] = {};
+                Memory.rooms[flag.memory.room_name]['flags'][flag.name] = {}
+            }
+
+            // debug.log();
             // console.log(flag);
 
             // let attack_flag = Game.flags[`${this.structure.room.name}_attack`];
@@ -195,118 +259,173 @@ class Inventory {
         // return _.reduce(_.map(creep.body, (obj) => { return obj.type; }), (a, b) => { return a + BODYPART_COST[b] }, 0);
     }
 
-    static generateMaxCreepCount(room: Room) {
-        if (!room.controller.owner || room.controller.owner.username != Globals.USERNAME) return;
+    // static generateMaxCreepCount(room: Room) {
+    //     if (!room.controller.owner || room.controller.owner.username != Globals.USERNAME) return;
 
-        let sources = Inventory.room_sources(room),
-            // minerals = Inventory.room_minerals(room),
-            spawns = Inventory.room_structure_count('spawn', room),
-            storage = Inventory.room_structure_count('storage', room),
-            towers = Inventory.room_structure_count('tower', room),
-            links = Inventory.room_structure_count('link', room),
-            extensions = Inventory.room_structure_count('extension', room),
-            extractors = Inventory.room_structure_count('extractor', room);
+    //     let sources = Inventory.room_sources(room),
+    //         // minerals = Inventory.room_minerals(room),
+    //         spawns = Inventory.room_structure_count('spawn', room),
+    //         storage = Inventory.room_structure_count('storage', room),
+    //         towers = Inventory.room_structure_count('tower', room),
+    //         links = Inventory.room_structure_count('link', room),
+    //         extensions = Inventory.room_structure_count('extension', room),
+    //         extractors = Inventory.room_structure_count('extractor', room);
 
-        // console.log(flagCreeps['runner'])
-        let max_creeps = {
-            'builder': 1 + (storage ? 1 : 0), //(room.controller.level < 8 ? 1 : 0)
-            'harvester': sources,
-            'linker': links > 0 ? storage : 0,
-            'courier': storage > 0 ? Math.ceil(towers / 2) : 0,
-            'miner': 0, //storage > 0 ? minerals : 0,
-            'guard': 0,
-            'ranger': 0,
-            'runner': 0,
-            'healer': 0,
-        }
+    //     // console.log(flagCreeps['runner'])
+    //     let max_creeps = {
+    //         'builder': 1 + (storage ? 1 : 0), //(room.controller.level < 8 ? 1 : 0)
+    //         'harvester': sources,
+    //         'linker': links > 0 ? storage : 0,
+    //         'courier': storage > 0 ? Math.ceil(towers / 2) : 0,
+    //         'miner': 0, //storage > 0 ? minerals : 0,
+    //         'guard': 0,
+    //         'ranger': 0,
+    //         'runner': 0,
+    //         'healer': 0,
+    //     }
 
-        if (storage && extractors) {
-            let storage = <Storage>Game.getObjectById(room.memory['structures']['storage'][0]);
-            if (_.sum(storage.store) - storage.store[RESOURCE_ENERGY] < storage.storeCapacity * Globals.MAX_MINERALS_IN_STORE) {
-                max_creeps['miner'] = 1;
+    //     if (storage && extractors) {
+    //         let storage = <Storage>Game.getObjectById(room.memory['structures']['storage'][0]);
+    //         if (_.sum(storage.store) - storage.store[RESOURCE_ENERGY] < storage.storeCapacity * Globals.MAX_MINERALS_IN_STORE) {
+    //             max_creeps['miner'] = 1;
+    //         }
+    //     }
+
+    //     let under_attack_by = room.memory.under_attack;
+    //     if (room.memory.under_attack > 0){
+    //         max_creeps.courier += Math.floor(under_attack_by / 3);
+    //         max_creeps.healer += Math.floor(under_attack_by / 2);
+    //         max_creeps.guard += Math.ceil(under_attack_by / 4);
+    //         max_creeps.ranger += Math.ceil(under_attack_by);
+    //     }
+
+    //     if (room.memory.flags) {
+    //         for (let f in room.memory.flags) {
+    //             let flag = <Flag>Game.flags[f];
+    //             // console.log(flag);
+
+    //         }
+    //     }
+
+    //     room.memory['max_creeps'] = max_creeps;
+    // }
+
+    // static generateQueue(room: Room) {
+    //     let queue = [];
+    //     let max_creeps = room.memory['max_creeps'];
+    //     for (let role in max_creeps) {
+    //         let current_creeps = Inventory.room_creep_count(role, room);
+    //         if (current_creeps < max_creeps[role]) {
+    //             queue.push(role);
+    //             // current_creeps++;
+    //         } else if (current_creeps > max_creeps[role]) {
+    //             //should obsolete some existing creeps...
+    //         }
+    //     }
+    //     return queue;
+    // }
+
+    //Note: this should be run after generateMaxCreepCount
+    //This doesn't work too good because it's not accounting for the creeps already marked as obsolete...
+    static updateObsoleteCreeps(room: Room) {
+        for (let role in room.memory.creep_roles){
+            let max_count = room.memory.max_creeps['home'][role],
+                count = room.memory.creep_roles[role].length;
+            if (count > max_count) {
+                let non_obsolete = [];
+                _.forEach(room.memory.creep_roles[role], (name) => {
+                    // console.log(!Memory.creeps[name].obsolete);
+                    let creep = Game.creeps[name];
+                    if (!creep.memory.obsolete) {
+                        non_obsolete.push({
+                            name: name,
+                            time: creep.ticksToLive,
+                        });
+                    }
+                });
+                if (non_obsolete.length > max_count) {
+                    console.log(`Too many ${role}s in ${room.name}`);
+                    // debug.log(creeps);
+                    // let sorted = _.sortBy(non_obsolete, (obj) => { 
+                    //     return obj.time; 
+                    // });
+                    // debug.log(sorted);
+                    // for (let i = 0; i < sorted.length - max_count; i++) {
+                    //     let name = sorted[i].name;
+                    //     Memory.creeps[name].obsolete = true;
+                    //     console.log(`Making ${role} ${name} obsolete`);
+                    // }
+                }
             }
+            // debug.log(creeps);
+            // if (creeps.length > max_count) {
+            //     let min_ticks = null, min_creep = null;
+            //     for (var c in room.memory.creep_roles[role]) {
+            //         let creep = <Creep>Game.creeps[room.memory.creep_roles[role][c]];
+            //         if (min_ticks == null || creep.ticksToLive < min_ticks) {
+            //             min_ticks = creep.ticksToLive;
+            //             min_creep = creep;
+            //         }
+            //     }
+            //     min_creep.memory.obsolete = true;
+            // }
         }
-
-        let under_attack_by = room.memory.under_attack;
-        if (room.memory.under_attack > 0){
-            max_creeps.courier += Math.floor(under_attack_by / 3);
-            max_creeps.healer += Math.floor(under_attack_by / 2);
-            max_creeps.guard += Math.ceil(under_attack_by / 4);
-            max_creeps.ranger += Math.ceil(under_attack_by);
-        }
-
-        room.memory['max_creeps'] = max_creeps;
     }
 
-    static generateQueue(room: Room) {
-        let queue = [];
-        let max_creeps = room.memory['max_creeps'];
-        for (let role in max_creeps) {
-            let current_creeps = Inventory.room_creep_count(role, room);
-            if (current_creeps < max_creeps[role]) {
-                queue.push(role);
-                // current_creeps++;
-            } else if (current_creeps > max_creeps[role]) {
-                //should obsolete some existing creeps...
-            }
-        }
-        return queue;
-    }
+    // static updateSpawnQueue(room: Room){
+    //     if (!room.controller.owner || room.controller.owner.username != Globals.USERNAME) return;
 
-    static updateSpawnQueue(room: Room){
-        if (!room.controller.owner || room.controller.owner.username != Globals.USERNAME) return;
+    //     // let sources = Inventory.room_sources(room),
+    //     //     // minerals = Inventory.room_minerals(room),
+    //     //     spawns = Inventory.room_structure_count('spawn', room),
+    //     //     storage = Inventory.room_structure_count('storage', room),
+    //     //     towers = Inventory.room_structure_count('tower', room),
+    //     //     links = Inventory.room_structure_count('link', room),
+    //     //     extensions = Inventory.room_structure_count('extension', room),
+    //     //     extractors = Inventory.room_structure_count('extractor', room);
 
-        // let sources = Inventory.room_sources(room),
-        //     // minerals = Inventory.room_minerals(room),
-        //     spawns = Inventory.room_structure_count('spawn', room),
-        //     storage = Inventory.room_structure_count('storage', room),
-        //     towers = Inventory.room_structure_count('tower', room),
-        //     links = Inventory.room_structure_count('link', room),
-        //     extensions = Inventory.room_structure_count('extension', room),
-        //     extractors = Inventory.room_structure_count('extractor', room);
+    //     // // console.log(flagCreeps['runner'])
+    //     // let max_creeps = {
+    //     //     'builder': 1 + (storage ? 1 : 0), //(room.controller.level < 8 ? 1 : 0)
+    //     //     'harvester': sources,
+    //     //     'linker': links > 0 ? storage : 0,
+    //     //     'courier': storage > 0 ? Math.ceil(towers / 2) : 0,
+    //     //     'miner': extractors, //storage > 0 ? minerals : 0,
+    //     //     'guard': 0,
+    //     //     'ranger': 0,
+    //     //     'runner': 0,
+    //     //     'healer': 0,
+    //     // }
 
-        // // console.log(flagCreeps['runner'])
-        // let max_creeps = {
-        //     'builder': 1 + (storage ? 1 : 0), //(room.controller.level < 8 ? 1 : 0)
-        //     'harvester': sources,
-        //     'linker': links > 0 ? storage : 0,
-        //     'courier': storage > 0 ? Math.ceil(towers / 2) : 0,
-        //     'miner': extractors, //storage > 0 ? minerals : 0,
-        //     'guard': 0,
-        //     'ranger': 0,
-        //     'runner': 0,
-        //     'healer': 0,
-        // }
+    //     // let under_attack_by = room.memory.under_attack;
+    //     // if (room.memory.under_attack > 0){
+    //     //     max_creeps.courier += Math.floor(under_attack_by / 3);
+    //     //     max_creeps.healer += Math.floor(under_attack_by / 2);
+    //     //     max_creeps.guard += Math.ceil(under_attack_by / 4);
+    //     //     max_creeps.ranger += Math.ceil(under_attack_by);
+    //     // }
 
-        // let under_attack_by = room.memory.under_attack;
-        // if (room.memory.under_attack > 0){
-        //     max_creeps.courier += Math.floor(under_attack_by / 3);
-        //     max_creeps.healer += Math.floor(under_attack_by / 2);
-        //     max_creeps.guard += Math.ceil(under_attack_by / 4);
-        //     max_creeps.ranger += Math.ceil(under_attack_by);
-        // }
-
-        // let current_creeps = {};
-        // for (let role in max_creeps) {
-        //     current_creeps[role] = Inventory.room_creep_count(role, room);
-        // }
-        // // debug.log(current_creeps);
+    //     // let current_creeps = {};
+    //     // for (let role in max_creeps) {
+    //     //     current_creeps[role] = Inventory.room_creep_count(role, room);
+    //     // }
+    //     // // debug.log(current_creeps);
         
-        // let queue = [];
-        // for (let role in max_creeps) {
-        //     if (current_creeps[role] < max_creeps[role]) {
-        //         queue.push(role);
-        //         current_creeps[role]++;
-        //     }else if (current_creeps[role] > max_creeps[role]){
-        //         //should obsolete some existing creeps...
-        //     }
-        // }
+    //     // let queue = [];
+    //     // for (let role in max_creeps) {
+    //     //     if (current_creeps[role] < max_creeps[role]) {
+    //     //         queue.push(role);
+    //     //         current_creeps[role]++;
+    //     //     }else if (current_creeps[role] > max_creeps[role]){
+    //     //         //should obsolete some existing creeps...
+    //     //     }
+    //     // }
 
-        // room.memory['spawn_queue'] = queue;
-        // room.memory['max_creeps'] = max_creeps;
+    //     // room.memory['spawn_queue'] = queue;
+    //     // room.memory['max_creeps'] = max_creeps;
         
-        room.memory['spawn_queue'] = Inventory.generateQueue(room);
-    }
+    //     room.memory['spawn_queue'] = Inventory.generateQueue(room);
+    // }
 
     static invCreepObj(creep: Creep) {
         // console.log(creep);
@@ -318,19 +437,15 @@ class Inventory {
 
         let room: Room = Game.rooms[home];
         this.invCreep(role, name, room);
-        
-        if (creep.memory.home == creep.room.name && Inventory.room_creep_count(role, room)) {
-
-        }
-
 
         // //This should only be temporarily necessary:
         // if (!creep.memory.cost) {
         //     // console.log(_.map(creep.body, (obj) => { return obj.type; }));
         //     creep.memory.cost = this.calculateCreepCost(creep);
         // }
-        if (!creep.memory.obsolete) { //room.controller.level < 8 && 
-            let ctrl = creep_controllers[role];
+
+        if (!creep.memory.obsolete && creep.memory.home == creep.room.name) { //room.controller.level < 8 && 
+            let ctrl = CreepControllers[role];
             if (ctrl) {
                 if (ctrl.creep_is_obsolete(creep, room) === true) {
                     creep.memory.obsolete = true;

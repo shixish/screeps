@@ -5,21 +5,21 @@
 
 class BuilderCreep extends BaseCreep {
     public creep: Creep;
-    public hasStorage: boolean;
 
     constructor(creep: Creep) {
         super(creep);
-        this.hasStorage = Inventory.room_structure_count('storage', this.creep.room) > 0;
     }
 
     retarget() {
         super.retarget();
         // this.creep.memory.target_id = this.creep.memory.action_name = null;
         if (this.creep.carry.energy > 0) {
-            if (this.hasStorage || !super.try_to('Give')) {
-                if (!super.try_to('Build')) {
-                    if (!super.try_to('Upgrade')) {
+            if (!super.try_to('Sustain')) {
+                if (this.creep.room.memory.storage > 20000 || !super.try_to('Store')) {
+                    if (!super.try_to('Build')) {
+                        if (!super.try_to('Upgrade')) {
 
+                        }
                     }
                 }
             }
