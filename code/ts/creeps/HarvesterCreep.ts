@@ -40,26 +40,28 @@ class HarvesterCreep extends BaseCreep {
         //     return;
         // }
         // console.log(this.link);
-        if (this.creep.carry.energy > 0) {
-            // var source_memory = this.source.room.memory.source[this.source.id];
-            // if (source_memory.link) {
-            //     this.link = <Link>Game.getObjectById(source_memory.link);
-            // }
-            if (Inventory.room_creep_count('Courier', this.creep.room) > 0 && this.link && this.link.energy < this.link.energyCapacity*0.90) { //mostly full, links slowly lose energy while they sit...
-                super.set_target(this.link, 'Give');
-            } else {
-                if (!super.try_to('Give')) { //Behave as a more generic creep if still in low infrastructure
-                    if (!super.try_to('Store')) {
-                        if (!super.try_to('Build')) {
-                            if (!super.try_to('Upgrade')) {
+        if (!super.try_to('GoOffice')) {
+            if (this.creep.carry.energy > 0) {
+                // var source_memory = this.source.room.memory.source[this.source.id];
+                // if (source_memory.link) {
+                //     this.link = <Link>Game.getObjectById(source_memory.link);
+                // }
+                if (Inventory.room_creep_count('Courier', this.creep.room) > 0 && this.link && this.link.energy < this.link.energyCapacity * 0.90) { //mostly full, links slowly lose energy while they sit...
+                    super.set_target(this.link, 'Give');
+                } else {
+                    if (!super.try_to('Give')) { //Behave as a more generic creep if still in low infrastructure
+                        if (!super.try_to('Store')) {
+                            if (!super.try_to('Build')) {
+                                if (!super.try_to('Upgrade')) {
 
+                                }
                             }
                         }
                     }
                 }
+            } else {
+                super.set_target(this.source, 'Harvest');
             }
-        } else {
-            super.set_target(this.source, 'Harvest');
         }
     }
 

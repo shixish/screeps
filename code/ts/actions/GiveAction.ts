@@ -27,10 +27,15 @@ class GiveAction extends BaseAction {
                 filter: function(obj) {
                     return (
                         (
-                            obj.structureType == STRUCTURE_TOWER ||
-                            obj.structureType == STRUCTURE_LAB
+                            (
+                                obj.structureType == STRUCTURE_TOWER ||
+                                obj.structureType == STRUCTURE_LAB
+                            )
+                            && obj.energy < obj.energyCapacity
+                        ) || (
+                            obj.structureType == STRUCTURE_TERMINAL
+                            && obj.store.energy < obj.storeCapacity * 0.1
                         )
-                        && obj.energy < obj.energyCapacity
                     );
                 }
             });

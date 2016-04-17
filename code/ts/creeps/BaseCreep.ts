@@ -50,22 +50,24 @@ class BaseCreep { //Abstract class
     //     }
     // }
 
-    //need to use this sparingly...
-    static creep_is_obsolete(creep:Creep){
-        if (this.creep_tiers && this.creep_tiers[0].cost > creep.memory.cost && creep.room.energyCapacityAvailable > creep.memory.cost) {
-            //If it's not the highest tier creep and the room budget supports a higher tier:
-            return true;
-        }
-        //  else {
-        //     let role = creep.memory.role;
-        //     // console.log(creep.room.memory.max_creeps[role]);
-        //     if (Inventory.room_creep_count(role, room) > creep.room.memory.max_creeps[role]) {
-        //         return true;
-        //     }
-        // }
-        return false;
-    }
+    // //this is no longer necessary:
+    // static creep_is_obsolete(creep:Creep){
+    //     if (this.creep_tiers && this.creep_tiers[0].cost > creep.memory.cost && creep.room.energyCapacityAvailable > creep.memory.cost) {
+    //         //If it's not the highest tier creep and the room budget supports a higher tier:
+    //         console.log('obsolete creep costs: ', creep.memory.cost, 'T1 costs', this.creep_tiers[0].cost);
+    //         return true;
+    //     }
+    //     //  else {
+    //     //     let role = creep.memory.role;
+    //     //     // console.log(creep.room.memory.max_creeps[role]);
+    //     //     if (Inventory.room_creep_count(role, room) > creep.room.memory.max_creeps[role]) {
+    //     //         return true;
+    //     //     }
+    //     // }
+    //     return false;
+    // }
 
+    //could be cached i think...
     static get_heighest_tier(room:Room){
         let budget = room.energyCapacityAvailable;
         for (let t in this.creep_tiers) {
@@ -89,24 +91,24 @@ class BaseCreep { //Abstract class
         }
     }
 
-    static produce_new(room:Room){
-        if (this.creep_tiers) {
-            return this.get_heighest_tier(room);
-            // return this.get_affordable_tier(room);
-        }
-        // else if (this.create){
-        //     let body = this.create(room.energyCapacityAvailable);
-        //     return {
-        //         'cost': _.reduce(body, (a,b) => { return a+BODYPART_COST[b] }, 0),
-        //         'body': body,
-        //     }
-        // }
-    }
+    // static produce_new(room:Room){
+    //     if (this.creep_tiers) {
+    //         return this.get_heighest_tier(room);
+    //         // return this.get_affordable_tier(room);
+    //     }
+    //     // else if (this.create){
+    //     //     let body = this.create(room.energyCapacityAvailable);
+    //     //     return {
+    //     //         'cost': _.reduce(body, (a,b) => { return a+BODYPART_COST[b] }, 0),
+    //     //         'body': body,
+    //     //     }
+    //     // }
+    // }
 
     retarget() {
         //Note: This function needs to be extended by child classes
-        // this.creep.memory.target_id = null;
-        // this.creep.memory.action_name = null;
+        this.creep.memory.target_id = null;
+        this.creep.memory.action_name = null;
     }
 
     set_target(targets, action?:string) {

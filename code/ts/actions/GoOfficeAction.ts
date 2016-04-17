@@ -11,11 +11,20 @@ class GoOfficeAction extends BaseAction {
     }
 
     getTargets() {
-        if (this.actor.memory.office) {
-            let flag = Game.flags[this.actor.memory.office];
+        if (this.actor.memory.flag && this.actor.memory.office && this.actor.room.name != this.actor.memory.office) {
+            // BaseAction.getExit(this.actor.room, this.actor.memory.office);
+            let flag = Game.flags[this.actor.memory.flag];
             if (flag && this.actor.room.name != flag.pos.roomName) {
                 return [flag];
             }
+        }
+    }
+
+    perform() {
+        if (this.actor.room.name != this.actor.memory.office) {
+            this.move();
+        } else {
+            return false;
         }
     }
 

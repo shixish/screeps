@@ -14,11 +14,13 @@ class BuilderCreep extends BaseCreep {
         super.retarget();
         // this.creep.memory.target_id = this.creep.memory.action_name = null;
         if (this.creep.carry.energy > 0) {
-            if (!super.try_to('Sustain')) {
-                if (this.creep.room.memory.storage > 20000 || !super.try_to('Store')) {
-                    if (!super.try_to('Build')) {
-                        if (!super.try_to('Upgrade')) {
+            if (!super.try_to('GoOffice')) {
+                if (!super.try_to('Sustain')) {
+                    if (this.creep.room.memory.storage.energy > 20000 || !super.try_to('Store')) {
+                        if (!super.try_to('Build')) {
+                            if (!super.try_to('Upgrade')) {
 
+                            }
                         }
                     }
                 }
@@ -69,9 +71,9 @@ class BuilderCreep extends BaseCreep {
     //         ];
     // }
 
-    static creep_tiers = [
+    static creep_tiers = [// 2300
         {
-            'cost': 50 * 25 + 100 * 15 + 50 * 10, //2500,
+            'cost': 50 * 25 + 100 * 15 + 50 * 10,
             'body': [
                 CARRY, CARRY, CARRY, CARRY, CARRY, 
                 CARRY, CARRY, CARRY, CARRY, CARRY,
@@ -85,16 +87,16 @@ class BuilderCreep extends BaseCreep {
             ],
         },
         {
-            'cost': 50 * 20 + 100 * 10 + 50 * 10, //2500,
+            'cost': 50 * 18 + 100 * 10 + 50 * 8, //2300 breakpoint
             'body': [
                 CARRY, CARRY, CARRY, CARRY, CARRY, 
                 CARRY, CARRY, CARRY, CARRY, CARRY,
                 CARRY, CARRY, CARRY, CARRY, CARRY, 
-                CARRY, CARRY, CARRY, CARRY, CARRY,
+                CARRY, CARRY, CARRY, 
                 WORK, WORK, WORK, WORK, WORK, 
                 WORK, WORK, WORK, WORK, WORK,
                 MOVE, MOVE, MOVE, MOVE, MOVE, 
-                MOVE, MOVE, MOVE, MOVE, MOVE,
+                MOVE, MOVE, MOVE,
             ],
         },
         {
@@ -107,7 +109,7 @@ class BuilderCreep extends BaseCreep {
             ],
         },
         {
-            'cost': 50 * 4 + 100 * 4 + 50 * 4, //800 //Walk Miner,
+            'cost': 50 * 4 + 100 * 4 + 50 * 4, //800
             'body': [
                 CARRY, CARRY, CARRY, CARRY,
                 WORK, WORK, WORK, WORK,

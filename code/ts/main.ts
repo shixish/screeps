@@ -86,6 +86,8 @@ declare var module: any;
     }
     
     totalDiag.stop();
+
+    // debug.log(Game.market);
     
     // debug.printDiag();
 }

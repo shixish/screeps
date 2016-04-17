@@ -11,8 +11,17 @@ class RestAction extends BaseAction {
     }
 
     getTargets() {
-        if (!this.actor.memory.target_id && Game.flags[this.actor.room.name + '_resting']) {
-            return [Game.flags[this.actor.room.name + '_resting']];
+        if (!this.actor.memory.target_id) { //if nothing else
+            let flag_name = this.actor.room.name + '_resting',
+                flag = Game.flags[flag_name];
+
+            if (!flag) {
+                this.actor.room.createFlag(this.actor.room.controller, flag_name);
+                flag = Game.flags[flag_name];
+            }
+            if (flag) {
+                return [Game.flags[this.actor.room.name + '_resting']];
+            }
         }
     }
 

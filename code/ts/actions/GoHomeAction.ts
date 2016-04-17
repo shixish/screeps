@@ -11,13 +11,21 @@ class GoHomeAction extends BaseAction {
     }
 
     getTargets() {
-        if (this.actor.memory.office) {
-            let flag = Game.flags[this.actor.memory.office];
-            if (flag && this.actor.room.name != flag.pos.roomName) {
-                return [flag];
-            }
+        if (this.actor.memory.home && this.actor.room.name != this.actor.memory.home) {
+            // BaseAction.getExit(this.actor.room, this.actor.memory.home);
+            // let flag = Game.flags[this.actor.memory.home];
+            // if (flag && this.actor.room.name != flag.pos.roomName) {
+            //     return [flag];
+            // }
         }
     }
 
+    perform() {
+        if (this.actor.room.name != this.actor.memory.home) {
+            this.move();
+        } else {
+            return false;
+        }
+    }
 }
 CreepActions['GoHome'] = GoHomeAction;

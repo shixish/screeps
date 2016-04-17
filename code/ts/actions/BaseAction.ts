@@ -54,6 +54,17 @@ class BaseAction{ //Abstract class
         return false;
     }
 
+    static getExit(room: Room, target_room_name: string) {
+        let path = room.findExitTo(target_room_name);
+        if (path) {
+            if (!Memory['paths']) Memory['paths'] = {};
+            // if (!Memory['paths'][room.name]) Memory['paths'][room.name] = {};
+            // // Memory['paths'][room.name][target_room_name] = path;
+
+            // if (!Memory['paths'][target_room_name]) Memory['paths'][target_room_name] = {};
+            // Memory['paths'][target_room_name][room.name] = path;
+        }
+    }
 
     static getReverseDirection(direction) {
         switch (direction) {

@@ -34,3 +34,4 @@ const Globals = {
 var CreepActions = {};
 var CreepControllers = {};
 var StructureControllers = {};
+var FlagTypes = {};
