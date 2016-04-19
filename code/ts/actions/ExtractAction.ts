@@ -13,7 +13,7 @@ class ExtractAction extends BaseAction {
     getTargets() {
         return this.actor.room.find(FIND_SOURCES, {
             filter: function(obj: Source) {
-                return obj.energy > 0 && obj.room.controller.owner && obj.room.controller.owner.username == Globals.USERNAME;
+                return obj.energy > 0;// && obj.room.controller.owner && obj.room.controller.owner.username == Globals.USERNAME;
             }
         });
     }

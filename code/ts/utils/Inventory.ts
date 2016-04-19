@@ -15,6 +15,7 @@ class Inventory {
             let room = Game.rooms[r];
             // room.memory['energy'] = room.memory['energyCapacity'] = 0;
 
+
             if (!room.memory.source) Inventory.invRoomSources(room);
             if (!room.memory.mineral) Inventory.invRoomMinerals(room);
 
@@ -35,8 +36,8 @@ class Inventory {
             
             //Only update structure counts if need be.
             if (!room.memory.last_attack) room.memory.last_attack = Game.time;
-            let attack_cd = room.memory.last_attack > room.memory.last_updated && Game.time - room.memory.last_attack > Globals.ALL_CLEAR_AFTER;
-            let reload = !room.memory.last_updated || attack_cd || construction_finished;
+            let attack_finished = room.memory.last_attack > room.memory.last_updated && Game.time - room.memory.last_attack > Globals.ALL_CLEAR_AFTER;
+            let reload = !room.memory.last_updated || attack_finished || construction_finished;
             // console.log(room.memory.last_attack > room.memory.last_updated, Game.time - room.memory.last_attack, room);
             if (reload) {
                 console.log('Refreshing structure counts for room', room.name);
@@ -55,14 +56,15 @@ class Inventory {
             SpawnController.generateQueue(room);
 
             //Note: this should be run after generateMaxCreepCount
-            Inventory.updateObsoleteCreeps(room);
+            // Inventory.updateObsoleteCreeps(room);
 
             if (room.memory['structures']['storage'] && room.memory['structures']['storage'].length) {
                 let storage = <Storage>Game.getObjectById(room.memory['structures']['storage'][0]);
                 room.memory.storage = storage.store;
                 if (!room.memory.storage.energy) room.memory.storage.energy = 0; //make sure it gets set
             } else {
-                room.memory.storage.energy = 0;
+                //we get "Cannot assign to read only property 'energy' of 0" if you try to set the value directly
+                room.memory.storage = { energy: 0 };
             }
         }
         invDiag.stop();

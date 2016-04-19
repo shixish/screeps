@@ -29,7 +29,7 @@ class RunnerCreep extends BaseCreep {
         // this.creep.memory.action_name = 'moving';
 
         if (!super.try_to('GoOffice')) {
-            if (!super.try_to('Claim')) {
+            // if (!super.try_to('Claim')) {
                 if (this.creep.carry.energy > 0) {
                     if (!super.try_to('Give')) {
                         if (!super.try_to('Build')) {
@@ -43,11 +43,11 @@ class RunnerCreep extends BaseCreep {
                 } else {
                     if (!super.try_to('Pickup')) {
                         if (!super.try_to('Harvest')) {
-
+                            
                         }
                     }
                 }
-            }
+            // }
         }
         
         // if (this.flag && this.creep.room.name != this.flag.pos.roomName) {
@@ -81,42 +81,6 @@ class RunnerCreep extends BaseCreep {
         // }
     }
 
-    // static create(budget:number) {
-    //     // if (budget >= 600 * 5 + 50 * 10)
-    //     //     return [
-    //     //         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
-    //     //         CLAIM, CLAIM, CLAIM, CLAIM, CLAIM
-    //     //     ];
-
-    //     // if (budget >= 100 * 10 + 50 * 10 + 50 * 10)// + 600)
-    //     //     return [
-    //     //         WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK,
-    //     //         CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
-    //     //         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
-    //     //         // CLAIM, 
-    //     //     ];
-    //     if (budget >= 100 * 5 + 50 * 5 + 50 * 10)// + 600)
-    //         return [
-    //             WORK, WORK, WORK, WORK, WORK,
-    //             CARRY, CARRY, CARRY, CARRY, CARRY,
-    //             MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
-    //             // CLAIM, 
-    //         ];
-    //     // else if (budget >= 100 * 2 + 50 * 4 + 50 * 2) // 500
-    //     //     return [
-    //     //         WORK, WORK,
-    //     //         CARRY, CARRY, CARRY, CARRY,
-    //     //         MOVE, MOVE,
-    //     //     ];
-        
-    //     // return [
-    //     //     // CLAIM, 
-    //     //     WORK, WORK, 
-    //     //     CARRY, CARRY, CARRY, CARRY, CARRY, 
-    //     //     MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
-    //     // ];
-    // }
-
     static creep_tiers = [
         // // {
         // //     'cost': 100 * 5 + 50 * 5 + 50 * 10 + 600,
@@ -128,39 +92,45 @@ class RunnerCreep extends BaseCreep {
         // //     ],
         // // },
 
-        // {
-        //     'cost': 100 * 10 + 50 * 10 + 50 * 10,
-        //     'body': [
-        //         WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK,
-        //         CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
-        //         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
-        //         // CLAIM, 
-        //     ],
-        // },
-        // {
-        //     'cost': 100 * 5 + 50 * 5 + 50 * 10,
-        //     'body': [
-        //         WORK, WORK, WORK, WORK, WORK,
-        //         CARRY, CARRY, CARRY, CARRY, CARRY,
-        //         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
-        //         // CLAIM, 
-        //     ],
-        // },
-        // {
-        //     'cost': 300,
-        //     'body': [
-        //         CARRY, CARRY, CARRY,
-        //         WORK,
-        //         MOVE,
-        //     ],
-        // },
-        
-        {//Path Testing
-            'cost': 50,
+        {
+            'cost': 100 * 10 + 50 * 10 + 50 * 10, //2000
             'body': [
+                WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK,
+                CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
+                MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
+            ],
+        },
+        {
+            'cost': 100 * 5 + 50 * 5 + 50 * 10, //1250
+            'body': [
+                WORK, WORK, WORK, WORK, WORK,
+                CARRY, CARRY, CARRY, CARRY, CARRY,
+                MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
+            ],
+        },
+        {
+            'cost': 100 * 3 + 50 * 5 + 50 * 5, //800
+            'body': [
+                WORK, WORK, WORK,
+                CARRY, CARRY, CARRY, CARRY, CARRY,
+                MOVE, MOVE, MOVE, MOVE, MOVE,
+            ],
+        },
+        {
+            'cost': 300,
+            'body': [
+                CARRY, CARRY, CARRY,
+                WORK,
                 MOVE,
             ],
         },
+        
+        // {//Path Testing
+        //     'cost': 50,
+        //     'body': [
+        //         MOVE,
+        //     ],
+        // },
     ];
 
 }

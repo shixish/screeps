@@ -234,17 +234,18 @@ class BaseAction{ //Abstract class
     //     // return false;
     // }
 
-    move() {
+    move(_target?) {
+        let target = _target || this.target;
         // if (this.actor.name == 'Katherine')
         //     console.log(this.actor.name, this.actor.memory.role, this.actor.pos.x, this.actor.memory.target_x, ', ', this.actor.pos.y, this.actor.memory.target_y);
-        if (this.target && this.actor && !this.actor.pos.inRangeTo(this.target, this.getTargetRange(this.target))) {
-            let move = this.actor.moveTo(this.target);
+        if (target && this.actor && !this.actor.pos.inRangeTo(target, this.getTargetRange(target))) {
+            let move = this.actor.moveTo(target);
             // console.log(move);
             return move;
         }
         return;
 
-        // let p = this.actor.pos.findPathTo(this.target);
+        // let p = this.actor.pos.findPathTo(target);
         // return this.actor.moveByPath(p);
 
 
@@ -255,14 +256,14 @@ class BaseAction{ //Abstract class
         // }
 
         //As long as the stored target object is the right target, and we have the stored target_path, try to use it.
-        // if (this.target.id != this.actor.memory.target_id) {
+        // if (target.id != this.actor.memory.target_id) {
         //     console.log('weirdo movement!?');
         //     this.retarget();
         // }
 
         // let path;
         // if (!this.actor.memory.target_path) {
-        //     path = this.actor.pos.findPathTo(this.target);
+        //     path = this.actor.pos.findPathTo(target);
         //     this.actor.memory.target_path = Room.serializePath(path);
         // } else {
         //     path = Room.deserializePath(this.actor.memory.target_path);
@@ -270,7 +271,7 @@ class BaseAction{ //Abstract class
 
         // let move = this.actor.moveByPath(path);
         // if (move == ERR_NOT_FOUND) {
-        //     var new_path = this.actor.pos.findPathTo(this.target);
+        //     var new_path = this.actor.pos.findPathTo(target);
         //     this.actor.memory.target_path = Room.serializePath(new_path);
         //     move = this.actor.moveByPath(path);
         // }
@@ -280,13 +281,13 @@ class BaseAction{ //Abstract class
         // } else if (move == ERR_NOT_FOUND) {
         //     console.log(creep, 'Error finding path using serialization...');
         //     // debug.log(path);
-        //     var new_path = this.actor.pos.findPathTo(this.target);
+        //     var new_path = this.actor.pos.findPathTo(target);
         //     this.actor.memory.target_path = Room.serializePath(new_path);
 
 
 
         //     // console.log('ERR_NOT_FOUND', Object.keys(path[0]), path[0].x, path[0].y);
-        //     // var ezpath = this.actor.pos.findPathTo(this.target);
+        //     // var ezpath = this.actor.pos.findPathTo(target);
         //     // // if (ezpath.length) {
         //     // //     console.log('ERR_NOT_FOUND2', Object.keys(ezpath[0]), ezpath[0].x, ezpath[0].y);
         //     // // } else { 
@@ -294,7 +295,7 @@ class BaseAction{ //Abstract class
         //     // // }
         //     // move = this.actor.moveByPath(ezpath);
         //     // console.log('ezpath', move);
-        //     // return this.actor.moveTo(this.target);
+        //     // return this.actor.moveTo(target);
         // }else if (move == ERR_BUSY){
         //     //don't worry about it.
         // }else if (move != 0) {

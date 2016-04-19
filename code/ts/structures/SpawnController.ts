@@ -19,7 +19,8 @@ class SpawnController {
     }
 
     static getMaxCreepCount(room: Room) {
-        if (!room.controller.owner || room.controller.owner.username != Globals.USERNAME) return;
+        //There may not be a controller in the room.
+        if (!room.controller || !room.controller.owner || room.controller.owner.username != Globals.USERNAME) return;
 
         let sources = Inventory.room_sources(room),
             // minerals = Inventory.room_minerals(room),
@@ -51,10 +52,10 @@ class SpawnController {
         }
 
         let under_attack_by = room.memory.under_attack;
-        if (room.memory.under_attack > 4) {
+        if (room.memory.under_attack >= 2) {
             max_creeps.Courier += Math.floor(under_attack_by / 3);
-            max_creeps.Healer += Math.floor(under_attack_by / 2);
-            max_creeps.Guard += Math.ceil(under_attack_by / 4);
+            // max_creeps.Healer += Math.floor(under_attack_by / 2);
+            // max_creeps.Guard += Math.ceil(under_attack_by / 4);
             max_creeps.Ranger += Math.ceil(under_attack_by);
         }
 

@@ -4,17 +4,17 @@
 
 class RangerCreep extends BaseCreep {
     public creep: Creep;
-    public flag: Flag;
+    // public flag: Flag;
 
     constructor(creep: Creep) {
         super(creep);
 
-        if (!this.creep.memory.flag) {
-            this.creep.memory.flag = this.creep.room.name + '_attack';
-            this.flag = <Flag>Game.flags[this.creep.memory.flag];
-        } else {
-            this.flag = <Flag>Game.flags[this.creep.memory.flag];
-        }
+        // if (!this.creep.memory.flag) {
+        //     this.creep.memory.flag = this.creep.room.name + '_attack';
+        //     this.flag = <Flag>Game.flags[this.creep.memory.flag];
+        // } else {
+        //     this.flag = <Flag>Game.flags[this.creep.memory.flag];
+        // }
         // console.log(this.creep, this.flag);
         // this.retarget();
     }
@@ -24,9 +24,9 @@ class RangerCreep extends BaseCreep {
         // this.flag.remove();
         // this.creep.room.memory.under_attack
 
-        if (!super.try_to('Attack')) {
-            if (this.flag) {
-                super.set_target(this.flag);
+        if (!super.try_to('GoOffice')) {
+            if (!super.try_to('Attack')) {
+                
             }
         }
     }

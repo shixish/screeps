@@ -18,7 +18,7 @@ class HarvestFlag extends BaseFlag {
             'Ranger': 0,
             'Builder': 0,
             'Miner': 0,
-            'Runner': 0,
+            'Runner': 1,
         }
 
         // if (!target_room) { // || target_room.controller [claim timer is low]
