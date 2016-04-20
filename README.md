@@ -2,6 +2,7 @@ Screeps
 ===
 This is my super-secret code that powers my [Screeps](https://screeps.com/). It's getting complex enough now that I probably should stop sharing it... Wouldn't want to help the competition too much. ;)
 
+Sorry for the mess, I hadn't planned on sharing this with anyone really.
 
 Brief overview of my progress:
 ---

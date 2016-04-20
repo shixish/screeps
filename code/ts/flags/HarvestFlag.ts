@@ -12,7 +12,7 @@ class HarvestFlag extends BaseFlag {
 
     getMaxCreepCount() {
         let flag_creeps = {
-            'Runner': 1,
+            // 'Runner': 1,
             'RangeGuard': 1,
         };
         if (this.flag.room) {
@@ -20,7 +20,13 @@ class HarvestFlag extends BaseFlag {
             let sources = Inventory.room_sources(room),
                 containers = Inventory.room_structure_count('container', room);
             
-            flag_creeps['RangeCourier'] = containers * 2;
+            if (containers > 0) {
+                flag_creeps['RangeHarvester'] = containers;
+                flag_creeps['RangeCourier'] = containers;
+                flag_creeps['Repair'] = 1;
+            } else {
+                flag_creeps['Runner'] = 1; //make a generic creep instead
+            }
 
             if (room.controller && (!room.controller.reservation && !room.controller.reservation) || room.controller.ticksToDowngrade < 5000) {
                 flag_creeps['Claim'] = 1;

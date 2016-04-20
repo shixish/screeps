@@ -4,15 +4,13 @@
 /// <reference path="utils/Debug.ts" />
 "use strict";
 
-function run_structure(type:string, structure: Structure) {
-    if (structure_controllers[type]) {
-        let fn = structure_controllers[type];
-        // console.log(type, fn)
-    }
-}
-
 declare var module: any;
 (module).exports.loop = function () {
+    //Clear out the cache, ready for new stuff.
+    TickCache = {
+        'Action': {},
+        //other stuff?
+    };
     var totalDiag = debug.diag('Total');
     Inventory.update();
 

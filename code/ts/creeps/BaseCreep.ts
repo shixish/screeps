@@ -104,6 +104,14 @@ class BaseCreep { //Abstract class
     //     // }
     // }
 
+    is_at_home() {
+        return this.creep.memory.home == this.creep.pos.roomName;
+    }
+
+    is_at_office() {
+        return this.creep.memory.office == this.creep.pos.roomName;
+    }
+
     retarget() {
         //Note: This function needs to be extended by child classes
         this.creep.memory.target_id = null;

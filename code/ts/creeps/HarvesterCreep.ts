@@ -13,7 +13,7 @@ class HarvesterCreep extends BaseCreep {
         super(creep);
         var creep_name = this.creep.name;
         // console.log(creep_name, this.creep.memory.source, creep.room.memory.source[this.creep.memory.source].harvester);
-        if (!creep.memory.source) {
+        if (!creep.memory.source && this.is_at_office()) {
             // console.log(creep.room.memory.source);
             for (var s in creep.room.memory.source) {
                 var harvester_name = creep.room.memory.source[s].harvester;
@@ -64,33 +64,6 @@ class HarvesterCreep extends BaseCreep {
             }
         }
     }
-
-    // static create(budget: number) {
-    //     if (budget >= 50 + 100*6 + 50*6) //950
-    //         return [ //Linker creep
-    //             MOVE,
-    //             WORK, WORK, WORK, WORK, WORK, WORK,
-    //             CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
-    //         ];
-    //     else if (budget >= 50*4 + 100*4 + 50*4) //800
-    //         return [ //Walk Miner
-    //             CARRY, CARRY, CARRY, CARRY,
-    //             WORK, WORK, WORK, WORK,
-    //             MOVE, MOVE, MOVE, MOVE,
-    //         ];
-    //     else if (budget >= 50*4 + 100*2 + 50*2) //500
-    //         return [ //Walk Miner
-    //             CARRY, CARRY, CARRY, CARRY, 
-    //             WORK, WORK,
-    //             MOVE, MOVE,
-    //         ];
-    //     else //Walk Miner
-    //         return [
-    //             CARRY,
-    //             WORK, WORK,
-    //             MOVE,
-    //         ];
-    // }
 
     static creep_tiers = [
         {

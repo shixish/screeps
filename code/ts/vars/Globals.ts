@@ -35,3 +35,6 @@ var CreepActions = {};
 var CreepControllers = {};
 var StructureControllers = {};
 var FlagTypes = {};
+
+//Store things that get wiped out per tick.
+var TickCache = {};

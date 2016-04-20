@@ -4,6 +4,7 @@ class BaseAction{ //Abstract class
     public actor;
     public target;
     public action_name = 'Unknown';
+    protected cache_results = true;
 
     constructor(actor) {
         this.actor = actor;
@@ -15,6 +16,10 @@ class BaseAction{ //Abstract class
 
     getTargets() {
         //notice: I could possibly cache the results of this function on a per-tick basis, making it faster for repeat calls.
+    }
+
+    cacheGetTargets() {
+        // TickCache['Action']
     }
     
     try() {
