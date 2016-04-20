@@ -16,19 +16,29 @@ class SourceController {
         }
         var memory = this.source.room.memory.source[this.source.id];
         // console.log(this.source.room.memory.source[this.source.id].link);
-        if (!memory.link) {
-            var links = <Link[]>this.source.pos.findInRange(FIND_MY_STRUCTURES, 3, {
+        if (!memory.container && !memory.link) {
+            var structures = <Structure[]>this.source.pos.findInRange(FIND_MY_STRUCTURES, 3, {
                 filter: function(obj) {
-                    return obj.structureType == STRUCTURE_LINK;
+                    return obj.structureType == STRUCTURE_LINK || obj.structureType == STRUCTURE_CONTAINER;
                 }
             });
-            if (links.length) {
-                var link = links.pop();
-                memory.link = link.id;
-                this.link = link;
+            for (let s in structures) {
+                let structure = structures[s];
+                if (structure.structureType == STRUCTURE_LINK) {
+                    memory.link = structure.id;
+                    this.link = <Link>structure;
+                } else { 
+                    memory.container = structure.id;
+                    this.container = <Container>structure;
+                }
             }
-        } else { 
+        }
+
+        if (memory.link) { 
             this.link = <Link>Game.getObjectById(memory.link);
+        }
+        if (memory.container) {
+            this.container = <Container>Game.getObjectById(memory.container);
         }
         this.work();
     }

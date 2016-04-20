@@ -5,6 +5,7 @@ class ClaimAction extends BaseAction {
     public actor;
     public target;
     public action_name = 'Claim';
+    private min_ticks = 15000;
 
     constructor(actor) {
         super(actor);
@@ -13,17 +14,22 @@ class ClaimAction extends BaseAction {
     getTargets() {
         if (this.actor.getActiveBodyparts(CLAIM) > 0) {
             return this.actor.room.find(FIND_STRUCTURES, {
-                filter: function(obj) {
-                    return obj.structureType == STRUCTURE_CONTROLLER && (!obj.owner || obj.owner.username != Globals.USERNAME)
-                }
+                filter: obj => (
+                    obj.structureType == STRUCTURE_CONTROLLER &&
+                    (
+                        (!obj.owner || obj.owner.username != Globals.USERNAME) ||
+                        (<Controller>obj).ticksToDowngrade < this.min_ticks
+                    )
+                )
             });
+            // .reservation.username
         }
     }
 
     perform() {
         super.perform();
-
-        if ((<Controller>this.target).owner && (<Controller>this.target).owner.username == Globals.USERNAME) {
+        let controller_is_mine = (<Controller>this.target).owner && (<Controller>this.target).owner.username == Globals.USERNAME;
+        if (controller_is_mine || (<Controller>this.target).ticksToDowngrade > this.min_ticks) {
             return false;
         } else {
             let action = this.actor.claimController(this.target);

@@ -3,9 +3,10 @@
 "use strict";
 class AttackFlag extends BaseFlag {
     public flag_name = 'Attack';
+    public flag: Flag;
 
-    constructor() {
-        super();
+    constructor(flag: Flag) {
+        super(flag);
     }
 
     getMaxCreepCount() {

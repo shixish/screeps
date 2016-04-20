@@ -304,8 +304,11 @@ class SpawnController {
         if (role && CreepControllers[role]) {
             let ctrl = CreepControllers[role];
             // let tier = ctrl.produce_new(room);
+            // let tier = Inventory.getHighestCreepTier(room, role);
             let tier = Inventory.getHighestCreepTier(room, role);
-            // tier = ctrl.get_heighest_tier(room);
+            
+            //bring things back to life...
+            // tier = ctrl.get_affordable_tier(room);
 
             // if (role == "guard") {
             //     console.log(tier, ctrl);
@@ -343,7 +346,8 @@ class SpawnController {
                     console.log(this.structure.room.name, this.structure, "create creep error:", response);
                 }
             } else {
-                console.log(`No creep tier found for ${role} in room ${room}`)
+                console.log(`No creep tier found for ${role} in room ${room}`);
+                Inventory.invHighestCreepTiers(room);
             }
         } else {
             console.log(`Spawn detected invalid creep role ${role}!`);

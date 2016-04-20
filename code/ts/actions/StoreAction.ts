@@ -15,14 +15,14 @@ class StoreAction extends BaseAction {
         // if (_.sum(storage.store) - storage.store[RESOURCE_ENERGY] < storage.storeCapacity * Globals.MAX_MINERALS_IN_STORE) {
         //    
         // }
-        let targets = this.actor.room.find(FIND_MY_STRUCTURES, {
+        //notice: can't use "my" structures to find containers, as they are neutral...
+        let targets = this.actor.room.find(FIND_STRUCTURES, {
             filter: function(obj) {
-                let fullness = _.sum(obj.store);
-                return (
-                    obj.structureType == STRUCTURE_STORAGE
-                     && fullness < obj.storeCapacity //needs to not be totally full
-                    // && fullness - obj.store[RESOURCE_ENERGY] < obj.storeCapacity * Globals.MAX_MINERALS_IN_STORE
-                );
+                if (obj.structureType == STRUCTURE_STORAGE || obj.structureType == STRUCTURE_CONTAINER) {
+                    let fullness = _.sum(obj.store);
+                    return fullness < obj.storeCapacity; //needs to not be totally full
+                }
+                return false;
             }
         });
         return targets;

@@ -79,7 +79,6 @@ class BaseCreep { //Abstract class
         }
     }
 
-    //not sure this is necessary...
     static get_affordable_tier(room: Room) {
         let budget = room.energyAvailable;
         for (let t in this.creep_tiers) {
@@ -147,7 +146,7 @@ class BaseCreep { //Abstract class
     //     }
     // }
 
-    work(is_retry) {
+    work(is_retry?) {
         // let target = Game.getObjectById(this.creep.memory.target_id),
         //     action_name = this.creep.memory.action_name,
         //     action_function = this[action_name];

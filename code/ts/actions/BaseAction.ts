@@ -14,7 +14,7 @@ class BaseAction{ //Abstract class
     }
 
     getTargets() {
-
+        //notice: I could possibly cache the results of this function on a per-tick basis, making it faster for repeat calls.
     }
     
     try() {
@@ -64,6 +64,7 @@ class BaseAction{ //Abstract class
             // if (!Memory['paths'][target_room_name]) Memory['paths'][target_room_name] = {};
             // Memory['paths'][target_room_name][room.name] = path;
         }
+        return path;
     }
 
     static getReverseDirection(direction) {

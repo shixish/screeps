@@ -30,11 +30,21 @@ class ExtractAction extends BaseAction {
             // console.log('Depleted an energy source.');
             return false;
         } else if (action != 0) {
-            console.log('harvesting error:', action, this.actor.name);
+            console.log('extracting error:', action, this.actor.name);
             // return false;
         }
+        // if (action == 0) {
+        //     let container = <Creep[]>this.actor.pos.findInRange(FIND_MY_STRUCTURES, 3, {
+        //         filter: function(obj) {
+        //             return obj.structureType == STRUCTURE_RAMPART;
+        //         }
+        //     });
+        // }
         return true;
     }
 
+    micro() {
+
+    }
 }
 CreepActions['Extract'] = ExtractAction;

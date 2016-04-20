@@ -11,12 +11,22 @@ class TakeAction extends BaseAction {
     }
 
     getTargets() {
-        let targets = this.actor.room.find(FIND_MY_STRUCTURES, {
+
+        // let targets = this.actor.room.find(FIND_MY_STRUCTURES, {
+        //     filter: function(obj) {
+        //         return (
+        //             obj.structureType == STRUCTURE_STORAGE
+        //             && obj.store.energy > 0
+        //         );
+        //     }
+        // });
+        //notice: can't use "my" structures to find containers, as they are neutral...
+        let targets = this.actor.room.find(FIND_STRUCTURES, {
             filter: function(obj) {
-                return (
-                    obj.structureType == STRUCTURE_STORAGE
-                    && obj.store.energy > 0
-                );
+                if (obj.structureType == STRUCTURE_STORAGE || obj.structureType == STRUCTURE_CONTAINER) {
+                    return obj.store.energy > 0; //needs to not be empty
+                }
+                return false;
             }
         });
         return targets;
@@ -28,12 +38,20 @@ class TakeAction extends BaseAction {
         // if (this.actor.name == 'Lucy')
         //     console.log('Take:', this.actor.name, this.actor.memory.role, this.actor.room);
         let fullness = _.sum(this.actor.carry); //creep can have multiple resources on board
-        if (fullness == this.actor.carryCapacity || this.target.energy == 0) {//end condition:
+        if (!this.target || fullness == this.actor.carryCapacity || this.target.energy == 0) {//end condition:
             // this.actor.say('Energized');
             return false;
         } else {
             if (this.target.energy > 0 || (this.target.store && this.target.store.energy > 0)) { //Storage uses .store, others don't
-                let action = this.target.transferEnergy(this.actor);
+                //Notice: links do not offer the "transfer" method, only "transferEnergy" method.
+                let action;
+                //for some reason links have a transfer method but cant use it
+                if (this.target.transfer && this.target.structureType != STRUCTURE_LINK) {
+                    action = this.target.transfer(this.actor, RESOURCE_ENERGY);
+                } else {
+                    action = this.target.transferEnergy(this.actor);
+                }
+
                 // if (target.energy <= 5){
                 //     this.retarget(this);
                 // }

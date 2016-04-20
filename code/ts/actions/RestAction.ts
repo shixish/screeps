@@ -12,7 +12,7 @@ class RestAction extends BaseAction {
 
     getTargets() {
         if (!this.actor.memory.target_id) { //if nothing else
-            let flag_name = this.actor.room.name + '_resting',
+            let flag_name = this.actor.room.name + '_Rest',
                 flag = Game.flags[flag_name];
 
             if (!flag) {
@@ -20,7 +20,7 @@ class RestAction extends BaseAction {
                 flag = Game.flags[flag_name];
             }
             if (flag) {
-                return [Game.flags[this.actor.room.name + '_resting']];
+                return [Game.flags[flag_name]];
             }
         }
     }

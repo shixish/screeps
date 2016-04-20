@@ -1,24 +1,30 @@
 /// <reference path="../vars/Globals.ts" />
+/// <reference path="../utils/Inventory.ts" />
 /// <reference path="BaseFlag.ts" />
 "use strict";
 class HarvestFlag extends BaseFlag {
     public flag_name = 'Harvest';
+    public flag: Flag;
 
-    constructor() {
-        super();
+    constructor(flag: Flag) {
+        super(flag);
     }
 
     getMaxCreepCount() {
         let flag_creeps = {
-            'Harvester': 0,
-            'Courier': 0,
-            'Linker': 0,
-            'Guard': 0,
-            'Healer': 0,
-            'Ranger': 0,
-            'Builder': 0,
-            'Miner': 0,
             'Runner': 1,
+            'RangeGuard': 1,
+        };
+        if (this.flag.room) {
+            let room = this.flag.room;
+            let sources = Inventory.room_sources(room),
+                containers = Inventory.room_structure_count('container', room);
+            
+            flag_creeps['RangeCourier'] = containers * 2;
+
+            if (room.controller && (!room.controller.reservation && !room.controller.reservation) || room.controller.ticksToDowngrade < 5000) {
+                flag_creeps['Claim'] = 1;
+            }
         }
 
         // if (!target_room) { // || target_room.controller [claim timer is low]

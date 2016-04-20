@@ -30,12 +30,30 @@ class RunnerCreep extends BaseCreep {
 
         if (!super.try_to('GoOffice')) {
             // if (!super.try_to('Claim')) {
+                // if (this.creep.carry.energy > 0) {
+                //     if (!super.try_to('Give')) {
+                //         if (!super.try_to('Build')) {
+                //             if (!super.try_to('Upgrade')) {
+                //                 if (!super.try_to('Store')) {
+                //                     // console.log('Creep is unable to spend energy!?');
+                //                 }
+                //             }
+                //         }
+                //     }
+                // } else {
+                //     if (!super.try_to('Pickup')) {
+                //         if (!super.try_to('Harvest')) {
+                            
+                //         }
+                //     }
+                // }
+            // }
                 if (this.creep.carry.energy > 0) {
                     if (!super.try_to('Give')) {
                         if (!super.try_to('Build')) {
-                            if (!super.try_to('Upgrade')) {
+                            if (!super.try_to('Repair')) {
                                 if (!super.try_to('Store')) {
-                                    // console.log('Creep is unable to spend energy!?');
+                                    
                                 }
                             }
                         }
@@ -43,11 +61,10 @@ class RunnerCreep extends BaseCreep {
                 } else {
                     if (!super.try_to('Pickup')) {
                         if (!super.try_to('Harvest')) {
-                            
+
                         }
                     }
                 }
-            // }
         }
         
         // if (this.flag && this.creep.room.name != this.flag.pos.roomName) {

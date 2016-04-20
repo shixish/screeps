@@ -15,7 +15,7 @@ class CourierCreep extends BaseCreep {
         super.retarget();
         if (_.sum(this.creep.carry) > this.creep.carryCapacity/2) {
             if (!super.try_to('GoHome')) {
-                if (this.creep.carry.energy > 0) {
+                if (this.creep.carry.energy > 0 && this.creep.memory.home == this.creep.memory.office) {
                     !super.try_to('Give');
                 } else { //if it's not energy, it needs to be put into storage.
                     super.try_to('Store');
