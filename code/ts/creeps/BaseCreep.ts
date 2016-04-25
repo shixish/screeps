@@ -171,12 +171,13 @@ class BaseCreep { //Abstract class
     // }
 
     work(is_retry?) {
-        let target = Game.getObjectById(this.creep.memory.target_id),
-            action_name = this.creep.memory.action_name;
-        
         if (this.creep.memory.action_name !== "Renew" && !this.creep.room.memory.under_attack && !this.creep.memory.obsolete && this.creep.ticksToLive < Globals.MIN_TICKS_TO_LIVE) {
             this.try_to('Renew');
         }
+
+        //Notice: make sure any targeting happens before this.
+        let target = Game.getObjectById(this.creep.memory.target_id),
+            action_name = this.creep.memory.action_name;
 
         if (CreepActions[action_name]) {
             if (action_name) this.creep.say(action_name);

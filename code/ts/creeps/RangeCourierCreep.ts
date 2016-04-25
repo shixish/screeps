@@ -13,7 +13,7 @@ class RangeCourierCreep extends BaseCreep {
 
     retarget() {
         super.retarget();
-        if (_.sum(this.creep.carry) > 0) {
+        if (_.sum(this.creep.carry) == this.creep.carryCapacity) {
             if (!(this.rejuvinate && super.try_to('Give'))) {
                 if (!super.try_to('GoHome')) {
                     if (!super.try_to('Link')) {
@@ -23,7 +23,11 @@ class RangeCourierCreep extends BaseCreep {
             }
         } else {
             if (!super.try_to('GoOffice')) {
-                if (!this.creep.room.memory.under_attack) super.try_to('Take');
+                if (!this.creep.room.memory.under_attack) {
+                    if (!super.try_to('Pickup')) {
+                        super.try_to('Take');
+                    }
+                }
             }
         }
         super.try_to('Rest');

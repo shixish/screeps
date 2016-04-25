@@ -72,20 +72,21 @@ class BuilderCreep extends BaseCreep {
     // }
 
     static creep_tiers = [// 2300
-        {
-            'cost': 50 * 25 + 100 * 15 + 50 * 10,
-            'body': [
-                CARRY, CARRY, CARRY, CARRY, CARRY, 
-                CARRY, CARRY, CARRY, CARRY, CARRY,
-                CARRY, CARRY, CARRY, CARRY, CARRY, 
-                CARRY, CARRY, CARRY, CARRY, CARRY,
-                CARRY, CARRY, CARRY, CARRY, CARRY, 
-                WORK, WORK, WORK, WORK, WORK, 
-                WORK, WORK, WORK, WORK, WORK,
-                WORK, WORK, WORK, WORK, WORK,
-                MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
-            ],
-        },
+        //Unnecessarily badass:
+        // {
+        //     'cost': 50 * 25 + 100 * 15 + 50 * 10,
+        //     'body': [
+        //         CARRY, CARRY, CARRY, CARRY, CARRY, 
+        //         CARRY, CARRY, CARRY, CARRY, CARRY,
+        //         CARRY, CARRY, CARRY, CARRY, CARRY, 
+        //         CARRY, CARRY, CARRY, CARRY, CARRY,
+        //         CARRY, CARRY, CARRY, CARRY, CARRY, 
+        //         WORK, WORK, WORK, WORK, WORK, 
+        //         WORK, WORK, WORK, WORK, WORK,
+        //         WORK, WORK, WORK, WORK, WORK,
+        //         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,
+        //     ],
+        // },
         {
             'cost': 50 * 18 + 100 * 10 + 50 * 8, //2300 breakpoint
             'body': [
