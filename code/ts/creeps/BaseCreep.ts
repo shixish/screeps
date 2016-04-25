@@ -19,18 +19,34 @@
 "use strict";
 class BaseCreep { //Abstract class
     public creep: Creep;
-    protected target;
-    protected action_name;
+        //Note: this was a bad idea, it needs to find out if the target changed right before doing the work:
+    // protected target;
+    // protected action_name;
     protected flag: Flag;
 
     constructor(creep: Creep) {
         this.creep = creep;
-        this.target = Game.getObjectById(this.creep.memory.target_id);
-        this.action_name = this.creep.memory.action_name;
-        if (this.creep.memory.office) {
+        /*if (this.creep.memory.office) {
             this.flag = Game.flags[this.creep.memory.office];
+        }*/
+        if (this.creep.memory.flag) {
+            this.flag = Game.flags[this.creep.memory.flag];
         }
     }
+
+    // setTarget(target_obj, action_name) {
+    //     if (target_obj.target) {
+    //         this.creep.memory.target_id = target_obj.target.id;
+    //         this.creep.memory.target_path = Room.serializePath(target_obj.path);
+    //         this.creep.memory.action_name = action_name;
+    //         this.creep.memory.target_x = target_obj.target.pos.x;
+    //         this.creep.memory.target_y = target_obj.target.pos.y;
+
+    //         target = target_obj.target;
+    //         action_name = action_name;
+    //         return true;
+    //     }
+    // }
 
     //This should be extended...
     static creep_tiers = [
@@ -155,21 +171,18 @@ class BaseCreep { //Abstract class
     // }
 
     work(is_retry?) {
-        // let target = Game.getObjectById(this.creep.memory.target_id),
-        //     action_name = this.creep.memory.action_name,
-        //     action_function = this[action_name];
-
-        
+        let target = Game.getObjectById(this.creep.memory.target_id),
+            action_name = this.creep.memory.action_name;
         
         if (this.creep.memory.action_name !== "Renew" && !this.creep.room.memory.under_attack && !this.creep.memory.obsolete && this.creep.ticksToLive < Globals.MIN_TICKS_TO_LIVE) {
             this.try_to('Renew');
         }
 
-        if (CreepActions[this.action_name]) {
-            if (this.action_name) this.creep.say(this.action_name);
+        if (CreepActions[action_name]) {
+            if (action_name) this.creep.say(action_name);
             else this.creep.say(this.creep.memory.role + ' idle');
 
-            let ctrl = new CreepActions[this.action_name](this.creep);
+            let ctrl = new CreepActions[action_name](this.creep);
             let ret = ctrl.perform();
             if (!ret) {
                 this.retarget();

@@ -21,9 +21,12 @@ class ClaimCreep extends BaseCreep {
         // }
 
         if (!super.try_to('GoOffice')) {
-            if (!super.try_to('Claim')) {
-
+            if (this.flag && this.flag.memory.claim) {
+                super.try_to('Claim');
+            } else {
+                super.try_to('Reserve')
             }
+            super.try_to('Rest');
         }
     }
 

@@ -8,7 +8,7 @@ class RangeCourierCreep extends BaseCreep {
 
     constructor(creep: Creep) {
         super(creep);
-        this.rejuvinate = this.creep.room.controller && this.creep.room.controller.owner && this.creep.room.controller.owner.username == Globals.USERNAME;
+        this.rejuvinate = this.creep.memory.home == this.creep.memory.office && this.creep.room.controller && this.creep.room.controller.owner && this.creep.room.controller.owner.username == Globals.USERNAME;
     }
 
     retarget() {
@@ -23,7 +23,7 @@ class RangeCourierCreep extends BaseCreep {
             }
         } else {
             if (!super.try_to('GoOffice')) {
-                super.try_to('Take');
+                if (!this.creep.room.memory.under_attack) super.try_to('Take');
             }
         }
         super.try_to('Rest');
@@ -31,14 +31,26 @@ class RangeCourierCreep extends BaseCreep {
 
     static creep_tiers = [
         {
-            'cost': 50*10 + 50*3,
+            'cost': 800,
             'body': [
+                MOVE,
+                CARRY, CARRY, CARRY,
+                MOVE,
+                CARRY, CARRY, CARRY,
+                MOVE,
+                CARRY, CARRY, CARRY,
+                MOVE,
+                CARRY, CARRY, CARRY,
+            ],
+        },
+        {
+            'cost': 500,
+            'body': [
+                CARRY, CARRY,
                 MOVE, 
-                CARRY, CARRY, 
-                CARRY, CARRY, 
-                CARRY, 
+                CARRY, CARRY,
                 MOVE, 
-                CARRY, CARRY, CARRY, CARRY, CARRY,
+                CARRY, CARRY, CARRY,
                 MOVE,
             ],
         },

@@ -11,7 +11,9 @@ class UpgradeAction extends BaseAction {
     }
 
     getTargets() {
-        if (this.actor.room.controller && (this.actor.room.controller.progress < this.actor.room.controller.progressTotal || this.actor.room.controller.ticksToDowngrade < 80000)) {
+        //notice: this.actor.room.controller.progress starts out undefined...
+        // if (this.actor.room.controller && (!this.actor.room.controller.progress || this.actor.room.controller.progress < this.actor.room.controller.progressTotal || this.actor.room.controller.ticksToDowngrade < 80000)) {
+        if (this.actor.room.controller && this.actor.room.controller.owner && this.actor.room.controller.owner.username == Globals.USERNAME) {
             return [this.actor.room.controller];
         }
     }
@@ -28,10 +30,12 @@ class UpgradeAction extends BaseAction {
                 this.move();
             } else if (action == ERR_BUSY) {//The creep is still being spawned.
                 //just wait
-                // }else if (action == ERR_INVALID_TARGET){
+            }else if (action == ERR_INVALID_TARGET){
+                console.log('upgrading invalid target:', this.target, this.actor.name, this.actor.room.name);
+                return false;
             } else if (action != 0) {
-                console.log('upgrading error:', action);
-                // return false;
+                console.log('upgrading error:', action, this.actor.name, this.actor.room.name);
+                return false;
             }
             return true;
         }

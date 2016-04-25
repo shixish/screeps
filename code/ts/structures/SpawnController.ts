@@ -39,7 +39,7 @@ class SpawnController {
             'Guard': 0,
             'Healer': 0,
             'Ranger': 0,
-            'Builder': 1 + (room.controller.level < 8 ? 1 : 0),//(storage ? 1 : 0), //
+            'Builder': room.controller.level < 8 ? sources : 1,//(storage ? 1 : 0), //
             'Miner': 0, //storage > 0 ? minerals : 0,
             'Runner': 0,
         }
@@ -56,7 +56,7 @@ class SpawnController {
             max_creeps.Courier += Math.floor(under_attack_by / 3);
             // max_creeps.Healer += Math.floor(under_attack_by / 2);
             // max_creeps.Guard += Math.ceil(under_attack_by / 4);
-            max_creeps.Ranger += Math.ceil(under_attack_by);
+            // max_creeps.Ranger += Math.ceil(under_attack_by);
         }
 
         return max_creeps;

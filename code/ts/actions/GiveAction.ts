@@ -11,17 +11,27 @@ class GiveAction extends BaseAction {
     }
 
     getTargets() {
-        let targets = this.actor.room.find(FIND_MY_STRUCTURES, {
-            filter: function(obj) {
-                return (
-                    (
-                        obj.structureType == STRUCTURE_SPAWN ||
-                        obj.structureType == STRUCTURE_EXTENSION
-                    )
-                    && obj.energy < obj.energyCapacity
-                );
-            }
-        });
+        let targets = [];
+        if (this.actor.room.memory.under_attack) {
+            targets = this.actor.room.find(FIND_MY_STRUCTURES, {
+                filter: obj => {
+                    return obj.structureType == STRUCTURE_TOWER;
+                }
+            });
+        }
+        if (!targets.length) {
+            targets = this.actor.room.find(FIND_MY_STRUCTURES, {
+                filter: function(obj) {
+                    return (
+                        (
+                            obj.structureType == STRUCTURE_SPAWN ||
+                            obj.structureType == STRUCTURE_EXTENSION
+                        )
+                        && obj.energy < obj.energyCapacity
+                    );
+                }
+            });
+        }
         if (!targets.length) {
             targets = this.actor.room.find(FIND_MY_STRUCTURES, {
                 filter: function(obj) {

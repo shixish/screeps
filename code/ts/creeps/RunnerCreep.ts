@@ -52,8 +52,11 @@ class RunnerCreep extends BaseCreep {
                     if (!super.try_to('Give')) {
                         if (!super.try_to('Build')) {
                             if (!super.try_to('Repair')) {
-                                if (!super.try_to('Store')) {
-                                    
+                                // console.log(this.flag.memory.claim);
+                                if (!(this.flag.memory.claim && super.try_to('Upgrade'))) {
+                                    if (!super.try_to('Store')) {
+                                        
+                                    }
                                 }
                             }
                         }

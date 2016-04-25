@@ -4,7 +4,7 @@ class BaseAction{ //Abstract class
     public actor;
     public target;
     public action_name = 'Unknown';
-    protected cache_results = true;
+    protected cache_targeting = true;
 
     constructor(actor) {
         this.actor = actor;
@@ -17,13 +17,21 @@ class BaseAction{ //Abstract class
     getTargets() {
         //notice: I could possibly cache the results of this function on a per-tick basis, making it faster for repeat calls.
     }
-
-    cacheGetTargets() {
-        // TickCache['Action']
-    }
     
     try() {
-        let targets = this.getTargets();
+        let targets;
+        //This caching doesn't seem to help anything... hmph
+
+        // if (this.cache_targeting && TickCache['Action'][this.action_name]) {
+        //     // console.log('cache hit', TickCache['Action'][this.action_name]);
+        //     targets = TickCache['Action'][this.action_name];
+        // } else {
+        //     targets = this.getTargets();
+        //     TickCache['Action'][this.action_name] = targets;
+        // }
+        
+        targets = this.getTargets();
+
         if (targets){
             return this.setTargets(targets);
         }

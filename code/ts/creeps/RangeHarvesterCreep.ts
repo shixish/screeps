@@ -7,6 +7,7 @@
 
 class RangeHarvesterCreep extends HarvesterCreep {
     public creep: Creep;
+    public container: Container;
 
     constructor(creep: Creep) {
         super(creep);
@@ -22,9 +23,9 @@ class RangeHarvesterCreep extends HarvesterCreep {
             if (this.creep.carry.energy > 0) {
                 if (this.container) {
                     super.set_target(this.container, 'Store');
-                } else {
+                } else { //if (!super.try_to('Store')) {
                     console.log('ranged harvester found no container?!');
-                    super.try_to('Store');
+                    super.set_target(this.source, 'Extract');
                 }
             } else {
                 super.set_target(this.source, 'Harvest');

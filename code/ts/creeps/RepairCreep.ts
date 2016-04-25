@@ -29,6 +29,14 @@ class RepairCreep extends BaseCreep {
 
     static creep_tiers = [
         {
+            'cost': 500,
+            'body': [
+                CARRY, CARRY, CARRY,
+                WORK, WORK,
+                MOVE, MOVE, MOVE,
+            ],
+        },
+        {
             'cost': 300,
             'body': [
                 CARRY, CARRY, CARRY,

@@ -27,7 +27,6 @@ class TowerController {
     }
 
     work(){
-        let _this = this;
         var target;
         if (this.structure.energy > 0){
             target = this.structure.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
@@ -42,13 +41,14 @@ class TowerController {
                 if (target){
                     var action = this.structure.heal(target);
                 }else if (this.structure.room.memory.storage.energy > 20000){//don't sap the place dry repairing walls...
+                    //notice: towers don't repair walls until we have a storage tank
                     target = this.structure.pos.findClosestByRange(FIND_STRUCTURES, {
                         filter: obj =>(
                             (
                                 obj.structureType == STRUCTURE_ROAD || 
                                 obj.structureType == STRUCTURE_WALL || 
                                 (obj.owner && obj.owner.username == Globals.USERNAME)
-                            ) && obj.hits < obj.hitsMax && obj.hits < _this.max_repair //Globals.MAX_HITS_REPAIR
+                            ) && obj.hits < obj.hitsMax && obj.hits < this.max_repair //Globals.MAX_HITS_REPAIR
                         ),
                     });
                     if (target){

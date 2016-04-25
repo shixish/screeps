@@ -20,17 +20,20 @@ class HarvestFlag extends BaseFlag {
             let sources = Inventory.room_sources(room),
                 containers = Inventory.room_structure_count('container', room);
             
-            if (containers > 0) {
-                flag_creeps['RangeHarvester'] = containers;
-                flag_creeps['RangeCourier'] = containers;
-                flag_creeps['Repair'] = 1;
-            } else {
-                flag_creeps['Runner'] = 1; //make a generic creep instead
-            }
-
-            if (room.controller && (!room.controller.reservation && !room.controller.reservation) || room.controller.ticksToDowngrade < 5000) {
+            if (room.controller && (!room.controller.reservation && !room.controller.owner) || room.controller.ticksToDowngrade < 5000) {
                 flag_creeps['Claim'] = 1;
             }
+            if (room.memory.constructing){
+                flag_creeps['Runner'] = 1;
+            }
+            // if (containers > 0) {
+                flag_creeps['RangeHarvester'] = containers;
+                flag_creeps['RangeCourier'] = containers * 2;
+                flag_creeps['Repair'] = 1;
+            // } else {
+            //     flag_creeps['Runner'] = 1; //make a generic creep instead
+            // }
+
         }
 
         // if (!target_room) { // || target_room.controller [claim timer is low]

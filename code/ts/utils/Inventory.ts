@@ -37,7 +37,7 @@ class Inventory {
             //Only update structure counts if need be.
             if (!room.memory.last_attack) room.memory.last_attack = Game.time;
             let attack_finished = room.memory.last_attack > room.memory.last_updated && Game.time - room.memory.last_attack > Globals.ALL_CLEAR_AFTER;
-            let reload = !room.memory.last_updated || attack_finished || construction_finished;
+            let reload = Memory['reload'] || !room.memory.last_updated || attack_finished || construction_finished;
             // console.log(room.memory.last_attack > room.memory.last_updated, Game.time - room.memory.last_attack, room);
             if (reload) {
                 console.log('Refreshing structure counts for room', room.name);
@@ -56,7 +56,7 @@ class Inventory {
             SpawnController.generateQueue(room);
 
             //Note: this should be run after generateMaxCreepCount
-            // Inventory.updateObsoleteCreeps(room);
+            Inventory.updateObsoleteCreeps(room);
 
             if (room.memory['structures']['storage'] && room.memory['structures']['storage'].length) {
                 let storage = <Storage>Game.getObjectById(room.memory['structures']['storage'][0]);
@@ -67,6 +67,7 @@ class Inventory {
                 room.memory.storage = { energy: 0 };
             }
         }
+        Memory['reload'] = false;//Reset the reload flag. This can be manually flipped to reload caches.
         invDiag.stop();
     }
 
@@ -245,37 +246,37 @@ class Inventory {
     //Note: this should be run after generateMaxCreepCount
     //This doesn't work too good because it's not accounting for the creeps already marked as obsolete...
     static updateObsoleteCreeps(room: Room) {
-        for (let role in room.memory.creep_roles){
-            let max_count = room.memory.max_creeps[role];
+        // for (let role in room.memory.creep_roles){
+        //     let max_count = room.memory.max_creeps[role];
             
-            //Note: this is only the non-obsolete creeps:
-            let creeps = room.memory.creep_roles[role], count = creeps.length;
+        //     //Note: this is only the non-obsolete creeps:
+        //     let creeps = room.memory.creep_roles[role], count = creeps.length;
 
-            // if (count > max_count) {
-            // let non_obsolete = [];
-            // _.forEach(room.memory.creep_roles[role], (name) => {
-            //     // console.log(!Memory.creeps[name].obsolete);
-            //     let creep = Game.creeps[name];
-            //     if (!creep.memory.obsolete && creep.memory.office == creep.memory.home) { //not a foreign creep
-            //         non_obsolete.push({
-            //             name: name,
-            //             time: creep.ticksToLive
-            //         });
-            //     }
-            // });
-            if (count > max_count) {
-                let sorted = _.sortBy(creeps, (obj) => { 
-                    return obj.time; 
-                });
-                // console.log(`Too many ${role}s in ${room.name}, delete ${sorted.length - max_count}`);
-                for (let i = 0; i < sorted.length - max_count; i++) {
-                    let name = sorted[i];
-                    // console.log(name);
-                    Memory.creeps[name].obsolete = true;
-                    console.log(`Making ${role} ${name} obsolete in room ${room.name}`);
-                }
-            }
-        }
+        //     // if (count > max_count) {
+        //     // let non_obsolete = [];
+        //     // _.forEach(room.memory.creep_roles[role], (name) => {
+        //     //     // console.log(!Memory.creeps[name].obsolete);
+        //     //     let creep = Game.creeps[name];
+        //     //     if (!creep.memory.obsolete && creep.memory.office == creep.memory.home) { //not a foreign creep
+        //     //         non_obsolete.push({
+        //     //             name: name,
+        //     //             time: creep.ticksToLive
+        //     //         });
+        //     //     }
+        //     // });
+        //     if (count > max_count) {
+        //         let sorted = _.sortBy(creeps, (obj) => { 
+        //             return obj.time; 
+        //         });
+        //         // console.log(`Too many ${role}s in ${room.name}, delete ${sorted.length - max_count}`);
+        //         for (let i = 0; i < sorted.length - max_count; i++) {
+        //             let name = sorted[i];
+        //             // console.log(name);
+        //             Memory.creeps[name].obsolete = true;
+        //             console.log(`Making ${role} ${name} obsolete in room ${room.name}`);
+        //         }
+        //     }
+        // }
     }
 
     static invCreepObj(creep: Creep) {

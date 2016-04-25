@@ -16,8 +16,21 @@ class SourceController {
         }
         var memory = this.source.room.memory.source[this.source.id];
         // console.log(this.source.room.memory.source[this.source.id].link);
+
+        //Sometimes structures die, look if the thing still exists.
+        if (memory.link) { 
+            this.link = <Link>Game.getObjectById(memory.link);
+            if (!this.link) delete memory.link;
+        }
+
+        if (memory.container) {
+            this.container = <Container>Game.getObjectById(memory.container);
+            if (!this.container) delete memory.container;
+        }
+        
         if (!memory.container && !memory.link) {
-            var structures = <Structure[]>this.source.pos.findInRange(FIND_MY_STRUCTURES, 3, {
+            //cant use FIND_MY_STRUCTURES to find containers
+            var structures = <Structure[]>this.source.pos.findInRange(FIND_STRUCTURES, 3, {
                 filter: function(obj) {
                     return obj.structureType == STRUCTURE_LINK || obj.structureType == STRUCTURE_CONTAINER;
                 }
@@ -34,12 +47,9 @@ class SourceController {
             }
         }
 
-        if (memory.link) { 
-            this.link = <Link>Game.getObjectById(memory.link);
-        }
-        if (memory.container) {
-            this.container = <Container>Game.getObjectById(memory.container);
-        }
+        // if (memory.container) {
+        //     this.container = <Container>Game.getObjectById(memory.container);
+        // }
         this.work();
     }
 

@@ -28,6 +28,7 @@ class HarvesterCreep extends BaseCreep {
         if (this.source) {
             var source_memory = this.source.room.memory.source[this.source.id];
             this.link = <Link>Game.getObjectById(source_memory.link);
+            this.container = <Container>Game.getObjectById(source_memory.container);
         }
     }
 
