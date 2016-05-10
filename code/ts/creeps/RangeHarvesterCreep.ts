@@ -24,7 +24,7 @@ class RangeHarvesterCreep extends HarvesterCreep {
                 if (this.container) {
                     super.set_target(this.container, 'Store');
                 } else { //if (!super.try_to('Store')) {
-                    console.log('ranged harvester found no container?!');
+                    // console.log('ranged harvester found no container?!');
                     super.set_target(this.source, 'Extract');
                 }
             } else {

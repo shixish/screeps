@@ -124,6 +124,9 @@ class debug {
 		return {
 			stop: function() {
 				debug.logDiag(method, Game.cpu.getUsed() - cpu, (new Date()).getTime() - time);
+			},
+			log: function() {
+				console.log(method, Game.cpu.getUsed() - cpu, (new Date()).getTime() - time);
 			}
 		}
 	}

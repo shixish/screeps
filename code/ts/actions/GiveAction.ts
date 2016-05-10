@@ -13,11 +13,13 @@ class GiveAction extends BaseAction {
     getTargets() {
         let targets = [];
         if (this.actor.room.memory.under_attack) {
+            let towerdiag = debug.diag('STRUCTURE_TOWER');
             targets = this.actor.room.find(FIND_MY_STRUCTURES, {
                 filter: obj => {
                     return obj.structureType == STRUCTURE_TOWER;
                 }
             });
+            towerdiag.log();
         }
         if (!targets.length) {
             targets = this.actor.room.find(FIND_MY_STRUCTURES, {

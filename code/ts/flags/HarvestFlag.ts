@@ -12,19 +12,25 @@ class HarvestFlag extends BaseFlag {
     }
 
     getMaxCreepCount() {
-        let flag_creeps = {
-            // 'Runner': 1,
-            'RangeGuard': 1,
-        };
+        let flag_creeps = {};
+        // console.log(Game.rooms[this.flag.pos.roomName].memory.under_attack);
         if (this.flag.room) {
             let room = this.flag.room;
             let sources = Inventory.room_sources(room),
                 containers = Inventory.room_structure_count('container', room);
-            
+
+            // console.log(room.memory.under_attack);
+            if (room.memory.under_attack) {
+                flag_creeps['Test'] = 1;
+                return flag_creeps;
+            }
+
+            flag_creeps['RangeGuard'] = 1;
+
             if (room.controller && (!room.controller.reservation && !room.controller.owner) || room.controller.ticksToDowngrade < this.min_ticks) {
                 flag_creeps['Claim'] = 1;
             }
-            if (room.memory.constructing){
+            if (room.memory.constructing) {
                 flag_creeps['Runner'] = 1;
             }
             if (containers > 0 || !room.memory.constructing) {
@@ -37,7 +43,12 @@ class HarvestFlag extends BaseFlag {
             //     flag_creeps['Runner'] = 1; //make a generic creep instead
             // }
 
+        } else {
+            flag_creeps['Test'] = 1; //just make this crap creep to test if it's all clear yet... =\
         }
+        // else {
+        //     console.log(Memory.rooms[this.flag.pos.roomName].under_attack);
+        // }
 
         // if (!target_room) { // || target_room.controller [claim timer is low]
         //     flag_creeps['Claim'] = 1;
